@@ -21,7 +21,7 @@ class SplashPage extends StatelessWidget {
               return Transform.scale(scale: scale, child: child);
             },
             onEnd: () {
-              Navigator.pushNamed(context, AppRouteEnum.login.name);
+              Navigator.pushNamed(context, AppRouteEnum.onboard.name);
             },
             child: Image.asset('assets/images/ghl-logo.png', scale: 2),
           ),

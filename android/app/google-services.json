@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142874087932",
+    "project_id": "ghlapp-aff30",
+    "storage_bucket": "ghlapp-aff30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142874087932:android:d3dbf8c33f4f5d1ed52279",
+        "android_client_info": {
+          "package_name": "com.example.dhlapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA02l1WALMk_N6uCoWfHnbBits_zuwTLyw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

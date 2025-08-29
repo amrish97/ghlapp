@@ -21,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<LoginProvider>().initLocationCheck();
-      context.read<LoginProvider>().initDeviceId();
     });
     super.initState();
   }
@@ -46,16 +45,16 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.15,
+                            height: MediaQuery.of(context).size.height / 10,
                           ),
                           Image.asset('assets/images/login.png', scale: 3),
-                          SizedBox(height: 20),
+                          SizedBox(height: 60),
                           PrimaryText(
                             text: "Enter Your Phone Number",
-                            size: 30,
-                            weight: FontWeight.bold,
+                            size: 25,
+                            weight: AppFont.semiBold,
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           PrimaryText(
                             text:
                                 "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
@@ -91,10 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                                   message: 'Please enter valid phone number',
                                 );
                               } else {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouteEnum.verifyPhone.name,
-                                );
+                                value.sendOtp(context);
                               }
                             },
                           ),
@@ -108,40 +104,18 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 20),
                           Row(
                             children: [
-                              Expanded(
-                                child: Container(
-                                  height: 60,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.lightGrey.withAlpha(40),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/images/google.png',
-                                    scale: 3,
-                                  ),
-                                ),
+                              socialButton(
+                                image: 'assets/images/google.png',
+                                onTap: () {
+                                  value.signInWithGoogle(context);
+                                },
                               ),
                               SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  height: 60,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.lightGrey.withAlpha(40),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/images/facebook.png',
-                                    scale: 3,
-                                  ),
-                                ),
+                              socialButton(
+                                image: 'assets/images/facebook.png',
+                                onTap: () {
+                                  value.signInWithFacebook(context);
+                                },
                               ),
                             ],
                           ),
@@ -155,6 +129,26 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget socialButton({
+    required String image,
+    required GestureTapCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 60,
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.white,
+          ),
+          child: Image.asset(image, scale: 3),
+        ),
+      ),
     );
   }
 }

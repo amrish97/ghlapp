@@ -31,7 +31,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: value.selectedIndex,
-            backgroundColor: AppColors.screenBgColor,
+            backgroundColor: AppColors.white,
             onTap: (index) {
               value.setIndex(index);
             },

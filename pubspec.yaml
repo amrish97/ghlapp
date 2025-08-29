@@ -13,12 +13,16 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   provider:
+  http:
   permission_handler:
   geolocator:
   shared_preferences:
   device_info_plus:
   another_telephony:
   pin_code_fields:
+  google_sign_in: 6.1.5
+  flutter_facebook_auth: 6.0.3
+
 
 dev_dependencies:
   flutter_test:

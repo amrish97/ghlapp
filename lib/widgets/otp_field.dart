@@ -7,7 +7,12 @@ import '../resources/app_colors.dart';
 
 class OtpField extends StatelessWidget {
   final FocusNode focusNode;
-  const OtpField({super.key, required this.focusNode});
+  final TextEditingController controller;
+  const OtpField({
+    super.key,
+    required this.focusNode,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +20,7 @@ class OtpField extends StatelessWidget {
       length: 4,
       appContext: context,
       focusNode: focusNode,
+      controller: controller,
       blinkWhenObscuring: true,
       enableActiveFill: true,
       inputFormatters: [
@@ -36,9 +42,9 @@ class OtpField extends StatelessWidget {
         inactiveColor: Colors.transparent,
         selectedColor: Colors.transparent,
         errorBorderColor: Colors.red,
-        activeFillColor: AppColors.lightGrey.withAlpha(40),
-        inactiveFillColor: AppColors.lightGrey.withAlpha(40),
-        selectedFillColor: AppColors.lightGrey.withAlpha(40),
+        activeFillColor: AppColors.lightGrey.withAlpha(25),
+        inactiveFillColor: AppColors.lightGrey.withAlpha(25),
+        selectedFillColor: AppColors.lightGrey.withAlpha(25),
       ),
       useHapticFeedback: true,
       textStyle: AppTextStyles.otpTextStyle,

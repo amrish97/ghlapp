@@ -1,3 +1,4 @@
+import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/resources/app_style.dart';
 import 'package:flutter/material.dart';
 
@@ -5,7 +6,7 @@ class AppSnackBar {
   static void show(
     BuildContext context, {
     required String message,
-    Color backgroundColor = Colors.red,
+    Color backgroundColor = AppColors.primary,
     TextStyle? textStyle,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     Duration duration = const Duration(seconds: 2),

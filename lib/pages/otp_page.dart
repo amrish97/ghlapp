@@ -1,9 +1,10 @@
-import 'package:dhlapp/app/app_routes.dart';
+import 'dart:async';
+
 import 'package:dhlapp/providers/login_provider.dart';
 import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/resources/app_font.dart';
+import 'package:dhlapp/resources/app_style.dart';
 import 'package:dhlapp/widgets/custom_button.dart';
-import 'package:dhlapp/widgets/custom_snakebar.dart';
 import 'package:dhlapp/widgets/custom_text.dart';
 import 'package:dhlapp/widgets/otp_field.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _OtpPageState extends State<OtpPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<LoginProvider>().checkAndLoadSms(context);
+      context.read<LoginProvider>().startTimer();
     });
   }
 
@@ -49,34 +51,41 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                           PrimaryText(
                             text: "Enter Your OTP",
-                            size: 30,
+                            size: 25,
+                            color: AppColors.black,
                             weight: FontWeight.bold,
                           ),
                           SizedBox(height: 20),
                           PrimaryText(
                             text:
                                 "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
-                            size: 16,
+                            size: 15,
                             align: TextAlign.center,
-                            weight: AppFont.light,
+                            weight: AppFont.regular,
                             color: AppColors.lightGrey,
                           ),
                           SizedBox(height: 20),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 40,
-                              vertical: 40,
-                            ),
-                            child: OtpField(focusNode: FocusNode()),
+                          OtpField(
+                            focusNode: FocusNode(),
+                            controller: value.otpController,
                           ),
-                          resendCode(),
+                          SizedBox(height: 10),
+                          resendOTP(
+                            onTap: () {
+                              value.resendOtp(context);
+                              value.startTimer();
+                            },
+                            canResend: value.canResend,
+                            seconds: value.seconds,
+                          ),
                           SizedBox(height: 20),
                           CustomButton(
                             text: "Verify",
                             onTap: () {
-                              Navigator.pushNamed(
+                              value.verifyOtp(
+                                value.phoneNumberController.text,
+                                value.otpController.text,
                                 context,
-                                AppRouteEnum.bottomPage.name,
                               );
                             },
                           ),
@@ -94,29 +103,34 @@ class _OtpPageState extends State<OtpPage> {
     );
   }
 
-  Widget resendCode() {
+  Widget resendOTP({
+    required GestureTapCallback onTap,
+    bool canResend = false,
+    int seconds = 30,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        PrimaryText(
-          text: "Resend Code in",
-          color: AppColors.hintTextColor,
-          weight: AppFont.regular,
-          size: 16,
-        ),
-        PrimaryText(
-          text: " 20 ",
-          color: Colors.red,
-          weight: AppFont.regular,
-          size: 16,
-        ),
-        PrimaryText(
-          text: "Sec",
-          color: AppColors.hintTextColor,
-          weight: AppFont.regular,
-          size: 16,
-        ),
+        canResend
+            ? TextButton(
+              onPressed: onTap,
+              child: Text("Resend OTP", style: AppTextStyles.body),
+            )
+            : RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Resend code in ",
+                    style: AppTextStyles.bodyBlackStyle,
+                  ),
+                  TextSpan(
+                    text: seconds.toString(),
+                    style: AppTextStyles.resendCodeStyle,
+                  ),
+                  TextSpan(text: " sec", style: AppTextStyles.bodyBlackStyle),
+                ],
+              ),
+            ),
       ],
     );
   }

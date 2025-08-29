@@ -18,11 +18,25 @@ class AppTextStyles {
     fontWeight: AppFont.regular,
   );
 
+  static TextStyle resendCodeStyle = TextStyle(
+    color: AppColors.primary,
+    fontSize: AppDimen.textSize16,
+    fontFamily: AppFont.font,
+    fontWeight: AppFont.semiBold,
+  );
+
+  static TextStyle bodyBlackStyle = TextStyle(
+    color: AppColors.lightGrey,
+    fontSize: AppDimen.textSize16,
+    fontFamily: AppFont.font,
+    fontWeight: AppFont.regular,
+  );
+
   static TextStyle otpTextStyle = TextStyle(
     color: AppColors.black,
-    fontSize: AppDimen.textSize26,
+    fontSize: AppDimen.textSize20,
     fontFamily: AppFont.font,
-    fontWeight: AppFont.bold,
+    fontWeight: AppFont.semiBold,
   );
 
   static TextStyle errorStyle = TextStyle(
@@ -43,6 +57,6 @@ class AppTextStyles {
     color: AppColors.white,
     fontSize: AppDimen.textSize16,
     fontFamily: AppFont.font,
-    fontWeight: AppFont.regular,
+    fontWeight: AppFont.semiBold,
   );
 }

@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: AppColors.screenBgColor,
       body: Consumer<HomeProvider>(
         builder: (context, value, child) {
@@ -31,14 +34,15 @@ class HomePage extends StatelessWidget {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 16,
                           ),
-                          getProfile(),
+                          getProfile(value, scaffoldKey: scaffoldKey),
                           SizedBox(height: 20),
                           kycCard(),
                           SizedBox(height: 20),
                           PrimaryText(
                             text: "Total Investment",
-                            size: 20,
+                            size: 16,
                             weight: AppFont.regular,
+                            color: AppColors.textColorLightBlack,
                           ),
                           Row(
                             children: [
@@ -46,8 +50,8 @@ class HomePage extends StatelessWidget {
                               Icon(Icons.currency_rupee, size: 30),
                               PrimaryText(
                                 text: "7,645.25",
-                                size: 40,
-                                weight: FontWeight.bold,
+                                size: 36,
+                                weight: AppFont.semiBold,
                                 color: AppColors.black,
                               ),
                               Spacer(),
@@ -55,15 +59,15 @@ class HomePage extends StatelessWidget {
                                 children: [
                                   PrimaryText(
                                     text: " +25.52%",
-                                    color: Colors.green,
-                                    size: 23,
-                                    weight: AppFont.regular,
+                                    color: Color(0xFF628C5E),
+                                    size: 16,
+                                    weight: AppFont.medium,
                                   ),
                                   PrimaryText(
                                     text: " Last Month",
                                     color: Colors.black,
-                                    size: 17,
-                                    weight: AppFont.regular,
+                                    size: 12,
+                                    weight: AppFont.medium,
                                   ),
                                 ],
                               ),
@@ -90,8 +94,8 @@ class HomePage extends StatelessWidget {
                                       PrimaryText(
                                         text: "Investment",
                                         color: AppColors.white,
-                                        weight: AppFont.bold,
-                                        size: 19,
+                                        weight: AppFont.semiBold,
+                                        size: 16,
                                       ),
                                     ],
                                   ),
@@ -116,8 +120,8 @@ class HomePage extends StatelessWidget {
                                       PrimaryText(
                                         text: "Referral",
                                         color: AppColors.white,
-                                        weight: AppFont.bold,
-                                        size: 19,
+                                        weight: AppFont.semiBold,
+                                        size: 16,
                                       ),
                                     ],
                                   ),
@@ -143,12 +147,12 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     PrimaryText(
                                       text: "Operations",
-                                      size: 20,
-                                      weight: AppFont.regular,
+                                      size: 16,
+                                      weight: AppFont.semiBold,
                                     ),
                                     PrimaryText(
                                       text: "View All",
-                                      size: 20,
+                                      size: 14,
                                       weight: AppFont.regular,
                                       color: AppColors.lightGrey,
                                     ),
@@ -158,19 +162,22 @@ class HomePage extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.currency_rupee, size: 30),
+                                    Icon(Icons.currency_rupee, size: 25),
                                     PrimaryText(
                                       text: "9,645.25",
-                                      size: 40,
-                                      weight: FontWeight.bold,
+                                      size: 32,
+                                      weight: AppFont.semiBold,
                                       color: AppColors.black,
                                     ),
                                     SizedBox(width: 5),
-                                    PrimaryText(
-                                      text: "Spend this month",
-                                      size: 13,
-                                      weight: AppFont.regular,
-                                      color: AppColors.lightGrey,
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: PrimaryText(
+                                        text: "Spend this month",
+                                        size: 14,
+                                        weight: AppFont.medium,
+                                        color: AppColors.lightGrey,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -187,12 +194,110 @@ class HomePage extends StatelessWidget {
           );
         },
       ),
+      drawer: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          children: [
+            Container(
+              height: 160,
+              width: double.infinity,
+              color: AppColors.primary,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(radius: 40),
+                  SizedBox(height: 10),
+                  PrimaryText(
+                    text: "Amrish Kumar",
+                    size: 18,
+                    color: AppColors.white,
+                    weight: AppFont.semiBold,
+                  ),
+                ],
+              ),
+            ),
+            getSideBarInfo(
+              image: "assets/images/facebook.png",
+              label: "Profile",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector3.png",
+              label: "Investment Calculator",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Blogs",
+            ),
+            getSideBarInfo(
+              image: "assets/images/facebook.png",
+              label: "Education Videos",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector3.png",
+              label: "Economy Insights",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Financial IQ",
+            ),
+            getSideBarInfo(
+              image: "assets/images/facebook.png",
+              label: "Refer & Earn",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector3.png",
+              label: "Terms & Conditions",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Privacy Policy",
+            ),
+            getSideBarInfo(
+              image: "assets/images/facebook.png",
+              label: "Contact Us",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector3.png",
+              label: "About Us",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Milestone",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Disclaimer",
+            ),
+            getSideBarInfo(
+              image: "assets/images/Vector-notification.png",
+              label: "Logout",
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getSideBarInfo({required String image, required String label}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        spacing: 5,
+        children: [
+          Image.asset(image, scale: 3),
+          SizedBox(width: 10),
+          PrimaryText(text: label, size: 16),
+        ],
+      ),
     );
   }
 
   Widget kycCard() {
     return Container(
-      height: 90,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -204,17 +309,18 @@ class HomePage extends StatelessWidget {
           SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               PrimaryText(
                 text: "KYC is Pending",
-                size: 20,
+                size: 15,
                 weight: AppFont.semiBold,
                 color: AppColors.black,
               ),
               PrimaryText(
-                text: "Welcome Back!",
-                size: 17,
-                weight: AppFont.regular,
+                text: "Please Fill the KYC",
+                size: 12,
+                weight: AppFont.semiBold,
                 color: AppColors.black,
               ),
             ],
@@ -229,63 +335,74 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget getProfile() {
+  Widget getProfile(HomeProvider value, {required scaffoldKey}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.purple.shade50,
-          child: Text("A"),
+          backgroundImage:
+              Image.asset(value.photoUrl ?? "assets/images/user.png").image,
         ),
         SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PrimaryText(
-              text: "Amrish Kumar",
-              size: 20,
-              weight: AppFont.bold,
-              color: AppColors.primary,
+              text: value.userName ?? "Amrish Kumar",
+              size: 16,
+              weight: AppFont.semiBold,
+              color: AppColors.black,
             ),
             PrimaryText(
               text: "Welcome Back!",
-              size: 17,
+              size: 14,
               weight: AppFont.regular,
               color: AppColors.lightGrey,
             ),
           ],
         ),
         Spacer(),
-        getRowIcon(selectedIndex: 0),
+        getRowIcon(selectedIndex: 0, scaffoldKey: scaffoldKey),
       ],
     );
   }
 
-  Widget getRowIcon({int selectedIndex = 0}) {
-    List<String> icons = [
-      "assets/images/info.png",
-      "assets/images/Vector3.png",
-      "assets/images/Vector-notification.png",
+  Widget getRowIcon({int selectedIndex = 0, required scaffoldKey}) {
+    final List<MapEntry<String, GestureTapCallback>> icons = [
+      MapEntry("assets/images/info.png", () {
+        scaffoldKey.currentState?.openDrawer();
+      }),
+      MapEntry("assets/images/Vector3.png", () {
+        debugPrint("Vector3 tapped");
+      }),
+      MapEntry("assets/images/Vector-notification.png", () {
+        debugPrint("Notification tapped");
+      }),
     ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(icons.length, (index) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: index == selectedIndex ? AppColors.primary : AppColors.white,
-          ),
-          child: Image.asset(
-            icons[index],
-            scale: 3.5,
-            color: index == selectedIndex ? null : AppColors.black,
+        final entry = icons[index];
+        return GestureDetector(
+          onTap: entry.value,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  index == selectedIndex ? AppColors.primary : AppColors.white,
+            ),
+            child: Image.asset(
+              entry.key, // 👈 image path
+              scale: 3.5,
+              color: index == selectedIndex ? null : AppColors.black,
+            ),
           ),
         );
       }),

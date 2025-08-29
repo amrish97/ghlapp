@@ -23,8 +23,12 @@ class Assets {
   static const String imagesInfo = 'assets/images/info.png';
   static const String imagesInverstment = 'assets/images/inverstment.png';
   static const String imagesLogin = 'assets/images/login.png';
+  static const String imagesOnboard1 = 'assets/images/onboard1.png';
+  static const String imagesOnboard2 = 'assets/images/onboard2.png';
+  static const String imagesOnboard3 = 'assets/images/onboard3.png';
   static const String imagesReferal = 'assets/images/referal.png';
   static const String imagesTimer = 'assets/images/timer.png';
+  static const String imagesUser = 'assets/images/user.png';
   static const String imagesVector = 'assets/images/Vector.png';
   static const String imagesVector3 = 'assets/images/Vector3.png';
   static const String imagesVectorNotification =

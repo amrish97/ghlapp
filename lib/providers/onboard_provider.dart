@@ -2,36 +2,33 @@ import 'package:flutter/material.dart';
 
 class OnBoardProvider extends ChangeNotifier {
   final PageController controller = PageController();
+  int _currentPage = 0;
+  int get currentPage => _currentPage;
 
-  bool _isLastPage = false;
-
-  bool get isLastPage => _isLastPage;
-
-  void setLastPage(bool value) {
-    _isLastPage = value;
+  void setPage(int index) {
+    _currentPage = index;
     notifyListeners();
   }
 
   List<Map<String, dynamic>> pageData = [
     {
       "index": 0,
-      "content": " to Esy Cash your Trusted Loan Partner",
-      "subContent":
-          "Fast, secure, and transparent loans designed for your needs",
-      "image": "assets/images/onboard.png",
+      "content": "Welcome ! to",
+      "subContent": "Smart investing made simple, secure, and stress-free.",
+      "image": "assets/images/onboard1.png",
     },
     {
       "index": 1,
-      "content": "Easiest way to Transfer ",
+      "content": "Grow Your Wealth, One Step at a Time",
       "subContent":
-          "Transfer money with ease! our app simplifies the process. ",
+          "Invest with confidence, track with ease, and watch your future bloom.",
       "image": "assets/images/onboard2.png",
     },
     {
       "index": 2,
-      "content": "Your Security, Our ",
+      "content": "Start Your Investment Journey Today ",
       "subContent":
-          " Bank-level encryption keeps your personal and financial data protected.",
+          " Create your free account in seconds and unlock smarter investing.",
       "image": "assets/images/onboard3.png",
     },
   ];

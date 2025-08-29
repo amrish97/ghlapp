@@ -43,7 +43,7 @@ class CustomTextFormField extends StatelessWidget {
         errorStyle: AppTextStyles.errorStyle,
         hintStyle: AppTextStyles.body,
         filled: true,
-        fillColor: AppColors.lightGrey.withAlpha(40),
+        fillColor: AppColors.lightGrey.withAlpha(20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
