@@ -1,4 +1,3 @@
-import 'package:dhlapp/app/app_routes.dart';
 import 'package:dhlapp/providers/login_provider.dart';
 import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/resources/app_font.dart';
@@ -91,6 +90,10 @@ class _LoginPageState extends State<LoginPage> {
                                 );
                               } else {
                                 value.sendOtp(context);
+                                // Navigator.pushNamed(
+                                //   context,
+                                //   AppRouteEnum.bottomPage.name,
+                                // );
                               }
                             },
                           ),

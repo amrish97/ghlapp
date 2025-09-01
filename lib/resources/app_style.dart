@@ -18,6 +18,13 @@ class AppTextStyles {
     fontWeight: AppFont.regular,
   );
 
+  static TextStyle hintStyle = TextStyle(
+    color: AppColors.hintTextStyleColor,
+    fontSize: AppDimen.textSize16,
+    fontFamily: AppFont.font,
+    fontWeight: AppFont.regular,
+  );
+
   static TextStyle resendCodeStyle = TextStyle(
     color: AppColors.primary,
     fontSize: AppDimen.textSize16,

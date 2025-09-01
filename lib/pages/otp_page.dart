@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dhlapp/providers/login_provider.dart';
 import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/resources/app_font.dart';
@@ -11,7 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+  final bool isFromVerification;
+  final String aadhaarNumber;
+  final int referenceID;
+
+  const OtpPage({
+    super.key,
+    this.isFromVerification = false,
+    this.aadhaarNumber = "",
+    this.referenceID = 0,
+  });
 
   @override
   State<OtpPage> createState() => _OtpPageState();
@@ -66,14 +73,29 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                           SizedBox(height: 20),
                           OtpField(
+                            isFrom: widget.isFromVerification,
                             focusNode: FocusNode(),
-                            controller: value.otpController,
+                            controller:
+                                widget.isFromVerification
+                                    ? value.aadhaarVerifyOTPController
+                                    : value.otpController,
                           ),
                           SizedBox(height: 10),
                           resendOTP(
                             onTap: () {
-                              value.resendOtp(context);
-                              value.startTimer();
+                              if (widget.isFromVerification) {
+                                value.resendAadhaarOTP(
+                                  context,
+                                  value.aadhaarController.text,
+                                );
+                                value.startTimer();
+                              } else {
+                                value.resendOtp(
+                                  context,
+                                  value.phoneNumberController.text,
+                                );
+                                value.startTimer();
+                              }
                             },
                             canResend: value.canResend,
                             seconds: value.seconds,
@@ -82,11 +104,20 @@ class _OtpPageState extends State<OtpPage> {
                           CustomButton(
                             text: "Verify",
                             onTap: () {
-                              value.verifyOtp(
-                                value.phoneNumberController.text,
-                                value.otpController.text,
-                                context,
-                              );
+                              if (widget.isFromVerification) {
+                                value.verifyAadhaarOTP(
+                                  context,
+                                  value.aadhaarVerifyOTPController.text,
+                                  widget.referenceID,
+                                  widget.aadhaarNumber,
+                                );
+                              } else {
+                                value.verifyOtp(
+                                  value.phoneNumberController.text,
+                                  value.otpController.text,
+                                  context,
+                                );
+                              }
                             },
                           ),
                           SizedBox(height: 20),

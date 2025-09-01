@@ -6,18 +6,20 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../resources/app_colors.dart';
 
 class OtpField extends StatelessWidget {
+  final bool isFrom;
   final FocusNode focusNode;
   final TextEditingController controller;
   const OtpField({
     super.key,
     required this.focusNode,
+    this.isFrom = false,
     required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return PinCodeTextField(
-      length: 4,
+      length: isFrom ? 6 : 4,
       appContext: context,
       focusNode: focusNode,
       controller: controller,
@@ -25,7 +27,7 @@ class OtpField extends StatelessWidget {
       enableActiveFill: true,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(4),
+        LengthLimitingTextInputFormatter(isFrom ? 6 : 4),
       ],
       cursorColor: Colors.transparent,
       pinTheme: PinTheme(
@@ -34,10 +36,10 @@ class OtpField extends StatelessWidget {
         fieldHeight: 70,
         fieldWidth: 70,
         borderWidth: 0,
-        fieldOuterPadding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 10,
-        ),
+        fieldOuterPadding:
+            isFrom
+                ? null
+                : const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         activeColor: Colors.transparent,
         inactiveColor: Colors.transparent,
         selectedColor: Colors.transparent,

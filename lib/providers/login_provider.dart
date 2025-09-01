@@ -7,8 +7,8 @@ import 'package:dhlapp/app/app_routes.dart';
 import 'package:dhlapp/model/device_detail.dart';
 import 'package:dhlapp/providers/mixin/otp_mixin.dart';
 import 'package:dhlapp/providers/mixin/social_mixin.dart';
+import 'package:dhlapp/providers/mixin/verification_mixin.dart';
 import 'package:dhlapp/resources/AppString.dart';
-import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/widgets/custom_snakebar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,9 +16,11 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginProvider extends ChangeNotifier with OtpMixin, SocialLoginMixin {
+class LoginProvider extends ChangeNotifier
+    with OtpMixin, SocialLoginMixin, VerificationMixin {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController otpController = TextEditingController();
+  TextEditingController aadhaarVerifyOTPController = TextEditingController();
   bool isLoading = false;
   bool get getIsLoading => isLoading;
 
@@ -132,79 +134,6 @@ class LoginProvider extends ChangeNotifier with OtpMixin, SocialLoginMixin {
     }
   }
 
-  Future<void> verifyOtp(String phone, String otp, context) async {
-    final url = Uri.parse("${AppStrings.baseURL}verify/user/otp");
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: jsonEncode({"phone": phone, "otp": otp}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data["status"] == 200 && data["ok"] == true) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString("auth_token", data["token"]);
-
-          AppSnackBar.show(
-            context,
-            message: data["message"] ?? "OTP Verified Successfully",
-            backgroundColor: Colors.green,
-          );
-          Navigator.pushNamed(context, AppRouteEnum.bottomPage.name);
-        } else {
-          AppSnackBar.show(
-            context,
-            message: data["message"] ?? "OTP Verification Failed",
-            backgroundColor: AppColors.primary,
-          );
-        }
-      } else {
-        AppSnackBar.show(
-          context,
-          message: "Error: ${response.statusCode} - ${response.body}",
-        );
-      }
-    } catch (e) {
-      print("verifyOtp error: $e");
-      AppSnackBar.show(context, message: e.toString());
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> resendOtp(context) async {
-    final url = Uri.parse("${AppStrings.baseURL}resend/otp");
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"phone": phoneNumberController.text}),
-      );
-
-      final data = jsonDecode(response.body);
-      if (data["sms_response"]?["status"] == "success") {
-        final message =
-            data["sms_response"]?["message"] ?? "OTP Sent Successfully";
-        AppSnackBar.show(
-          context,
-          message: message,
-          backgroundColor: Colors.green,
-        );
-      } else {
-        final errorMsg =
-            data["sms_response"]?["message"] ?? "Something went wrong";
-        AppSnackBar.show(context, message: errorMsg);
-      }
-    } catch (e) {
-      AppSnackBar.show(context, message: e.toString());
-    }
-  }
-
   Future<DeviceDetail?> _getDeviceBasics() async {
     final info = DeviceInfoPlugin();
 
@@ -223,7 +152,7 @@ class LoginProvider extends ChangeNotifier with OtpMixin, SocialLoginMixin {
       final ios = await info.iosInfo;
       return DeviceDetail(
         deviceId: ios.identifierForVendor ?? "",
-        deviceModel: ios.utsname.machine ?? "",
+        deviceModel: ios.utsname.machine,
         deviceName: ios.name,
       );
     }
@@ -273,6 +202,7 @@ class LoginProvider extends ChangeNotifier with OtpMixin, SocialLoginMixin {
   @override
   void dispose() {
     _timer?.cancel();
+    otpController.clear();
     super.dispose();
   }
 }

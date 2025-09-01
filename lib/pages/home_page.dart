@@ -1,9 +1,14 @@
+import 'package:dhlapp/app/app_routes.dart';
 import 'package:dhlapp/providers/home_provider.dart';
 import 'package:dhlapp/resources/app_colors.dart';
+import 'package:dhlapp/resources/app_dimention.dart';
 import 'package:dhlapp/resources/app_font.dart';
 import 'package:dhlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../widgets/chart_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -12,12 +17,13 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: AppColors.screenBgColor,
-      body: Consumer<HomeProvider>(
-        builder: (context, value, child) {
-          return Padding(
+    final width = MediaQuery.of(context).size.width;
+    return Consumer<HomeProvider>(
+      builder: (context, value, child) {
+        return Scaffold(
+          key: scaffoldKey,
+          backgroundColor: AppColors.screenBgColor,
+          body: Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -34,9 +40,13 @@ class HomePage extends StatelessWidget {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 16,
                           ),
-                          getProfile(value, scaffoldKey: scaffoldKey),
+                          getProfile(
+                            value,
+                            scaffoldKey: scaffoldKey,
+                            context: context,
+                          ),
                           SizedBox(height: 20),
-                          kycCard(),
+                          kycCard(true),
                           SizedBox(height: 20),
                           PrimaryText(
                             text: "Total Investment",
@@ -181,6 +191,100 @@ class HomePage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: 10),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                  height: 10,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.greenCircleColor,
+                                        AppColors.greenCircleColor,
+                                        Colors.blue,
+                                        Colors.blue,
+                                        Colors.red,
+                                        Colors.red,
+                                        AppColors.yellowShadeColor,
+                                        AppColors.yellowShadeColor,
+                                        AppColors.lightGrey,
+                                        AppColors.lightGrey,
+                                      ],
+                                      stops: [
+                                        0.0,
+                                        0.3,
+                                        0.3,
+                                        0.4,
+                                        0.4,
+                                        0.5,
+                                        0.5,
+                                        0.7,
+                                        0.7,
+                                        1.0,
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: AppColors.white,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                PrimaryText(
+                                  text: "My Investment",
+                                  size: AppDimen.textSize16,
+                                  weight: AppFont.semiBold,
+                                  color: AppColors.black,
+                                ),
+                                SizedBox(height: 10),
+                                SfCartesianChart(
+                                  primaryXAxis: NumericAxis(
+                                    minimum: 0.0,
+                                    maximum: 1.0,
+                                    interval: 0.1,
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    minimum: 0.0,
+                                    maximum: 1.0,
+                                    interval: 0.1,
+                                  ),
+                                  series: [
+                                    LineSeries<ChartData, double>(
+                                      dataSource: [
+                                        ChartData(0.0, 0.0),
+                                        ChartData(0.2, 0.4),
+                                        ChartData(0.4, 0.3),
+                                        ChartData(0.6, 0.7),
+                                        ChartData(0.8, 0.6),
+                                        ChartData(1.0, 1.0),
+                                      ],
+                                      xValueMapper:
+                                          (ChartData data, _) => data.x,
+                                      yValueMapper:
+                                          (ChartData data, _) => data.y,
+                                      markerSettings: const MarkerSettings(
+                                        isVisible: false,
+                                      ),
+                                      animationDelay: 5.0,
+                                      enableTooltip: true,
+                                      color: AppColors.primary,
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -191,89 +295,193 @@ class HomePage extends StatelessWidget {
                 );
               },
             ),
-          );
-        },
-      ),
-      drawer: Drawer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 10,
-          children: [
-            Container(
-              height: 160,
-              width: double.infinity,
-              color: AppColors.primary,
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(radius: 40),
-                  SizedBox(height: 10),
-                  PrimaryText(
-                    text: "Amrish Kumar",
-                    size: 18,
-                    color: AppColors.white,
-                    weight: AppFont.semiBold,
-                  ),
-                ],
+          ),
+          drawer: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.85,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50),
+              child: ColoredBox(
+                color: AppColors.white,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 160,
+                      width: double.infinity,
+                      color: AppColors.primary,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 35,
+                              backgroundImage:
+                                  Image.asset(
+                                    value.photoUrl ?? "assets/images/user.png",
+                                  ).image,
+                            ),
+                            const SizedBox(height: 10),
+                            PrimaryText(
+                              text:
+                                  value.userName ??
+                                  value.aadhaarResponse?.data.name ??
+                                  "Amrish Kumar",
+                              size: 18,
+                              color: AppColors.white,
+                              weight: AppFont.semiBold,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.white,
+                        child: getSideBarInfo(context),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            getSideBarInfo(
-              image: "assets/images/facebook.png",
-              label: "Profile",
+          ),
+        );
+      },
+    );
+  }
+
+  Widget getSideBarInfo(context) {
+    final List<Map<String, dynamic>> imageData = [
+      {
+        "image": "assets/images/profile.png",
+        "onTap": () {
+          Navigator.pushNamed(context, AppRouteEnum.profile.name);
+        },
+        "title": "profile",
+      },
+      {
+        "image": "assets/images/calc.png",
+        "onTap": () {},
+        "title": "Investment Calculator",
+      },
+      {"image": "assets/images/blog.png", "onTap": () {}, "title": "Blogs"},
+      {
+        "image": "assets/images/video.png",
+        "onTap": () {},
+        "title": "Educational Videos",
+      },
+      {
+        "image": "assets/images/economy.png",
+        "onTap": () {},
+        "title": "Economy Insights",
+      },
+      {
+        "image": "assets/images/finance.png",
+        "onTap": () {},
+        "title": "Financial IQ",
+      },
+      {
+        "image": "assets/images/refer.png",
+        "onTap": () {},
+        "title": "Refer & Earn",
+      },
+      {
+        "image": "assets/images/terms.png",
+        "onTap": () {},
+        "title": "Terms & Conditions",
+      },
+      {
+        "image": "assets/images/privacy.png",
+        "onTap": () {},
+        "title": "Privacy Policy",
+      },
+      {
+        "image": "assets/images/contact.png",
+        "onTap": () {},
+        "title": "Contact Us",
+      },
+      {"image": "assets/images/about.png", "onTap": () {}, "title": "About Us"},
+      {
+        "image": "assets/images/milestone.png",
+        "onTap": () {},
+        "title": "Milestone",
+      },
+      {
+        "image": "assets/images/disclimar.png",
+        "onTap": () {},
+        "title": "Disclaimer",
+      },
+      {"image": "assets/images/logout.png", "onTap": () {}, "title": "Logout"},
+    ];
+    return SingleChildScrollView(
+      child: Column(
+        children:
+            imageData.asMap().entries.map((entry) {
+              final data = entry.value;
+              return GestureDetector(
+                onTap: data["onTap"],
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 20),
+                      Image.asset(
+                        data["image"],
+                        scale: 3,
+                        color: AppColors.black,
+                      ),
+                      SizedBox(width: 10),
+                      PrimaryText(
+                        text: data["title"],
+                        size: 18,
+                        weight: AppFont.semiBold,
+                        color: AppColors.black,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+
+  Widget kycCard(bool isVerified) {
+    return Visibility(
+      visible: isVerified,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.primaryLight,
+        ),
+        child: Row(
+          children: [
+            Image.asset("assets/images/timer.png", scale: 3),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PrimaryText(
+                  text: "KYC is Pending",
+                  size: 15,
+                  weight: AppFont.semiBold,
+                  color: AppColors.black,
+                ),
+                PrimaryText(
+                  text: "Please Fill the KYC",
+                  size: 12,
+                  weight: AppFont.semiBold,
+                  color: AppColors.black,
+                ),
+              ],
             ),
-            getSideBarInfo(
-              image: "assets/images/Vector3.png",
-              label: "Investment Calculator",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Blogs",
-            ),
-            getSideBarInfo(
-              image: "assets/images/facebook.png",
-              label: "Education Videos",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector3.png",
-              label: "Economy Insights",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Financial IQ",
-            ),
-            getSideBarInfo(
-              image: "assets/images/facebook.png",
-              label: "Refer & Earn",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector3.png",
-              label: "Terms & Conditions",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Privacy Policy",
-            ),
-            getSideBarInfo(
-              image: "assets/images/facebook.png",
-              label: "Contact Us",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector3.png",
-              label: "About Us",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Milestone",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Disclaimer",
-            ),
-            getSideBarInfo(
-              image: "assets/images/Vector-notification.png",
-              label: "Logout",
+            Spacer(),
+            GestureDetector(
+              onTap: () {},
+              child: Image.asset("assets/images/circleArrow.png", scale: 3),
             ),
           ],
         ),
@@ -281,67 +489,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget getSideBarInfo({required String image, required String label}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        spacing: 5,
-        children: [
-          Image.asset(image, scale: 3),
-          SizedBox(width: 10),
-          PrimaryText(text: label, size: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget kycCard() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: AppColors.primaryLight,
-      ),
-      child: Row(
-        children: [
-          Image.asset("assets/images/timer.png", scale: 3),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PrimaryText(
-                text: "KYC is Pending",
-                size: 15,
-                weight: AppFont.semiBold,
-                color: AppColors.black,
-              ),
-              PrimaryText(
-                text: "Please Fill the KYC",
-                size: 12,
-                weight: AppFont.semiBold,
-                color: AppColors.black,
-              ),
-            ],
-          ),
-          Spacer(),
-          GestureDetector(
-            onTap: () {},
-            child: Image.asset("assets/images/circleArrow.png", scale: 3),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getProfile(HomeProvider value, {required scaffoldKey}) {
+  Widget getProfile(
+    HomeProvider value, {
+    required scaffoldKey,
+    required context,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
-          radius: 30,
           backgroundImage:
               Image.asset(value.photoUrl ?? "assets/images/user.png").image,
         ),
@@ -350,45 +507,64 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PrimaryText(
-              text: value.userName ?? "Amrish Kumar",
-              size: 16,
+              text:
+                  value.userName ??
+                  value.aadhaarResponse?.data.name ??
+                  "Amrish Kumar",
+              size: AppDimen.textSize16,
               weight: AppFont.semiBold,
               color: AppColors.black,
             ),
             PrimaryText(
               text: "Welcome Back!",
-              size: 14,
+              size: AppDimen.textSize14,
               weight: AppFont.regular,
               color: AppColors.lightGrey,
             ),
           ],
         ),
         Spacer(),
-        getRowIcon(selectedIndex: 0, scaffoldKey: scaffoldKey),
+        getRowIcon(
+          selectedIndex: 0,
+          scaffoldKey: scaffoldKey,
+          context: context,
+        ),
       ],
     );
   }
 
-  Widget getRowIcon({int selectedIndex = 0, required scaffoldKey}) {
-    final List<MapEntry<String, GestureTapCallback>> icons = [
-      MapEntry("assets/images/info.png", () {
-        scaffoldKey.currentState?.openDrawer();
-      }),
-      MapEntry("assets/images/Vector3.png", () {
-        debugPrint("Vector3 tapped");
-      }),
-      MapEntry("assets/images/Vector-notification.png", () {
-        debugPrint("Notification tapped");
-      }),
+  Widget getRowIcon({
+    int selectedIndex = 0,
+    required scaffoldKey,
+    required context,
+  }) {
+    final List<Map<String, dynamic>> icons = [
+      {
+        "image": "assets/images/info.png",
+        "onTap": () {
+          Navigator.pushNamed(context, AppRouteEnum.kyc.name);
+        },
+      },
+      {
+        "image": "assets/images/Vector-notification.png",
+        "onTap": () {
+          scaffoldKey.currentState?.openDrawer();
+        },
+      },
+      {
+        "image": "assets/images/Vector3.png",
+        "onTap": () {
+          debugPrint("Notification tapped");
+        },
+      },
     ];
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(icons.length, (index) {
         final entry = icons[index];
         return GestureDetector(
-          onTap: entry.value,
+          onTap: entry["onTap"],
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
             height: 40,
@@ -399,7 +575,7 @@ class HomePage extends StatelessWidget {
                   index == selectedIndex ? AppColors.primary : AppColors.white,
             ),
             child: Image.asset(
-              entry.key, // 👈 image path
+              entry["image"],
               scale: 3.5,
               color: index == selectedIndex ? null : AppColors.black,
             ),

@@ -20,6 +20,7 @@ dependencies:
   device_info_plus:
   another_telephony:
   pin_code_fields:
+  syncfusion_flutter_charts:
   google_sign_in: 6.1.5
   flutter_facebook_auth: 6.0.3
 

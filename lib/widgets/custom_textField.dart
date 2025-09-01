@@ -11,6 +11,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText;
   final bool isShowPrefixIcon;
   final String? prefixIcon;
+  final bool showBorderColor;
+  final TextCapitalization textCapitalization;
   final int maxLines;
 
   const CustomTextFormField({
@@ -22,6 +24,8 @@ class CustomTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.maxLines = 1,
     this.prefixIcon,
+    this.textCapitalization = TextCapitalization.none,
+    this.showBorderColor = false,
     this.isShowPrefixIcon = false,
   });
 
@@ -31,6 +35,7 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      textCapitalization: textCapitalization,
       maxLines: maxLines,
       inputFormatters: [
         if (keyboardType == TextInputType.phone) ...[
@@ -40,13 +45,28 @@ class CustomTextFormField extends StatelessWidget {
       ],
       decoration: InputDecoration(
         hintText: label,
-        errorStyle: AppTextStyles.errorStyle,
-        hintStyle: AppTextStyles.body,
+        hintStyle: AppTextStyles.hintStyle,
         filled: true,
         fillColor: AppColors.lightGrey.withAlpha(20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide:
+              showBorderColor
+                  ? BorderSide(
+                    color: AppColors.lightGrey.withAlpha(40),
+                    width: 1,
+                  )
+                  : BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide:
+              showBorderColor
+                  ? BorderSide(
+                    color: AppColors.lightGrey.withAlpha(40),
+                    width: 1,
+                  )
+                  : BorderSide.none,
         ),
         prefixIcon:
             isShowPrefixIcon ? Image.asset(prefixIcon ?? "", scale: 3) : null,

@@ -1,5 +1,6 @@
 import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_style.dart';
+import 'package:dhlapp/resources/app_font.dart';
+import 'package:dhlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class AppSnackBar {
@@ -14,7 +15,13 @@ class AppSnackBar {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: textStyle ?? AppTextStyles.errorSnakeBar),
+        content: PrimaryText(
+          text: message,
+          color: AppColors.white,
+          size: 17,
+          align: TextAlign.start,
+          weight: AppFont.regular,
+        ),
         backgroundColor: backgroundColor,
         behavior: behavior,
         shape: RoundedRectangleBorder(

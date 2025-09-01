@@ -3,7 +3,6 @@ import 'package:dhlapp/providers/onboard_provider.dart';
 import 'package:dhlapp/resources/AppString.dart';
 import 'package:dhlapp/resources/app_colors.dart';
 import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/resources/app_style.dart';
 import 'package:dhlapp/widgets/custom_button.dart';
 import 'package:dhlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +26,7 @@ class OnboardPage extends StatelessWidget {
                     controller: provider.controller,
                     itemCount: provider.pageData.length,
                     onPageChanged: provider.setPage,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final data = provider.pageData[index];
                       return Column(
@@ -34,9 +34,9 @@ class OnboardPage extends StatelessWidget {
                         children: [
                           Image.asset(data["image"], fit: BoxFit.contain),
                           const SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               PrimaryText(
                                 text: data["content"],
@@ -44,9 +44,8 @@ class OnboardPage extends StatelessWidget {
                                 weight: AppFont.semiBold,
                                 size: 24,
                               ),
-
                               if (index == 0) ...[
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 PrimaryText(
                                   text: AppStrings.appName,
                                   color: AppColors.primary,
