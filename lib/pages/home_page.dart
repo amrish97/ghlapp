@@ -1,353 +1,389 @@
-import 'package:dhlapp/app/app_routes.dart';
-import 'package:dhlapp/providers/home_provider.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_dimention.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/constants.dart';
+import 'package:ghlapp/pages/html_content_page.dart';
+import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../widgets/chart_page.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeProvider>().userDashboardAPI(context);
+      //context.read<HomeProvider>().checkAndLoadSms(context);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Consumer<HomeProvider>(
       builder: (context, value, child) {
-        return Scaffold(
-          key: scaffoldKey,
-          backgroundColor: AppColors.screenBgColor,
-          body: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: Container(
+        final allVerified = value.verifiedSection.values.every(
+          (v) => v == true,
+        );
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (!didPop) {
+              App().closeApp();
+            }
+          },
+          child: Scaffold(
+            key: scaffoldKey,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(70),
+              child: AppBar(
+                backgroundColor: AppColors.screenBgColor,
+                automaticallyImplyLeading: false,
+                forceMaterialTransparency: true,
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: getProfile(
+                    value,
+                    scaffoldKey: scaffoldKey,
+                    context: context,
+                  ),
+                ),
+              ),
+            ),
+            backgroundColor: AppColors.screenBgColor,
+            body: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Container(
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
                     child: IntrinsicHeight(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 16,
-                          ),
-                          getProfile(
-                            value,
-                            scaffoldKey: scaffoldKey,
-                            context: context,
-                          ),
-                          SizedBox(height: 20),
-                          kycCard(true),
-                          SizedBox(height: 20),
-                          PrimaryText(
-                            text: "Total Investment",
-                            size: 16,
-                            weight: AppFont.regular,
-                            color: AppColors.textColorLightBlack,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(height: 10),
-                              Icon(Icons.currency_rupee, size: 30),
-                              PrimaryText(
-                                text: "7,645.25",
-                                size: 36,
-                                weight: AppFont.semiBold,
-                                color: AppColors.black,
-                              ),
-                              Spacer(),
-                              Column(
-                                children: [
-                                  PrimaryText(
-                                    text: " +25.52%",
-                                    color: Color(0xFF628C5E),
-                                    size: 16,
-                                    weight: AppFont.medium,
-                                  ),
-                                  PrimaryText(
-                                    text: " Last Month",
-                                    color: Colors.black,
-                                    size: 12,
-                                    weight: AppFont.medium,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.primary,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/inverstment.png",
-                                        scale: 3,
-                                      ),
-                                      SizedBox(width: 10),
-                                      PrimaryText(
-                                        text: "Investment",
-                                        color: AppColors.white,
-                                        weight: AppFont.semiBold,
-                                        size: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.primary,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/referal.png",
-                                        scale: 3,
-                                      ),
-                                      SizedBox(width: 10),
-                                      PrimaryText(
-                                        text: "Referral",
-                                        color: AppColors.white,
-                                        weight: AppFont.semiBold,
-                                        size: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            kycCard(!allVerified, context),
+                            SizedBox(height: 20),
+                            PrimaryText(
+                              text: "Total Investment",
+                              size: 16,
+                              weight: AppFont.regular,
+                              color: AppColors.textColorLightBlack,
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.white,
-                            ),
-                            child: Column(
+                            Row(
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    PrimaryText(
-                                      text: "Operations",
-                                      size: 16,
-                                      weight: AppFont.semiBold,
-                                    ),
-                                    PrimaryText(
-                                      text: "View All",
-                                      size: 14,
-                                      weight: AppFont.regular,
-                                      color: AppColors.lightGrey,
-                                    ),
-                                  ],
-                                ),
                                 SizedBox(height: 10),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.currency_rupee, size: 25),
-                                    PrimaryText(
-                                      text: "9,645.25",
-                                      size: 32,
-                                      weight: AppFont.semiBold,
-                                      color: AppColors.black,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: PrimaryText(
-                                        text: "Spend this month",
-                                        size: 14,
-                                        weight: AppFont.medium,
-                                        color: AppColors.lightGrey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                  ),
-                                  height: 10,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppColors.greenCircleColor,
-                                        AppColors.greenCircleColor,
-                                        Colors.blue,
-                                        Colors.blue,
-                                        Colors.red,
-                                        Colors.red,
-                                        AppColors.yellowShadeColor,
-                                        AppColors.yellowShadeColor,
-                                        AppColors.lightGrey,
-                                        AppColors.lightGrey,
-                                      ],
-                                      stops: [
-                                        0.0,
-                                        0.3,
-                                        0.3,
-                                        0.4,
-                                        0.4,
-                                        0.5,
-                                        0.5,
-                                        0.7,
-                                        0.7,
-                                        1.0,
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.white,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                                Icon(Icons.currency_rupee, size: 30),
                                 PrimaryText(
-                                  text: "My Investment",
-                                  size: AppDimen.textSize16,
+                                  text: "7,645.25",
+                                  size: 36,
                                   weight: AppFont.semiBold,
                                   color: AppColors.black,
                                 ),
-                                SizedBox(height: 10),
-                                SfCartesianChart(
-                                  primaryXAxis: NumericAxis(
-                                    minimum: 0.0,
-                                    maximum: 1.0,
-                                    interval: 0.1,
-                                  ),
-                                  primaryYAxis: NumericAxis(
-                                    minimum: 0.0,
-                                    maximum: 1.0,
-                                    interval: 0.1,
-                                  ),
-                                  series: [
-                                    LineSeries<ChartData, double>(
-                                      dataSource: [
-                                        ChartData(0.0, 0.0),
-                                        ChartData(0.2, 0.4),
-                                        ChartData(0.4, 0.3),
-                                        ChartData(0.6, 0.7),
-                                        ChartData(0.8, 0.6),
-                                        ChartData(1.0, 1.0),
-                                      ],
-                                      xValueMapper:
-                                          (ChartData data, _) => data.x,
-                                      yValueMapper:
-                                          (ChartData data, _) => data.y,
-                                      markerSettings: const MarkerSettings(
-                                        isVisible: false,
-                                      ),
-                                      animationDelay: 5.0,
-                                      enableTooltip: true,
-                                      color: AppColors.primary,
+                                Spacer(),
+                                Column(
+                                  children: [
+                                    PrimaryText(
+                                      text: " +25.52%",
+                                      color: Color(0xFF628C5E),
+                                      size: 16,
+                                      weight: AppFont.medium,
+                                    ),
+                                    PrimaryText(
+                                      text: " Last Month",
+                                      color: Colors.black,
+                                      size: 12,
+                                      weight: AppFont.medium,
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          drawer: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.85,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: ColoredBox(
-                color: AppColors.white,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 160,
-                      width: double.infinity,
-                      color: AppColors.primary,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 35,
-                              backgroundImage:
-                                  Image.asset(
-                                    value.photoUrl ?? "assets/images/user.png",
-                                  ).image,
+                            SizedBox(height: 20),
+                            Row(
+                              children: [
+                                getCommonButton(
+                                  context,
+                                  imageData: "assets/images/inverstment.png",
+                                  text: "Investment",
+                                  onTap: () {
+                                    value.setIndex(1);
+                                  },
+                                ),
+                                SizedBox(width: 10),
+                                getCommonButton(
+                                  context,
+                                  imageData: "assets/images/referal.png",
+                                  text: "Referral",
+                                  onTap: () {},
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            PrimaryText(
-                              text:
-                                  value.userName ??
-                                  value.aadhaarResponse?.data.name ??
-                                  "Amrish Kumar",
-                              size: 18,
-                              color: AppColors.white,
-                              weight: AppFont.semiBold,
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: AppColors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      PrimaryText(
+                                        text: "Operations",
+                                        size: 16,
+                                        weight: AppFont.semiBold,
+                                      ),
+                                      PrimaryText(
+                                        text: "View All",
+                                        size: 14,
+                                        weight: AppFont.regular,
+                                        color: AppColors.lightGrey,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.currency_rupee, size: 25),
+                                      PrimaryText(
+                                        text: "9,645.25",
+                                        size: 32,
+                                        weight: AppFont.semiBold,
+                                        color: AppColors.black,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 8.0,
+                                        ),
+                                        child: PrimaryText(
+                                          text: "Spend this month",
+                                          size: 14,
+                                          weight: AppFont.medium,
+                                          color: AppColors.lightGrey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                    ),
+                                    height: 10,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppColors.greenCircleColor,
+                                          AppColors.greenCircleColor,
+                                          Colors.blue,
+                                          Colors.blue,
+                                          Colors.red,
+                                          Colors.red,
+                                          AppColors.yellowShadeColor,
+                                          AppColors.yellowShadeColor,
+                                          AppColors.lightGrey,
+                                          AppColors.lightGrey,
+                                        ],
+                                        stops: [
+                                          0.0,
+                                          0.3,
+                                          0.3,
+                                          0.4,
+                                          0.4,
+                                          0.5,
+                                          0.5,
+                                          0.7,
+                                          0.7,
+                                          1.0,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: AppColors.white,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  PrimaryText(
+                                    text: "My Investment",
+                                    size: AppDimen.textSize16,
+                                    weight: AppFont.semiBold,
+                                    color: AppColors.black,
+                                  ),
+                                  SizedBox(height: 10),
+                                  SfCartesianChart(
+                                    primaryXAxis: NumericAxis(
+                                      minimum: 0.0,
+                                      maximum: 1.0,
+                                      interval: 0.1,
+                                    ),
+                                    primaryYAxis: NumericAxis(
+                                      minimum: 0.0,
+                                      maximum: 1.0,
+                                      interval: 0.1,
+                                    ),
+                                    series: [
+                                      LineSeries<ChartData, double>(
+                                        dataSource: [
+                                          ChartData(0.0, 0.0),
+                                          ChartData(0.2, 0.4),
+                                          ChartData(0.4, 0.3),
+                                          ChartData(0.6, 0.7),
+                                          ChartData(0.8, 0.6),
+                                          ChartData(1.0, 1.0),
+                                        ],
+                                        xValueMapper:
+                                            (ChartData data, _) => data.x,
+                                        yValueMapper:
+                                            (ChartData data, _) => data.y,
+                                        markerSettings: const MarkerSettings(
+                                          isVisible: false,
+                                        ),
+                                        animationDelay: 5.0,
+                                        enableTooltip: true,
+                                        color: AppColors.primary,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: getSideBarInfo(context),
+                  );
+                },
+              ),
+            ),
+            drawer: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50),
+                child: ColoredBox(
+                  color: AppColors.white,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 160,
+                        width: double.infinity,
+                        color: AppColors.primary,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 35,
+                                backgroundImage:
+                                    Image.asset(
+                                      value.photoUrl ??
+                                          "assets/images/user.png",
+                                    ).image,
+                              ),
+                              const SizedBox(height: 10),
+                              PrimaryText(
+                                text:
+                                    aadhaarName.toString().isEmpty
+                                        ? "User"
+                                        : aadhaarName.toString(),
+                                size: AppDimen.textSize16,
+                                color: AppColors.white,
+                                weight: AppFont.semiBold,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Container(
+                          color: Colors.white,
+                          child: getSideBarInfo(context),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget getCommonButton(
+    context, {
+    required String imageData,
+    required String text,
+    required GestureTapCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.primary,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(imageData, scale: 3),
+              SizedBox(width: 10),
+              PrimaryText(
+                text: text,
+                color: AppColors.white,
+                weight: AppFont.semiBold,
+                size: 16,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -388,12 +424,34 @@ class HomePage extends StatelessWidget {
       },
       {
         "image": "assets/images/terms.png",
-        "onTap": () {},
-        "title": "Terms & Conditions",
+        "onTap": () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => HtmlContentView(
+                    isFrom: AppStrings.termsCondition,
+                    showTermsPrivacy: true,
+                  ),
+            ),
+          );
+        },
+        "title": AppStrings.termsCondition,
       },
       {
         "image": "assets/images/privacy.png",
-        "onTap": () {},
+        "onTap": () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => HtmlContentView(
+                    isFrom: 'Privacy policy',
+                    showTermsPrivacy: false,
+                  ),
+            ),
+          );
+        },
         "title": "Privacy Policy",
       },
       {
@@ -422,7 +480,7 @@ class HomePage extends StatelessWidget {
               return GestureDetector(
                 onTap: data["onTap"],
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  padding: const EdgeInsets.only(top: 20, bottom: 20),
                   child: Row(
                     children: [
                       SizedBox(width: 20),
@@ -434,7 +492,7 @@ class HomePage extends StatelessWidget {
                       SizedBox(width: 10),
                       PrimaryText(
                         text: data["title"],
-                        size: 18,
+                        size: AppDimen.textSize14,
                         weight: AppFont.semiBold,
                         color: AppColors.black,
                       ),
@@ -447,7 +505,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget kycCard(bool isVerified) {
+  Widget kycCard(bool isVerified, context) {
     return Visibility(
       visible: isVerified,
       child: Container(
@@ -480,7 +538,9 @@ class HomePage extends StatelessWidget {
             ),
             Spacer(),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRouteEnum.kyc.name);
+              },
               child: Image.asset("assets/images/circleArrow.png", scale: 3),
             ),
           ],
@@ -498,27 +558,29 @@ class HomePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(width: 10),
         CircleAvatar(
           backgroundImage:
               Image.asset(value.photoUrl ?? "assets/images/user.png").image,
         ),
-        SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PrimaryText(
               text:
-                  value.userName ??
-                  value.aadhaarResponse?.data.name ??
-                  "Amrish Kumar",
-              size: AppDimen.textSize16,
+                  aadhaarName.toString().isEmpty
+                      ? "User"
+                      : aadhaarName.toString(),
+              size: AppDimen.textSize12,
               weight: AppFont.semiBold,
+              maxLines: 1,
               color: AppColors.black,
             ),
             PrimaryText(
               text: "Welcome Back!",
-              size: AppDimen.textSize14,
+              size: AppDimen.textSize12,
               weight: AppFont.regular,
+              maxLines: 1,
               color: AppColors.lightGrey,
             ),
           ],
@@ -529,6 +591,7 @@ class HomePage extends StatelessWidget {
           scaffoldKey: scaffoldKey,
           context: context,
         ),
+        SizedBox(width: 5),
       ],
     );
   }

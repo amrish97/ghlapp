@@ -1,6 +1,7 @@
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class AppSnackBar {
@@ -18,7 +19,7 @@ class AppSnackBar {
         content: PrimaryText(
           text: message,
           color: AppColors.white,
-          size: 17,
+          size: AppDimen.textSize14,
           align: TextAlign.start,
           weight: AppFont.regular,
         ),

@@ -1,60 +1,80 @@
-import 'package:dhlapp/pages/verification_page.dart';
-import 'package:dhlapp/providers/home_provider.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_dimention.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/widgets/custom_button.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/pages/verification_page.dart';
+import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/providers/kyc_provider.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/widgets/custom_button.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../constants.dart';
 
 class KycPage extends StatelessWidget {
   const KycPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.screenBgColor,
-      body: Consumer<HomeProvider>(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          App().closeApp();
+        }
+      },
+      child: Consumer<HomeProvider>(
         builder: (context, value, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        getTopSection(context, progress: value.progress),
-                        const SizedBox(height: 20),
-                        getBottomSection(context, provider: value),
-                        const SizedBox(height: 20),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            children: [
-                              PrimaryText(
-                                text:
-                                    "Lorem ipsum dolor sit amet consectetur. Arcu lacus netus enim tempus at. Ornare quis ipsum quis sodales orci turpis.",
-                                size: AppDimen.textSize14,
-                                align: TextAlign.start,
-                                weight: AppFont.medium,
-                                color: AppColors.black,
-                              ),
-                              const SizedBox(height: 20),
-                              CustomButton(text: "Got it", onTap: () {}),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
+          final allVerified = value.verifiedSection.values.every(
+            (v) => v == true,
+          );
+          return Scaffold(
+            backgroundColor: AppColors.screenBgColor,
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          getTopSection(context),
+                          const SizedBox(height: 20),
+                          getBottomSection(context, provider: value),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  PrimaryText(
+                    text:
+                        "Lorem ipsum dolor sit amet consectetur. Arcu lacus netus enim tempus at. Ornare quis ipsum quis sodales orci turpis.",
+                    size: AppDimen.textSize14,
+                    align: TextAlign.start,
+                    weight: AppFont.medium,
+                    color: AppColors.black,
+                  ),
+                  const SizedBox(height: 5),
+                  CustomButton(
+                    text: allVerified ? "Done" : "Got it",
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
@@ -90,19 +110,21 @@ class KycPage extends StatelessWidget {
     return Column(
       children:
           setOfData.map((item) {
-            bool isVerified = provider.verifiedSection[item["key"]] ?? false;
+            final isVerified = provider.verifiedSection[item["key"]] ?? false;
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => VerificationPage(
-                          routeName: item["title"],
-                          isFrom: item["key"],
-                        ),
-                  ),
-                );
+                if (!isVerified) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => VerificationPage(
+                            routeName: item["title"],
+                            isFrom: item["key"],
+                          ),
+                    ),
+                  );
+                }
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(
@@ -158,7 +180,7 @@ class KycPage extends StatelessWidget {
     );
   }
 
-  Widget getTopSection(context, {required double progress}) {
+  Widget getTopSection(context) {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
@@ -220,37 +242,44 @@ class KycPage extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    PrimaryText(
-                      text: "Personal Detail",
-                      size: AppDimen.textSize16,
-                      color: AppColors.white,
-                      weight: AppFont.semiBold,
-                    ),
-                    PrimaryText(
-                      text: "Lorem ipsum dolor sit amet consectetur.",
-                      size: AppDimen.textSize12,
-                      color: AppColors.white,
-                      weight: AppFont.regular,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      PrimaryText(
+                        text: "Personal Detail",
+                        size: AppDimen.textSize16,
+                        color: AppColors.white,
+                        weight: AppFont.semiBold,
+                      ),
+                      PrimaryText(
+                        text: "Lorem ipsum dolor sit amet consectetur.",
+                        size: AppDimen.textSize12,
+                        color: AppColors.white,
+                        weight: AppFont.regular,
+                        align: TextAlign.start,
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 10),
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    SizedBox(
-                      width: 70,
-                      height: 70,
-                      child: CircularProgressIndicator(
-                        value: progress,
-                        color: AppColors.yellowShadeColor,
-                        strokeWidth: 7,
-                        backgroundColor: AppColors.primaryLight,
-                      ),
+                    Consumer<KycProvider>(
+                      builder: (context, provider, child) {
+                        return SizedBox(
+                          width: 70,
+                          height: 70,
+                          child: CircularProgressIndicator(
+                            value: provider.progress,
+                            color: AppColors.yellowShadeColor,
+                            strokeWidth: 7,
+                            backgroundColor: AppColors.primaryLight,
+                          ),
+                        );
+                      },
                     ),
                     Container(
                       width: 60,

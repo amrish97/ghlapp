@@ -1,6 +1,6 @@
-import 'package:dhlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:dhlapp/resources/app_style.dart';
+import 'package:ghlapp/resources/app_style.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -8,6 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final String? Function(String?)? onchanged;
   final bool obscureText;
   final bool isShowPrefixIcon;
   final String? prefixIcon;
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.onchanged,
     this.obscureText = false,
     this.maxLines = 1,
     this.prefixIcon,
@@ -35,6 +37,7 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      style: AppTextStyles.hintStyle,
       textCapitalization: textCapitalization,
       maxLines: maxLines,
       inputFormatters: [
@@ -56,7 +59,10 @@ class CustomTextFormField extends StatelessWidget {
                     color: AppColors.lightGrey.withAlpha(40),
                     width: 1,
                   )
-                  : BorderSide.none,
+                  : BorderSide(
+                    color: AppColors.lightGrey.withAlpha(40),
+                    width: 1,
+                  ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -66,12 +72,16 @@ class CustomTextFormField extends StatelessWidget {
                     color: AppColors.lightGrey.withAlpha(40),
                     width: 1,
                   )
-                  : BorderSide.none,
+                  : BorderSide(
+                    color: AppColors.lightGrey.withAlpha(40),
+                    width: 1,
+                  ),
         ),
         prefixIcon:
             isShowPrefixIcon ? Image.asset(prefixIcon ?? "", scale: 3) : null,
       ),
       validator: validator,
+      onChanged: onchanged,
     );
   }
 }

@@ -1,10 +1,13 @@
-import 'package:dhlapp/providers/login_provider.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/widgets/custom_button.dart';
-import 'package:dhlapp/widgets/custom_snakebar.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
-import 'package:dhlapp/widgets/custom_textField.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/providers/login_provider.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/widgets/custom_button.dart';
+import 'package:ghlapp/widgets/custom_scaffold.dart';
+import 'package:ghlapp/widgets/custom_snakebar.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:ghlapp/widgets/custom_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LoginProvider>().initLocationCheck();
-    });
+    context.read<LoginProvider>().initLocationCheck();
     super.initState();
   }
 
@@ -28,106 +29,110 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Consumer<LoginProvider>(
       builder: (context, value, child) {
-        return Scaffold(
-          backgroundColor: AppColors.screenBgColor,
-          body: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 10,
-                          ),
-                          Image.asset('assets/images/login.png', scale: 3),
-                          SizedBox(height: 60),
-                          PrimaryText(
-                            text: "Enter Your Phone Number",
-                            size: 25,
-                            weight: AppFont.semiBold,
-                          ),
-                          SizedBox(height: 10),
-                          PrimaryText(
-                            text:
-                                "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
-                            size: 16,
-                            align: TextAlign.center,
-                            weight: AppFont.light,
-                            color: AppColors.lightGrey,
-                          ),
-                          SizedBox(height: 20),
-                          CustomTextFormField(
-                            label: 'Enter your phone number',
-                            isShowPrefixIcon: true,
-                            controller: value.phoneNumberController,
-                            prefixIcon: "assets/images/Vector.png",
-                            keyboardType: TextInputType.phone,
-                          ),
-                          SizedBox(height: 20),
-                          CustomButton(
-                            text: "Send OTP",
-                            onTap: () {
-                              if (value.phoneNumberController.text.isEmpty) {
-                                AppSnackBar.show(
-                                  context,
-                                  message: 'Please enter a phone number',
-                                );
-                              } else if (value
-                                      .phoneNumberController
-                                      .text
-                                      .length !=
-                                  10) {
-                                AppSnackBar.show(
-                                  context,
-                                  message: 'Please enter valid phone number',
-                                );
-                              } else {
-                                value.sendOtp(context);
-                                // Navigator.pushNamed(
-                                //   context,
-                                //   AppRouteEnum.bottomPage.name,
-                                // );
-                              }
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          PrimaryText(
-                            text: "Login With",
-                            size: 16,
-                            weight: AppFont.medium,
-                            color: AppColors.lightGrey,
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              socialButton(
-                                image: 'assets/images/google.png',
-                                onTap: () {
-                                  value.signInWithGoogle(context);
-                                },
-                              ),
-                              SizedBox(width: 10),
-                              socialButton(
-                                image: 'assets/images/facebook.png',
-                                onTap: () {
-                                  value.signInWithFacebook(context);
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (!didPop) {
+              App().closeApp();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.screenBgColor,
+            body: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 10,
+                            ),
+                            Image.asset('assets/images/login.png', scale: 3),
+                            SizedBox(height: 60),
+                            PrimaryText(
+                              text: "Enter Your Phone Number",
+                              size: AppDimen.textSize24,
+                              weight: AppFont.semiBold,
+                            ),
+                            SizedBox(height: 10),
+                            PrimaryText(
+                              text:
+                                  "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
+                              size: AppDimen.textSize16,
+                              align: TextAlign.center,
+                              weight: AppFont.light,
+                              color: AppColors.lightGrey,
+                            ),
+                            SizedBox(height: 20),
+                            CustomTextFormField(
+                              label: 'Enter your phone number',
+                              isShowPrefixIcon: true,
+                              controller: value.phoneNumberController,
+                              prefixIcon: "assets/images/Vector.png",
+                              keyboardType: TextInputType.phone,
+                            ),
+                            SizedBox(height: 20),
+                            CustomButton(
+                              text: "Send OTP",
+                              onTap: () {
+                                if (value.phoneNumberController.text.isEmpty) {
+                                  AppSnackBar.show(
+                                    context,
+                                    message: 'Please enter a phone number',
+                                  );
+                                } else if (value
+                                        .phoneNumberController
+                                        .text
+                                        .length !=
+                                    10) {
+                                  AppSnackBar.show(
+                                    context,
+                                    message: 'Please enter valid phone number',
+                                  );
+                                } else {
+                                  value.sendOtp(context);
+                                }
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            PrimaryText(
+                              text: "Login With",
+                              size: 16,
+                              weight: AppFont.medium,
+                              color: AppColors.lightGrey,
+                            ),
+                            SizedBox(height: 20),
+                            Row(
+                              children: [
+                                socialButton(
+                                  image: 'assets/images/google.png',
+                                  onTap: () {
+                                    value.signInWithGoogle(context);
+                                  },
+                                ),
+                                SizedBox(width: 10),
+                                socialButton(
+                                  image: 'assets/images/facebook.png',
+                                  onTap: () {
+                                    value.signInWithFacebook(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         );

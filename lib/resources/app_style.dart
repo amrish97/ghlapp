@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_dimention.dart';
-import 'package:dhlapp/resources/app_font.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
 
 class AppTextStyles {
-  static TextStyle onBoardStyle = TextStyle(
-    color: AppColors.primary,
-    fontSize: 32,
-    fontFamily: AppFont.font,
-    fontWeight: AppFont.semiBold,
-  );
-
   static TextStyle body = TextStyle(
     color: AppColors.lightGrey,
-    fontSize: AppDimen.textSize16,
+    fontSize: AppDimen.textSize14,
+    fontFamily: AppFont.font,
+    fontWeight: AppFont.regular,
+  );
+
+  static TextStyle bodyStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: AppDimen.textSize12,
     fontFamily: AppFont.font,
     fontWeight: AppFont.regular,
   );
 
   static TextStyle hintStyle = TextStyle(
     color: AppColors.hintTextStyleColor,
-    fontSize: AppDimen.textSize16,
+    fontSize: AppDimen.textSize14,
     fontFamily: AppFont.font,
     fontWeight: AppFont.regular,
   );
@@ -65,5 +65,19 @@ class AppTextStyles {
     fontSize: AppDimen.textSize16,
     fontFamily: AppFont.font,
     fontWeight: AppFont.semiBold,
+  );
+
+  static TextStyle unSelectedTextStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: AppDimen.textSize12,
+    fontWeight: AppFont.semiBold,
+    fontFamily: AppFont.font,
+  );
+
+  static TextStyle selectedTextStyle = TextStyle(
+    color: AppColors.primary,
+    fontSize: AppDimen.textSize12,
+    fontWeight: AppFont.semiBold,
+    fontFamily: AppFont.font,
   );
 }

@@ -1,10 +1,14 @@
-import 'package:dhlapp/providers/login_provider.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/resources/app_style.dart';
-import 'package:dhlapp/widgets/custom_button.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
-import 'package:dhlapp/widgets/otp_field.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/providers/login_provider.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/resources/app_style.dart';
+import 'package:ghlapp/widgets/custom_button.dart';
+import 'package:ghlapp/widgets/custom_scaffold.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:ghlapp/widgets/otp_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,8 +33,7 @@ class _OtpPageState extends State<OtpPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LoginProvider>().checkAndLoadSms(context);
-      context.read<LoginProvider>().startTimer();
+      context.read<LoginProvider>().startTimerLogin();
     });
   }
 
@@ -58,7 +61,7 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                           PrimaryText(
                             text: "Enter Your OTP",
-                            size: 25,
+                            size: AppDimen.textSize14,
                             color: AppColors.black,
                             weight: FontWeight.bold,
                           ),
@@ -84,17 +87,13 @@ class _OtpPageState extends State<OtpPage> {
                           resendOTP(
                             onTap: () {
                               if (widget.isFromVerification) {
-                                value.resendAadhaarOTP(
-                                  context,
-                                  value.aadhaarController.text,
-                                );
-                                value.startTimer();
+                                value.resendAadhaarOTP(context);
                               } else {
                                 value.resendOtp(
                                   context,
                                   value.phoneNumberController.text,
                                 );
-                                value.startTimer();
+                                value.startTimerLogin();
                               }
                             },
                             canResend: value.canResend,
@@ -119,6 +118,7 @@ class _OtpPageState extends State<OtpPage> {
                                 );
                               }
                             },
+                            isLoader: value.getIsLoading,
                           ),
                           SizedBox(height: 20),
                         ],

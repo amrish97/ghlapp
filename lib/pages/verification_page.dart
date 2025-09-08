@@ -1,11 +1,12 @@
-import 'package:dhlapp/providers/home_provider.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/resources/app_dimention.dart';
-import 'package:dhlapp/resources/app_font.dart';
-import 'package:dhlapp/widgets/custom_button.dart';
-import 'package:dhlapp/widgets/custom_snakebar.dart';
-import 'package:dhlapp/widgets/custom_text.dart';
-import 'package:dhlapp/widgets/custom_textField.dart';
+import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/providers/kyc_provider.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/widgets/custom_button.dart';
+import 'package:ghlapp/widgets/custom_snakebar.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:ghlapp/widgets/custom_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,6 @@ class VerificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final buttonTitle =
         isFrom == "aadhaar"
             ? "Send OTP"
@@ -32,48 +32,50 @@ class VerificationPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: AppColors.screenBgColor,
           resizeToAvoidBottomInset: true,
-          body: SingleChildScrollView(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60),
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: size.height * 0.09,
-                horizontal: size.width * 0.05,
+              padding: const EdgeInsets.only(top: 50, right: 10, left: 10),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.white,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.black,
+                        size: 20, // scale icon too
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  PrimaryText(
+                    text: "$routeName Details",
+                    color: AppColors.black,
+                    weight: AppFont.semiBold,
+                    size: AppDimen.textSize18,
+                  ),
+                ],
               ),
-              child: IntrinsicHeight(
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: IntrinsicHeight(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.white,
-                            ),
-                            child: Icon(
-                              Icons.arrow_back_ios_new,
-                              color: AppColors.black,
-                              size: 20, // scale icon too
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        PrimaryText(
-                          text: "$routeName Details",
-                          color: AppColors.black,
-                          weight: AppFont.semiBold,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 50),
                     if (isFrom == "aadhaar" || isFrom == "pan") ...[
                       PrimaryText(
                         text: "$routeName Number",
@@ -244,7 +246,6 @@ class VerificationPage extends StatelessWidget {
                               context: context,
                               value: value.accountNumberController.text,
                               emptyMessage: "please enter account number",
-                              exactLength: 11,
                               lengthMessage:
                                   "please enter your account number correctly",
                             )) {
@@ -312,7 +313,9 @@ class VerificationPage extends StatelessWidget {
                         };
                         validators[isFrom]?.call();
                       },
+                      isLoader: value.getIsLoading,
                     ),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),

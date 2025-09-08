@@ -1,10 +1,13 @@
-import 'package:dhlapp/resources/AppString.dart';
+import 'dart:io';
+
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:flutter/material.dart';
-import 'package:dhlapp/app/app_routes.dart';
-import 'package:dhlapp/resources/app_colors.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:flutter/services.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,5 +30,16 @@ class App extends StatelessWidget {
         );
       },
     );
+  }
+
+  MethodChannel locationChannel = MethodChannel('close');
+
+  void closeApp() {
+    if (Platform.isAndroid) {
+      locationChannel.invokeMethod('closeApp');
+      SystemNavigator.pop();
+    } else {
+      exit(0);
+    }
   }
 }

@@ -1,11 +1,13 @@
-import 'package:dhlapp/pages/bottom_navigation.dart';
-import 'package:dhlapp/pages/home_page.dart';
-import 'package:dhlapp/pages/kyc_page.dart';
-import 'package:dhlapp/pages/login_page.dart';
-import 'package:dhlapp/pages/onboard_page.dart';
-import 'package:dhlapp/pages/otp_page.dart';
-import 'package:dhlapp/pages/profile_page.dart';
-import 'package:dhlapp/pages/splash_page.dart';
+import 'package:ghlapp/pages/Detail_page.dart';
+import 'package:ghlapp/pages/bottom_navigation.dart';
+import 'package:ghlapp/pages/home_page.dart';
+import 'package:ghlapp/pages/investment_page.dart';
+import 'package:ghlapp/pages/kyc_page.dart';
+import 'package:ghlapp/pages/login_page.dart';
+import 'package:ghlapp/pages/onboard_page.dart';
+import 'package:ghlapp/pages/otp_page.dart';
+import 'package:ghlapp/pages/profile_page.dart';
+import 'package:ghlapp/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -18,6 +20,8 @@ class AppRoutes {
     AppRouteEnum.home.name: (context) => HomePage(),
     AppRouteEnum.profile.name: (context) => ProfilePage(),
     AppRouteEnum.kyc.name: (context) => KycPage(),
+    AppRouteEnum.detailPage.name: (context) => DetailPage(),
+    AppRouteEnum.investment.name: (context) => InvestmentPage(),
   };
 }
 
@@ -30,4 +34,6 @@ enum AppRouteEnum {
   home,
   profile,
   kyc,
+  detailPage,
+  investment,
 }

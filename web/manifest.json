@@ -1,6 +1,6 @@
 {
-    "name": "dhlapp",
-    "short_name": "dhlapp",
+    "name": "ghlapp",
+    "short_name": "ghlapp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

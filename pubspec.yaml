@@ -1,6 +1,6 @@
-name: dhlapp
+name: ghlapp
 description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -23,6 +23,15 @@ dependencies:
   syncfusion_flutter_charts:
   google_sign_in: 6.1.5
   flutter_facebook_auth: 6.0.3
+  flutter_widget_from_html_core: 0.14.11
+  url_launcher: 6.2.1
+  intl:
+  video_player:
+  pdf:
+  path_provider:
+  open_filex:
+  csv:
+
 
 
 dev_dependencies:

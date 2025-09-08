@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:dhlapp/model/aadhaar_model.dart';
-import 'package:dhlapp/pages/otp_page.dart';
-import 'package:dhlapp/resources/AppString.dart';
-import 'package:dhlapp/resources/app_colors.dart';
-import 'package:dhlapp/widgets/custom_snakebar.dart';
-import 'package:flutter/foundation.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/model/aadhaar_model.dart';
+import 'package:ghlapp/pages/otp_page.dart';
+import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants.dart';
 
 mixin VerificationMixin on ChangeNotifier {
   //aadhaar
@@ -29,19 +32,68 @@ mixin VerificationMixin on ChangeNotifier {
   final TextEditingController nomineeAadhaarController =
       TextEditingController();
 
-  String transactionId = "";
-  String aadhaarNumber = "";
+  int _seconds = 30;
+  bool _canResend = false;
+  Timer? _timer;
+
+  int get seconds => _seconds;
+  bool get canResend => _canResend;
+
+  int referenceID = 0;
+  String aadhaarNo = "";
+  bool isLoading = false;
+  bool get getIsLoading => isLoading;
+
+  void setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
 
   Map<String, bool> verifiedSection = {
-    "aadhaar": false,
-    "pan": false,
-    "bank": false,
-    "nominee": false,
+    "aadhaar": isAadhaarVerified,
+    "pan": isPanVerified,
+    "bank": isBankVerified,
+    "nominee": isNomineeVerified,
   };
+
+  Future<void> updateSection(String section, bool status) async {
+    verifiedSection[section] = status;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("${section}_completed", status);
+    notifyListeners();
+  }
 
   double get progress {
     int completed = verifiedSection.values.where((value) => value).length;
     return completed / verifiedSection.length;
+  }
+
+  Future<void> loadVerifiedSections() async {
+    final prefs = await SharedPreferences.getInstance();
+    verifiedSection["aadhaar"] =
+        prefs.getBool("aadhaar_completed") ?? isAadhaarVerified;
+    verifiedSection["pan"] = prefs.getBool("pan_completed") ?? isPanVerified;
+    verifiedSection["bank"] = prefs.getBool("bank_completed") ?? isBankVerified;
+    verifiedSection["nominee"] =
+        prefs.getBool("nominee_completed") ?? isNomineeVerified;
+    aadhaarName = prefs.getString("aadhaar_name") ?? "";
+    aadhaarNo = prefs.getString("aadhaar_number") ?? "";
+    notifyListeners();
+  }
+
+  Future<void> statusUpdateNavigate(
+    BuildContext context,
+    String section,
+  ) async {
+    await updateSection(section, true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (section == "aadhaar") {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      } else {
+        Navigator.pop(context);
+      }
+    });
   }
 
   AadhaarResponse? _aadhaarResponse;
@@ -53,37 +105,36 @@ mixin VerificationMixin on ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateSection(String section, bool status) async {
-    print("sts--->> $status");
-    verifiedSection[section] = status;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("${section}_completed", status);
-    print("verifiedSectionset--->> $verifiedSection---$section---$status");
-    notifyListeners();
-  }
-
-  Future<void> loadVerifiedSections() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    verifiedSection["aadhaar"] = prefs.getBool("aadhaar_completed") ?? false;
-    verifiedSection["pan"] = prefs.getBool("pan_completed") ?? false;
-    verifiedSection["bank"] = prefs.getBool("bank_completed") ?? false;
-    verifiedSection["nominee"] = prefs.getBool("nominee_completed") ?? false;
-
-    notifyListeners();
-  }
-
-  Future<void> statusUpdateNavigate(context, String section) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (section == "aadhaar") {
-      Navigator.pop(context);
-      Navigator.pop(context);
-    } else {
-      Navigator.pop(context);
+  Future<void> userDashboardAPI(context) async {
+    final url = Uri.parse("${AppStrings.baseURL}kyc/dashboard");
+    try {
+      final res = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $authToken",
+        },
+      );
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+        isAadhaarVerified = data["aadhaar_status"] == "yes" ? true : false;
+        isPanVerified = data["pan_status"] == "yes" ? true : false;
+        isBankVerified = data["bank_status"] == "yes" ? true : false;
+        isNomineeVerified = data["kyc_status"] == "yes" ? true : false;
+        aadhaarName = data["userName"] ?? "";
+        notifyListeners();
+      } else {
+        AppSnackBar.show(context, message: "Error ${res.statusCode}");
+      }
+    } catch (e) {
+      AppSnackBar.show(context, message: e.toString());
     }
+    notifyListeners();
   }
 
   Future<void> sendToAadhaarOTP(context, String number) async {
+    setLoading(true);
     final url = Uri.parse("${AppStrings.baseURL}aadhaar/generate-otp");
     try {
       final response = await http.post(
@@ -91,24 +142,24 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer bsjjS3N60B8FXkBGvQyPsWowulJcQ3IfZuzc2NsDddfa2c55",
+          "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({"aadhaar_number": number.toString()}),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         if (data["code"] == 200) {
           final message = data["data"]["message"] ?? "";
-          transactionId = data["transaction_id"] ?? "";
-          aadhaarNumber = number.toString();
+          referenceID = data["data"]["reference_id"] ?? 0;
+          await saveAadhaar(number.toString());
+          final aadhaar = await getAadhaar();
           AppSnackBar.show(
             context,
             message: message,
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.greenCircleColor,
           );
+          setLoading(false);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -116,19 +167,32 @@ mixin VerificationMixin on ChangeNotifier {
                   (context) => OtpPage(
                     isFromVerification: true,
                     aadhaarNumber: number.toString(),
-                    referenceID: data["data"]["reference_id"] ?? 0,
+                    referenceID: referenceID,
                   ),
             ),
           );
         } else {
+          setLoading(false);
           AppSnackBar.show(context, message: data["data"]["message"]);
         }
       } else {
+        setLoading(false);
         AppSnackBar.show(context, message: "Error ${response.statusCode}");
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
+  }
+
+  Future<void> saveAadhaar(String number) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("aadhaar_number", number);
+  }
+
+  Future<String> getAadhaar() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("aadhaar_number") ?? "";
   }
 
   Future<void> verifyAadhaarOTP(
@@ -137,6 +201,7 @@ mixin VerificationMixin on ChangeNotifier {
     int referenceId,
     String aadhaarNumber,
   ) async {
+    setLoading(true);
     final url = Uri.parse("${AppStrings.baseURL}aadhaar/verify-otp");
     try {
       final response = await http.post(
@@ -144,8 +209,7 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer 5DpWI5h1VDSq0WR7owXgwpJmBzl40tGZXHaCwVNAb248b80c",
+          "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
           "reference_id": referenceId.toString(),
@@ -153,31 +217,57 @@ mixin VerificationMixin on ChangeNotifier {
           "otp": otp,
         }),
       );
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(response.body);
         final aadhaarResponse = AadhaarResponse.fromJson(json);
         setAadhaarResponse(aadhaarResponse);
-        await updateSection("aadhaar", true);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("aadhaar_name", aadhaarResponse.data.name);
+        await prefs.setString("aadhaar_photo", aadhaarResponse.data.photo);
+        aadhaarName = prefs.getString("aadhaar_name") ?? "";
+        prefs.setString("aadhaar_number", aadhaarNumber.toString());
+        aadhaarNo = prefs.getString("aadhaar_number") ?? "";
         await statusUpdateNavigate(context, "aadhaar");
         AppSnackBar.show(
           context,
           message: aadhaarResponse.data.message,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.greenCircleColor,
         );
+        setLoading(false);
       } else {
         final Map<String, dynamic> error = jsonDecode(response.body);
         AppSnackBar.show(
           context,
           message: error["message"] ?? "Something went wrong",
         );
+        setLoading(false);
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: "$e");
     }
   }
 
-  Future<void> resendAadhaarOTP(context, String aadhaarNumber) async {
+  void startTimer() {
+    _seconds = 30;
+    _canResend = false;
+    _timer?.cancel();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_seconds > 0) {
+        _seconds--;
+        notifyListeners();
+      } else {
+        _canResend = true;
+        notifyListeners();
+        _timer?.cancel();
+      }
+    });
+  }
+
+  Future<void> resendAadhaarOTP(context) async {
+    final aadhaar = await getAadhaar();
+    setLoading(true);
     final url = Uri.parse("${AppStrings.baseURL}aadhaar/resend-otp");
     try {
       final response = await http.post(
@@ -185,33 +275,38 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          "Authorization": "Bearer $authToken",
         },
-        body: jsonEncode({"aadhaar_number": aadhaarNumber}),
+        body: jsonEncode({"aadhaar_number": aadhaar}),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         if (data["code"] == 200) {
           final message = data["data"]["message"];
+          startTimer();
           AppSnackBar.show(
             context,
             message: message,
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.greenCircleColor,
           );
+          setLoading(false);
         } else {
+          setLoading(false);
           AppSnackBar.show(context, message: data["message"]);
         }
       } else {
+        setLoading(false);
         AppSnackBar.show(context, message: "Error ${response.statusCode}");
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
   }
 
   Future<void> verifyPanNumber(context, String panNumber) async {
-    print("p--->> ${panNumber}--${aadhaarNumber}");
+    setLoading(true);
     final url = Uri.parse(
       "${AppStrings.baseURL}aadhaar/pan_aadhaar/link_status",
     );
@@ -221,12 +316,11 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer B9mcTAMUl2CSTEDfPD9aM8XNX8BfMGvIKQhdlbVyc25daa11",
+          "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
           "pan": panNumber,
-          "aadhaar_number": aadhaarNumber.toString(),
+          "aadhaar_number": aadhaarNo.toString(),
         }),
       );
       if (res.statusCode == 200) {
@@ -235,14 +329,96 @@ mixin VerificationMixin on ChangeNotifier {
         AppSnackBar.show(
           context,
           message: message,
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.greenCircleColor,
         );
-        await updateSection("pan", true);
+        setLoading(false);
         await statusUpdateNavigate(context, "pan");
       } else {
+        setLoading(false);
         AppSnackBar.show(context, message: "Error ${res.statusCode}");
       }
     } catch (e) {
+      setLoading(false);
+      AppSnackBar.show(context, message: e.toString());
+    }
+  }
+
+  Future<void> verifyOtp(String phone, String otp, context) async {
+    setLoading(true);
+    final url = Uri.parse("${AppStrings.baseURL}verify/user/otp");
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({"phone": phone, "otp": otp}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data["status"] == 200 && data["ok"] == true) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString("auth_token", data["token"]);
+          authToken = prefs.getString("auth_token") ?? "";
+          AppSnackBar.show(
+            context,
+            message: data["message"] ?? "OTP Verified Successfully",
+            backgroundColor: AppColors.greenCircleColor,
+          );
+          setLoading(false);
+          Navigator.pushNamed(context, AppRouteEnum.bottomPage.name);
+        } else {
+          AppSnackBar.show(
+            context,
+            message: data["message"] ?? "OTP Verification Failed",
+          );
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+        AppSnackBar.show(
+          context,
+          message: "Error: ${response.statusCode} - ${response.body}",
+        );
+      }
+    } catch (e) {
+      setLoading(false);
+      AppSnackBar.show(context, message: e.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<void> resendOtp(context, phoneNumber) async {
+    setLoading(true);
+    final url = Uri.parse("${AppStrings.baseURL}resend/otp");
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"phone": phoneNumber}),
+      );
+
+      final data = jsonDecode(response.body);
+      if (data["sms_response"]?["status"] == "success") {
+        final message =
+            data["sms_response"]?["message"] ?? "OTP Sent Successfully";
+        startTimer();
+        AppSnackBar.show(
+          context,
+          message: message,
+          backgroundColor: AppColors.greenCircleColor,
+        );
+        setLoading(false);
+      } else {
+        setLoading(false);
+        final errorMsg =
+            data["sms_response"]?["message"] ?? "Something went wrong";
+        AppSnackBar.show(context, message: errorMsg);
+      }
+    } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
   }
@@ -253,6 +429,7 @@ mixin VerificationMixin on ChangeNotifier {
     String accountNumber,
     String ifscCode,
   ) async {
+    setLoading(true);
     final url = Uri.parse("${AppStrings.baseURL}kyc/create/bank-details");
     try {
       final res = await http.post(
@@ -260,8 +437,7 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer B9mcTAMUl2CSTEDfPD9aM8XNX8BfMGvIKQhdlbVyc25daa11",
+          "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
           "account_holder_name": holderName,
@@ -275,14 +451,16 @@ mixin VerificationMixin on ChangeNotifier {
         AppSnackBar.show(
           context,
           message: message,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.greenCircleColor,
         );
-        await updateSection("bank", true);
+        setLoading(false);
         await statusUpdateNavigate(context, "bank");
       } else {
+        setLoading(false);
         AppSnackBar.show(context, message: "Error ${res.body}");
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
   }
@@ -294,6 +472,7 @@ mixin VerificationMixin on ChangeNotifier {
     String nomineeEmail,
     String nomineeAadhaar,
   ) async {
+    setLoading(true);
     final url = Uri.parse("${AppStrings.baseURL}kyc/create/nominee-details");
     try {
       final res = await http.post(
@@ -301,8 +480,7 @@ mixin VerificationMixin on ChangeNotifier {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer 78|B9mcTAMUl2CSTEDfPD9aM8XNX8BfMGvIKQhdlbVyc25daa11",
+          "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
           "nominee_name": nomineeName,
@@ -317,14 +495,16 @@ mixin VerificationMixin on ChangeNotifier {
         AppSnackBar.show(
           context,
           message: message,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.greenCircleColor,
         );
-        await updateSection("nominee", true);
+        setLoading(false);
         await statusUpdateNavigate(context, "nominee");
       } else {
-        AppSnackBar.show(context, message: "Error ${res.statusCode}");
+        setLoading(false);
+        AppSnackBar.show(context, message: "Error ${res.body}");
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
   }

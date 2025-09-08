@@ -10,6 +10,8 @@ class AppColors {
   static const Color black = Color(0xFF000000);
   static const Color grey = Color(0xFF808080);
   static const Color lightGrey = Color(0xFF979797);
+  static const Color greyContainerColor = Color(0x068B0F1A);
+  static const Color progressGreyColor = Color(0xFF949494);
   static const Color hintTextStyleColor = Color(0xFFA9A6A6);
   static const Color textColorLightBlack = Color(0xFF3B3B3B);
   static const Color yellowShadeColor = Color(0xFFFFFB00);

@@ -1,4 +1,4 @@
-import 'package:dhlapp/widgets/custom_snakebar.dart';
+import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';

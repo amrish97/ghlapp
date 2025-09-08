@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dhlapp/app/app_routes.dart';
-import 'package:dhlapp/model/device_detail.dart';
-import 'package:dhlapp/providers/mixin/otp_mixin.dart';
-import 'package:dhlapp/providers/mixin/social_mixin.dart';
-import 'package:dhlapp/providers/mixin/verification_mixin.dart';
-import 'package:dhlapp/resources/AppString.dart';
-import 'package:dhlapp/widgets/custom_snakebar.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/model/device_detail.dart';
+import 'package:ghlapp/providers/mixin/otp_mixin.dart';
+import 'package:ghlapp/providers/mixin/social_mixin.dart';
+import 'package:ghlapp/providers/mixin/verification_mixin.dart';
+import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -17,12 +18,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginProvider extends ChangeNotifier
-    with OtpMixin, SocialLoginMixin, VerificationMixin {
+    with SocialLoginMixin, VerificationMixin {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController aadhaarVerifyOTPController = TextEditingController();
-  bool isLoading = false;
-  bool get getIsLoading => isLoading;
 
   String? _deviceId;
   String? _deviceModel;
@@ -38,11 +37,6 @@ class LoginProvider extends ChangeNotifier
 
   int get seconds => _seconds;
   bool get canResend => _canResend;
-
-  void setIsLoading(bool value) {
-    isLoading = value;
-    notifyListeners();
-  }
 
   PermissionStatus _permissionStatus = PermissionStatus.denied;
   bool _isLocationServiceEnabled = false;
@@ -96,6 +90,11 @@ class LoginProvider extends ChangeNotifier
   }
 
   Future<void> sendOtp(context) async {
+    setLoading(true);
+    if (currentPosition!.latitude.toString().isEmpty ||
+        currentPosition!.longitude.toString().isEmpty) {
+      initLocationCheck();
+    }
     await initDeviceInfo();
     final url = Uri.parse(
       "${AppStrings.baseURL}login?template_id=1407172830579892546",
@@ -103,9 +102,12 @@ class LoginProvider extends ChangeNotifier
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
         body: jsonEncode({
-          "phone": phoneNumberController.text,
+          "phone": phoneNumberController.text.trim(),
           "latitude": currentPosition?.latitude.toString(),
           "longitude": currentPosition?.longitude.toString(),
           "device_id": deviceId,
@@ -113,23 +115,26 @@ class LoginProvider extends ChangeNotifier
           "device_name": deviceName,
         }),
       );
-
       final data = jsonDecode(response.body);
+      print("res--->> ${data}");
       if (data["sms_response"]?["status"] == "success") {
         final message =
             data["sms_response"]?["message"] ?? "OTP Sent Successfully";
         AppSnackBar.show(
           context,
           message: message,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.greenCircleColor,
         );
+        setLoading(false);
         Navigator.pushNamed(context, AppRouteEnum.verifyPhone.name);
       } else {
+        setLoading(false);
         final errorMsg =
             data["sms_response"]?["message"] ?? "Something went wrong";
         AppSnackBar.show(context, message: errorMsg);
       }
     } catch (e) {
+      setLoading(false);
       AppSnackBar.show(context, message: e.toString());
     }
   }
@@ -161,7 +166,6 @@ class LoginProvider extends ChangeNotifier
 
   Future<void> initDeviceInfo() async {
     final prefs = await SharedPreferences.getInstance();
-
     _deviceId = prefs.getString('device_id');
     _deviceModel = prefs.getString('device_model');
     _deviceName = prefs.getString('device_name');
@@ -178,11 +182,10 @@ class LoginProvider extends ChangeNotifier
         await prefs.setString('device_name', _deviceName!);
       }
     }
-
     notifyListeners();
   }
 
-  void startTimer() {
+  void startTimerLogin() {
     _seconds = 30;
     _canResend = false;
     _timer?.cancel();
@@ -201,7 +204,6 @@ class LoginProvider extends ChangeNotifier
 
   @override
   void dispose() {
-    _timer?.cancel();
     otpController.clear();
     super.dispose();
   }

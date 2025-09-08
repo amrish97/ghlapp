@@ -1,6 +1,10 @@
+import 'package:ghlapp/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:dhlapp/app/app_routes.dart';
-import 'package:dhlapp/resources/app_colors.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constants.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -20,8 +24,19 @@ class SplashPage extends StatelessWidget {
             builder: (context, scale, child) {
               return Transform.scale(scale: scale, child: child);
             },
-            onEnd: () {
-              Navigator.pushNamed(context, AppRouteEnum.onboard.name);
+            onEnd: () async {
+              final prefs = await SharedPreferences.getInstance();
+              authToken = prefs.getString("auth_token") ?? "";
+              if (authToken.isNotEmpty) {
+                print("token--->> $authToken");
+                if (context.mounted) {
+                  Navigator.pushNamed(context, AppRouteEnum.bottomPage.name);
+                }
+              } else {
+                if (context.mounted) {
+                  Navigator.pushNamed(context, AppRouteEnum.onboard.name);
+                }
+              }
             },
             child: Image.asset('assets/images/ghl-logo.png', scale: 2),
           ),
