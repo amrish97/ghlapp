@@ -7,6 +7,7 @@ import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -154,48 +155,42 @@ class _ProfilePageState extends State<ProfilePage> {
                         imageData.asMap().entries.map((entry) {
                           final data = entry.value;
                           final index = entry.key;
-                          return GestureDetector(
-                            onTap: data["onTap"],
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 20,
-                                bottom: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 20),
-                                  Image.asset(
-                                    data["image"],
-                                    scale: 3,
-                                    color:
-                                        index != imageData.length - 1
-                                            ? AppColors.black
-                                            : Colors.red,
-                                  ),
-                                  SizedBox(width: 10),
-                                  PrimaryText(
-                                    text: data["title"],
-                                    size: AppDimen.textSize14,
-                                    weight: AppFont.regular,
-                                    color:
-                                        index != imageData.length - 1
-                                            ? AppColors.black
-                                            : Colors.red,
-                                  ),
-                                  Spacer(),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                    color:
-                                        index != imageData.length - 1
-                                            ? AppColors.lightGrey
-                                            : Colors.red,
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 20, bottom: 10),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 20),
+                                Image.asset(
+                                  data["image"],
+                                  scale: 3,
+                                  color:
+                                      index != imageData.length - 1
+                                          ? AppColors.black
+                                          : Colors.red,
+                                ),
+                                SizedBox(width: 10),
+                                PrimaryText(
+                                  text: data["title"],
+                                  size: AppDimen.textSize14,
+                                  weight: AppFont.regular,
+                                  color:
+                                      index != imageData.length - 1
+                                          ? AppColors.black
+                                          : Colors.red,
+                                ),
+                                Spacer(),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                  color:
+                                      index != imageData.length - 1
+                                          ? AppColors.lightGrey
+                                          : Colors.red,
+                                ),
+                                SizedBox(width: 10),
+                              ],
                             ),
-                          );
+                          ).toGesture(onTap: data["onTap"]);
                         }).toList(),
                   ),
                 ),

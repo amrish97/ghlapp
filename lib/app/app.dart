@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class App extends StatelessWidget {
   App({super.key});
@@ -41,5 +42,10 @@ class App extends StatelessWidget {
     } else {
       exit(0);
     }
+  }
+
+  String formatIndianNumber(int number) {
+    final formatter = NumberFormat.decimalPattern('en_IN');
+    return formatter.format(number);
   }
 }

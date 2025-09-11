@@ -25,6 +25,7 @@ class Assets {
   static const String imagesCircleArrow = 'assets/images/circleArrow.png';
   static const String imagesContact = 'assets/images/contact.png';
   static const String imagesDisclimar = 'assets/images/disclimar.png';
+  static const String imagesDollar = 'assets/images/dollar.png';
   static const String imagesEconomy = 'assets/images/economy.png';
   static const String imagesEdit = 'assets/images/edit.png';
   static const String imagesFacebook = 'assets/images/facebook.png';
@@ -48,6 +49,7 @@ class Assets {
   static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesRefer = 'assets/images/refer.png';
   static const String imagesReferal = 'assets/images/referal.png';
+  static const String imagesReward = 'assets/images/reward.png';
   static const String imagesRightArrow = 'assets/images/right_arrow.png';
   static const String imagesSupport = 'assets/images/support.png';
   static const String imagesTerms = 'assets/images/terms.png';

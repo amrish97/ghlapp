@@ -1,6 +1,5 @@
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
-import 'package:ghlapp/providers/kyc_provider.dart';
 import 'package:ghlapp/providers/login_provider.dart';
 import 'package:ghlapp/providers/onboard_provider.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
@@ -29,7 +28,6 @@ void main() {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => InvestmentProvider()),
-        ChangeNotifierProvider(create: (_) => KycProvider()),
       ],
       child: App(),
     ),

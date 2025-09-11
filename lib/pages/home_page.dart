@@ -7,6 +7,7 @@ import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeProvider>().userDashboardAPI(context);
-      //context.read<HomeProvider>().checkAndLoadSms(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      context.read<HomeProvider>().loadVerifiedSections(context);
     });
     super.initState();
   }
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             key: scaffoldKey,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(70),
+              preferredSize: Size.fromHeight(60),
               child: AppBar(
                 backgroundColor: AppColors.screenBgColor,
                 automaticallyImplyLeading: false,
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                                   imageData: "assets/images/inverstment.png",
                                   text: "Investment",
                                   onTap: () {
-                                    value.setIndex(1);
+                                    value.setIndex(1, context);
                                   },
                                 ),
                                 SizedBox(width: 10),
@@ -133,7 +133,13 @@ class _HomePageState extends State<HomePage> {
                                   context,
                                   imageData: "assets/images/referal.png",
                                   text: "Referral",
-                                  onTap: () {},
+                                  onTap: () async {
+                                    await value.getReferralCode(context);
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRouteEnum.referral.name,
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -252,43 +258,11 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.black,
                                   ),
                                   SizedBox(height: 10),
-                                  SfCartesianChart(
-                                    primaryXAxis: NumericAxis(
-                                      minimum: 0.0,
-                                      maximum: 1.0,
-                                      interval: 0.1,
-                                    ),
-                                    primaryYAxis: NumericAxis(
-                                      minimum: 0.0,
-                                      maximum: 1.0,
-                                      interval: 0.1,
-                                    ),
-                                    series: [
-                                      LineSeries<ChartData, double>(
-                                        dataSource: [
-                                          ChartData(0.0, 0.0),
-                                          ChartData(0.2, 0.4),
-                                          ChartData(0.4, 0.3),
-                                          ChartData(0.6, 0.7),
-                                          ChartData(0.8, 0.6),
-                                          ChartData(1.0, 1.0),
-                                        ],
-                                        xValueMapper:
-                                            (ChartData data, _) => data.x,
-                                        yValueMapper:
-                                            (ChartData data, _) => data.y,
-                                        markerSettings: const MarkerSettings(
-                                          isVisible: false,
-                                        ),
-                                        animationDelay: 5.0,
-                                        enableTooltip: true,
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                  ),
+                                  LineChart(),
                                 ],
                               ),
                             ),
+                            SizedBox(height: 20),
                           ],
                         ),
                       ),
@@ -340,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: Container(
                           color: Colors.white,
-                          child: getSideBarInfo(context),
+                          child: getSideBarInfo(context, data: value),
                         ),
                       ),
                     ],
@@ -361,33 +335,30 @@ class _HomePageState extends State<HomePage> {
     required GestureTapCallback onTap,
   }) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.primary,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(imageData, scale: 3),
-              SizedBox(width: 10),
-              PrimaryText(
-                text: text,
-                color: AppColors.white,
-                weight: AppFont.semiBold,
-                size: 16,
-              ),
-            ],
-          ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.primary,
         ),
-      ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageData.toImageAsset(),
+            SizedBox(width: 10),
+            PrimaryText(
+              text: text,
+              color: AppColors.white,
+              weight: AppFont.semiBold,
+              size: 16,
+            ),
+          ],
+        ),
+      ).toGesture(onTap: onTap),
     );
   }
 
-  Widget getSideBarInfo(context) {
+  Widget getSideBarInfo(context, {required HomeProvider data}) {
     final List<Map<String, dynamic>> imageData = [
       {
         "image": "assets/images/profile.png",
@@ -419,7 +390,12 @@ class _HomePageState extends State<HomePage> {
       },
       {
         "image": "assets/images/refer.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.pop(context);
+          await data.getReferralCode(context);
+          await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.referral.name);
+        },
         "title": "Refer & Earn",
       },
       {
@@ -477,29 +453,26 @@ class _HomePageState extends State<HomePage> {
         children:
             imageData.asMap().entries.map((entry) {
               final data = entry.value;
-              return GestureDetector(
-                onTap: data["onTap"],
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 20),
-                      Image.asset(
-                        data["image"],
-                        scale: 3,
-                        color: AppColors.black,
-                      ),
-                      SizedBox(width: 10),
-                      PrimaryText(
-                        text: data["title"],
-                        size: AppDimen.textSize14,
-                        weight: AppFont.semiBold,
-                        color: AppColors.black,
-                      ),
-                    ],
-                  ),
+              return Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: Row(
+                  children: [
+                    SizedBox(width: 20),
+                    Image.asset(
+                      data["image"],
+                      scale: 3,
+                      color: AppColors.black,
+                    ),
+                    SizedBox(width: 10),
+                    PrimaryText(
+                      text: data["title"],
+                      size: AppDimen.textSize14,
+                      weight: AppFont.semiBold,
+                      color: AppColors.black,
+                    ),
+                  ],
                 ),
-              );
+              ).toGesture(onTap: data["onTap"]);
             }).toList(),
       ),
     );
@@ -537,13 +510,12 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Spacer(),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, AppRouteEnum.kyc.name);
-              },
-              child: Image.asset("assets/images/circleArrow.png", scale: 3),
-            ),
+            Image.asset("assets/images/circleArrow.png", scale: 3),
           ],
+        ).toGesture(
+          onTap: () {
+            Navigator.pushNamed(context, AppRouteEnum.kyc.name);
+          },
         ),
       ),
     );
@@ -626,24 +598,20 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(icons.length, (index) {
         final entry = icons[index];
-        return GestureDetector(
-          onTap: entry["onTap"],
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5),
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color:
-                  index == selectedIndex ? AppColors.primary : AppColors.white,
-            ),
-            child: Image.asset(
-              entry["image"],
-              scale: 3.5,
-              color: index == selectedIndex ? null : AppColors.black,
-            ),
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: index == selectedIndex ? AppColors.primary : AppColors.white,
           ),
-        );
+          child: Image.asset(
+            entry["image"],
+            scale: 3.5,
+            color: index == selectedIndex ? null : AppColors.black,
+          ),
+        ).toGesture(onTap: entry["onTap"]);
       }),
     );
   }

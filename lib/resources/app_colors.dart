@@ -17,4 +17,7 @@ class AppColors {
   static const Color yellowShadeColor = Color(0xFFFFFB00);
   static const Color greenCircleColor = Color(0xFF068B0F);
   static const Color circleColor = Color(0xFFF6EDED);
+  static const Color brownColor = Color(0xFF640003);
+  static const Color closeButtonColor = Color(0xFF6C757E);
+  static const Color referralBoxColor = Color(0xFF22222B);
 }

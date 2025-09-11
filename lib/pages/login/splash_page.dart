@@ -4,7 +4,7 @@ import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

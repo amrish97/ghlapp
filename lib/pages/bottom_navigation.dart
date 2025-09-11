@@ -1,12 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
-import 'package:ghlapp/pages/Detail_page.dart';
+import 'package:ghlapp/pages/Investment/investment_page.dart';
 import 'package:ghlapp/pages/home_page.dart';
-import 'package:ghlapp/pages/investment_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_style.dart';
-import 'package:ghlapp/widgets/custom_scaffold.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavigationPage extends StatefulWidget {
@@ -20,8 +18,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final List<Widget> _pages = [
     HomePage(),
     InvestmentPage(),
-    const Center(child: Text("Add Action Page")),
-    DetailPage(),
+    const SizedBox(),
+    const Center(child: Text("Portfolio")),
     const Center(child: Text("FAQ Page")),
   ];
 
@@ -44,7 +42,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               currentIndex: value.selectedIndex,
               backgroundColor: AppColors.white,
               onTap: (index) {
-                value.setIndex(index);
+                value.setIndex(index, context, value: value);
               },
               showSelectedLabels: true,
               showUnselectedLabels: true,

@@ -1,21 +1,31 @@
+import 'dart:io';
+
+import 'package:csv/csv.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/pages/Investment/invest_now_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/resources/app_style.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/custom_textField.dart';
 import 'package:ghlapp/widgets/progress_view.dart';
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 
-import 'dart:io';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:csv/csv.dart';
+import '../../constants.dart';
 
 class InvestmentDetailPage extends StatelessWidget {
   final Map<String, dynamic> planDetail;
@@ -36,24 +46,24 @@ class InvestmentDetailPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: GestureDetector(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.black,
+                      size: 20,
+                    ),
+                  ).toGesture(
                     onTap: () {
                       Navigator.pop(context);
+                      value.clearData();
                     },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -100,7 +110,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                 ),
                                 PrimaryText(
                                   text:
-                                      "\u20B9 ${planDetail["deposit_amount"]}",
+                                      "\u20B9 ${App().formatIndianNumber(double.parse(planDetail["deposit_amount"]).toInt())}",
                                   size: AppDimen.textSize12,
                                   weight: AppFont.bold,
                                   color: AppColors.greenCircleColor,
@@ -152,14 +162,15 @@ class InvestmentDetailPage extends StatelessWidget {
                         ),
                         getRowSectionWithItem(
                           title: "MINIMUM INVESTMENT",
-                          value: planDetail["min_investment_amt"],
+                          value:
+                              "\u20B9 ${App().formatIndianNumber(double.parse(planDetail["min_investment_amt"]).toInt())}",
                         ),
                         getRowSectionWithItem(
                           title: "CAPITAL INVESTED",
                           value:
                               value.amountInvestController.text.isEmpty
                                   ? ""
-                                  : "\u20B9 ${value.amountInvestController.text}",
+                                  : "\u20B9 ${App().formatIndianNumber(int.parse(value.amountInvestController.text))}",
                         ),
                         getRowSectionWithItem(
                           title: "TDS APPLICABLE",
@@ -168,15 +179,17 @@ class InvestmentDetailPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "MONTHLY RETURNS",
                           value:
-                              "\u20B9 ${value.monthlyReturn.toStringAsFixed(2)}",
+                              "\u20B9 ${App().formatIndianNumber(int.parse(value.monthlyReturn.toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
                           title: "YEARLY RETURNS",
-                          value: "\u20B9 ${value.monthlyReturn * 12}",
+                          value:
+                              "\u20B9 ${App().formatIndianNumber(int.parse((value.monthlyReturn * 12).toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
                           title: "SUM OF CAPITAL & ROI",
-                          value: "\u20B9 ${value.totalSum.toStringAsFixed(2)}",
+                          value:
+                              "\u20B9 ${App().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
                         ),
                       ],
                     ),
@@ -194,64 +207,52 @@ class InvestmentDetailPage extends StatelessWidget {
                       SizedBox(height: 10),
                       CustomTextFormField(
                         label: "",
+                        controller: value.amountInvestController,
                         keyboardType: TextInputType.number,
                         showBorderColor: true,
-                        controller: value.amountInvestController,
-                        onchanged: (val) {
-                          final returnOfInvestment =
-                              double.tryParse(
-                                planDetail["return_of_investment"].toString(),
-                              ) ??
-                              0;
-                          final taxApplicable =
-                              double.tryParse(
-                                planDetail["tax_applicable"].toString(),
-                              ) ??
-                              0;
-                          final tenure =
-                              int.tryParse(planDetail["tenure"].toString()) ??
-                              2;
-                          final minAmount =
-                              double.tryParse(
-                                planDetail["min_investment_amt"].toString(),
-                              ) ??
-                              0;
-                          final maxInvestment =
-                              double.tryParse(
-                                planDetail["max_investment_amt"].toString(),
-                              ) ??
-                              0;
+                        errorText: value.errorMessage,
+                        onChanged: (val) {
                           value.updateInvestment(
-                            val.toString(),
-                            returnOfInvestment,
-                            taxApplicable,
-                            tenure,
-                            minAmount,
-                            maxInvestment,
+                            val,
+                            double.tryParse(
+                                  planDetail["return_of_investment"].toString(),
+                                ) ??
+                                0,
+                            double.tryParse(
+                                  planDetail["tax_applicable"].toString(),
+                                ) ??
+                                0,
+                            int.tryParse(planDetail["tenure"].toString()) ?? 2,
+                            double.tryParse(
+                                  planDetail["min_investment_amt"].toString(),
+                                ) ??
+                                0,
+                            double.tryParse(
+                                  planDetail["max_investment_amt"].toString(),
+                                ) ??
+                                0,
                           );
                         },
                       ),
-                      if (value.errorMessage.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: PrimaryText(
-                            text: value.errorMessage,
-                            weight: AppFont.semiBold,
-                            color: Colors.red,
-                            size: 12,
-                          ),
-                        ),
                       SizedBox(height: 10),
+                      PrimaryText(
+                        text: value.amountInWords,
+                        color: AppColors.lightGrey,
+                        size: AppDimen.textSize10,
+                      ),
                     ],
                   ),
                   CustomButton(
                     text: "Payment Schedule",
                     onTap: () async {
-                      if (value.amountInvestController.text.isEmpty) {
+                      final enteredText =
+                          value.amountInvestController.text.trim();
+                      if (enteredText.isEmpty) {
                         AppSnackBar.show(
                           context,
                           message: "Please enter Investment amount!!",
                         );
+                        return;
                       } else {
                         final res = await value.planSchedule(
                           context,
@@ -345,7 +346,10 @@ class InvestmentDetailPage extends StatelessWidget {
                                               children: [
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    await _exportPDF(res);
+                                                    await _exportPDF(
+                                                      res,
+                                                      planDetail["name"],
+                                                    );
                                                   },
                                                   child: Container(
                                                     padding:
@@ -373,7 +377,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                                 SizedBox(height: 8),
                                                 GestureDetector(
                                                   onTap: () async {
-                                                     await _exportCSV(res);
+                                                    await _exportCSV(res);
                                                   },
                                                   child: Container(
                                                     padding:
@@ -659,11 +663,38 @@ class InvestmentDetailPage extends StatelessWidget {
                     content: "(Grab upto 2% cashback on your investments)",
                     isCheck: value.isRememberClick,
                   ),
-                  CustomButton(
-                    text: "Invest",
-                    onTap: () {},
-                    color: AppColors.primary,
-                  ),
+                  // CustomButton(
+                  //   text: "Invest Now",
+                  //   onTap: () async {
+                  //     if (value.amountInvestController.text.isEmpty) {
+                  //       AppSnackBar.show(
+                  //         context,
+                  //         message: "Please enter Investment amount!!",
+                  //       );
+                  //       return;
+                  //     } else if (!value.isRememberClick) {
+                  //       AppSnackBar.show(
+                  //         context,
+                  //         message: "Please select a Checkbox in Payment type!!",
+                  //       );
+                  //     } else {
+                  //       await value.getBankDetails(
+                  //         context,
+                  //         id: widget.planDetail["id"],
+                  //       );
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder:
+                  //               (context) => InvestNowPage(
+                  //                 planDetail: widget.planDetail,
+                  //               ),
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+                  getBottomButton(value: value, context: context),
                   SizedBox(height: 10),
                 ],
               ),
@@ -674,39 +705,247 @@ class InvestmentDetailPage extends StatelessWidget {
     );
   }
 
-  Future<void> _exportPDF(dynamic res) async {
+  getBottomButton({
+    required InvestmentProvider value,
+    required BuildContext context,
+  }) {
+    switch (value.kycStatus) {
+      case "No data":
+        return CustomButton(
+          onTap: () {
+            Navigator.pushNamed(context, AppRouteEnum.kyc.name);
+          },
+          text: " Complete Your KYC",
+          color: AppColors.primary.withAlpha(90),
+        );
+      case "Pending":
+        return CustomButton(
+          onTap: () {
+            AppSnackBar.show(context, message: "Please Wait for KYC Approval");
+            return;
+          },
+          text: "Your KYC Status pending Waiting For Approval",
+          color: AppColors.brownColor.withAlpha(140),
+        );
+      case "Approved":
+        return CustomButton(
+          text: "Invest Now",
+          onTap: () async {
+            if (value.amountInvestController.text.isEmpty) {
+              AppSnackBar.show(
+                context,
+                message: "Please enter Investment amount!!",
+              );
+              return;
+            } else if (!value.isRememberClick) {
+              AppSnackBar.show(
+                context,
+                message: "Please select a Checkbox in Payment type!!",
+              );
+            } else {
+              await value.getBankDetails(context, id: planDetail["id"]);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InvestNowPage(planDetail: planDetail),
+                ),
+              );
+            }
+          },
+        );
+      case "rejected":
+        return CustomButton(
+          text: "KYC Rejected",
+          onTap: () {
+            AppSnackBar.show(
+              context,
+              message: "Your KYC is Rejected kindly contact Branch",
+            );
+            return;
+          },
+        );
+    }
+  }
+
+  Future<void> _exportPDF(dynamic res, String planName) async {
+    final poppinsRegular = pw.Font.ttf(
+      await rootBundle.load("assets/fonts/Poppins-Regular.ttf"),
+    );
+
+    final poppinsBold = pw.Font.ttf(
+      await rootBundle.load("assets/fonts/Poppins-Bold.ttf"),
+    );
+
     final pdf = pw.Document();
+    final datetime = DateTime.now();
+    String formattedDate = DateFormat('dd-MM-yyyy').format(datetime);
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
+          return pw.Stack(
             children: [
-              pw.Text(
-                "Payment Schedule",
-                style: pw.TextStyle(
-                  fontSize: 18,
-                  fontWeight: pw.FontWeight.bold,
+              pw.Positioned.fill(
+                child: pw.Center(
+                  child: pw.Transform.rotate(
+                    angle: 0.5,
+                    child: pw.Opacity(
+                      opacity: 0.1,
+                      child: pw.Text(
+                        AppStrings.appName,
+                        style: pw.TextStyle(
+                          font: poppinsRegular,
+                          fontSize: 80,
+                          color: PdfColors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              pw.SizedBox(height: 10),
-              pw.Table.fromTextArray(
-                headers: ["S.No", "Tentative Date", "Gross", "TDS", "Net"],
-                data: List.generate(res["paymentSchedule"].length, (i) {
-                  final item = res["paymentSchedule"][i];
-                  return [
-                    (i + 1).toString(),
-                    item["payment_date"].toString(),
-                    item["gross_amount"].toString(),
-                    item["tds"].toString(),
-                    item["net_return"].toString(),
-                  ];
-                }),
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Row(
+                    children: [
+                      pw.Text(
+                        planName,
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsRegular,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                      pw.SizedBox(width: 10),
+                      pw.Text(
+                        "(Download Date",
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsRegular,
+                          color: PdfColor.fromInt(0xFFDA0000),
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                      pw.Text(
+                        ": $formattedDate)",
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Row(
+                    children: [
+                      pw.Text(
+                        "Investment Amount (\u20B9):",
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsRegular,
+                          fontWeight: pw.FontWeight.normal,
+                        ),
+                      ),
+                      pw.SizedBox(width: 5),
+                      pw.Text(
+                        res["capital_invested"],
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsBold,
+                          fontWeight: pw.FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Row(
+                    children: [
+                      pw.Text(
+                        "Total Net Intrest (\u20B9):",
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsRegular,
+                          fontWeight: pw.FontWeight.normal,
+                        ),
+                      ),
+                      pw.SizedBox(width: 5),
+                      pw.Text(
+                        res["returns"].toString(),
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          font: poppinsBold,
+                          fontWeight: pw.FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.TableHelper.fromTextArray(
+                    headers: [
+                      "Tentative Date",
+                      "Gross Interest (\u20B9)",
+                      "TDS (\u20B9)",
+                      "Net Interest (\u20B9)",
+                    ],
+                    data: List.generate(res["paymentSchedule"].length, (i) {
+                      final item = res["paymentSchedule"][i];
+                      String formattedDateInTable = DateFormat(
+                        'dd-MM-yyyy',
+                      ).format(DateTime.parse(item["payment_date"].toString()));
+                      return [
+                        formattedDateInTable,
+                        item["gross_amount"].toString(),
+                        item["tds"].toString(),
+                        item["net_return"].toString(),
+                      ];
+                    }),
+
+                    headerStyle: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      font: poppinsBold, // text color
+                    ),
+                    headerDecoration: const pw.BoxDecoration(
+                      color: PdfColor.fromInt(0xFFDA0000),
+                    ),
+                    cellStyle: pw.TextStyle(
+                      fontSize: 12,
+                      color: PdfColors.black,
+                    ),
+                    cellHeight: 25,
+                    cellAlignments: {
+                      0: pw.Alignment.center,
+                      1: pw.Alignment.center,
+                      2: pw.Alignment.center,
+                      3: pw.Alignment.center,
+                    },
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    "Principal: \u20B9 ${res["capital_invested"]}",
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      font: poppinsRegular,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.Text(
+                    "Return: \u20B9 ${res["returns"]}",
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      font: poppinsRegular,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.Text(
+                    "Total: \u20B9 ${res["sum_of_capital"]}",
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      font: poppinsRegular,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                ],
               ),
-              pw.SizedBox(height: 10),
-              pw.Text("Principal: \u20B9${res["capital_invested"]}"),
-              pw.Text("Return: \u20B9${res["returns"]}"),
-              pw.Text("Total: \u20B9${res["sum_of_capital"]}"),
             ],
           );
         },
@@ -721,26 +960,31 @@ class InvestmentDetailPage extends StatelessWidget {
 
   Future<void> _exportCSV(dynamic res) async {
     List<List<dynamic>> rows = [];
+    String padRight(String value, int width) {
+      return value.padRight(width);
+    }
 
-    // Header row
-    rows.add(["S.No", "Tentative Date", "Gross", "TDS", "Net"]);
-
-    // Data rows
+    rows.add([
+      "S.No",
+      "Tentative Date",
+      "Gross Interest (\u20B9)",
+      "TDS (\u20B9)",
+      "Net Interest (\u20B9)",
+    ]);
     for (int i = 0; i < res["paymentSchedule"].length; i++) {
       final item = res["paymentSchedule"][i];
       rows.add([
-        (i + 1).toString(),
-        item["payment_date"].toString(),
-        item["gross_amount"].toString(),
-        item["tds"].toString(),
-        item["net_return"].toString(),
+        padRight((i + 1).toString(), 5),
+        padRight(item["payment_date"].toString(), 15),
+        padRight(item["gross_amount"].toString(), 15),
+        padRight(item["tds"].toString(), 10),
+        padRight(item["net_return"].toString(), 15),
       ]);
     }
-
     rows.add([]);
-    rows.add(["Principal", res["capital_invested"]]);
-    rows.add(["Return", res["returns"]]);
-    rows.add(["Total", res["sum_of_capital"]]);
+    rows.add(["Principal: \u20B9${res["capital_invested"]}"]);
+    rows.add(["Return: \u20B9${res["returns"]}"]);
+    rows.add(["Total: \u20B9${res["sum_of_capital"]}"]);
 
     String csvData = const ListToCsvConverter().convert(rows);
 
@@ -781,32 +1025,29 @@ class InvestmentDetailPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 5.0),
-          child: GestureDetector(
-            onTap: onTap,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                color: isCheck ? AppColors.greenCircleColor : AppColors.white,
-                border: Border.all(
-                  color:
-                      isCheck
-                          ? AppColors.greenCircleColor
-                          : AppColors.progressGreyColor,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(20),
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: isCheck ? AppColors.greenCircleColor : AppColors.white,
+              border: Border.all(
+                color:
+                    isCheck
+                        ? AppColors.greenCircleColor
+                        : AppColors.progressGreyColor,
+                width: 2,
               ),
-              child:
-                  isCheck
-                      ? const Icon(
-                        Icons.check,
-                        color: AppColors.white,
-                        size: AppDimen.textSize16,
-                      )
-                      : null,
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
+            child:
+                isCheck
+                    ? const Icon(
+                      Icons.check,
+                      color: AppColors.white,
+                      size: AppDimen.textSize16,
+                    )
+                    : null,
+          ).toGesture(onTap: onTap),
         ),
         SizedBox(width: 6),
         Expanded(

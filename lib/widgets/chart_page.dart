@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LineChart extends StatelessWidget {
@@ -6,29 +7,25 @@ class LineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SfCartesianChart(
-          title: const ChartTitle(text: "Line Chart (0.0 to 1.0)"),
-          primaryXAxis: NumericAxis(minimum: 0.0, maximum: 1.0, interval: 0.1),
-          primaryYAxis: NumericAxis(minimum: 0.0, maximum: 1.0, interval: 0.1),
-          series: [
-            LineSeries<ChartData, double>(
-              dataSource: [
-                ChartData(0.0, 0.0),
-                ChartData(0.2, 0.4),
-                ChartData(0.4, 0.3),
-                ChartData(0.6, 0.7),
-                ChartData(0.8, 0.6),
-                ChartData(1.0, 1.0),
-              ],
-              xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y,
-              markerSettings: const MarkerSettings(isVisible: true),
-            ),
+    return SfCartesianChart(
+      primaryXAxis: NumericAxis(minimum: 0.0, maximum: 1.0, interval: 0.1),
+      primaryYAxis: NumericAxis(minimum: 0.0, maximum: 1.0, interval: 0.1),
+      series: [
+        LineSeries<ChartData, double>(
+          dataSource: [
+            ChartData(0.0, 0.0),
+            ChartData(0.2, 0.4),
+            ChartData(0.4, 0.3),
+            ChartData(0.6, 0.7),
+            ChartData(0.8, 0.6),
+            ChartData(1.0, 1.0),
           ],
+          xValueMapper: (ChartData data, _) => data.x,
+          yValueMapper: (ChartData data, _) => data.y,
+          markerSettings: const MarkerSettings(isVisible: false),
+          color: AppColors.primary,
         ),
-      ),
+      ],
     );
   }
 }

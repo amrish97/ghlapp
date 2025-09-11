@@ -2,6 +2,7 @@ import 'package:ghlapp/providers/investment_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/custom_textField.dart';
@@ -28,24 +29,23 @@ class InvestmentCompletePage extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
                 child: Row(
                   children: [
-                    GestureDetector(
+                    Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.white,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.black,
+                        size: 20,
+                      ),
+                    ).toGesture(
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.white,
-                        ),
-                        child: Icon(
-                          Icons.arrow_back_ios_new,
-                          color: AppColors.black,
-                          size: 20,
-                        ),
-                      ),
                     ),
                     Spacer(),
                     Container(

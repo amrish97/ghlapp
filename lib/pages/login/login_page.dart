@@ -3,6 +3,7 @@ import 'package:ghlapp/providers/login_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_scaffold.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
@@ -145,18 +146,15 @@ class _LoginPageState extends State<LoginPage> {
     required GestureTapCallback onTap,
   }) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 60,
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.white,
-          ),
-          child: Image.asset(image, scale: 3),
+      child: Container(
+        height: 60,
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.white,
         ),
-      ),
+        child: Image.asset(image, scale: 3),
+      ).toGesture(onTap: onTap),
     );
   }
 }

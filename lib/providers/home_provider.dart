@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:another_telephony/telephony.dart';
 import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
+import 'package:ghlapp/providers/mixin/referral_mixin.dart';
 import 'package:ghlapp/providers/mixin/social_mixin.dart';
 import 'package:ghlapp/providers/mixin/verification_mixin.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,8 @@ class HomeProvider extends ChangeNotifier
         BottomNavigationMixin,
         SocialLoginMixin,
         VerificationMixin,
-        GetDetailMixin {
-  HomeProvider() {
-    loadVerifiedSections();
-  }
-
+        GetDetailMixin,
+        ReferralMixin {
   final Telephony telephony = Telephony.instance;
 
   Future<void> checkAndLoadSms(BuildContext context) async {

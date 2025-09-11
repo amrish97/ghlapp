@@ -1,7 +1,9 @@
-import 'package:ghlapp/pages/investment_completed_page.dart';
+import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
@@ -23,24 +25,23 @@ class CompletedPlanPage extends StatelessWidget {
             child: Center(
               child: Row(
                 children: [
-                  GestureDetector(
+                  Container(
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.black,
+                      size: 20,
+                    ),
+                  ).toGesture(
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ),
                   ),
                   SizedBox(width: 10),
                   PrimaryText(
@@ -68,7 +69,52 @@ class CompletedPlanPage extends StatelessWidget {
               color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: GestureDetector(
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(
+                    completedPlans[index]["uploadfiles_url"],
+                  ),
+                ),
+                SizedBox(width: 5),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PrimaryText(
+                        text: completedPlans[index]["name"],
+                        weight: AppFont.semiBold,
+                        size: AppDimen.textSize12,
+                        align: TextAlign.start,
+                      ),
+                      PrimaryText(
+                        text:
+                            "\u20B9 ${App().formatIndianNumber(double.parse(completedPlans[index]["total_investment_amt"]).toInt())}",
+                        weight: AppFont.regular,
+                        size: AppDimen.textSize14,
+                        color: AppColors.lightGrey,
+                        align: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppColors.white,
+                    size: 15,
+                  ),
+                ),
+              ],
+            ).toGesture(
               onTap: () {
                 Navigator.push(
                   context,
@@ -80,52 +126,6 @@ class CompletedPlanPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(
-                      completedPlans[index]["uploadfiles_url"],
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PrimaryText(
-                          text: completedPlans[index]["name"],
-                          weight: AppFont.semiBold,
-                          size: AppDimen.textSize12,
-                          align: TextAlign.start,
-                        ),
-                        PrimaryText(
-                          text:
-                              "\u20B9${completedPlans[index]["total_investment_amt"]}",
-                          weight: AppFont.regular,
-                          size: AppDimen.textSize14,
-                          color: AppColors.lightGrey,
-                          align: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: AppColors.white,
-                      size: 15,
-                    ),
-                  ),
-                ],
-              ),
             ),
           );
         },

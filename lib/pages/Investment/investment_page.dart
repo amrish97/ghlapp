@@ -1,10 +1,12 @@
+import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/completed_plan_page.dart';
-import 'package:ghlapp/pages/investment_about_page.dart';
-import 'package:ghlapp/pages/investment_completed_page.dart';
+import 'package:ghlapp/pages/Investment/investment_about_page.dart';
+import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/progress_view.dart';
@@ -74,7 +76,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                                 ),
                                 PrimaryText(
                                   text:
-                                      "\u20B9 ${provider.activePlan[index]["deposit_amount"]}",
+                                      "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
                                   size: AppDimen.textSize20,
                                   weight: AppFont.semiBold,
                                   color: AppColors.primary,
@@ -106,7 +108,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                                 text: "Upto 20% Cashback Offer!!",
                                 color: AppColors.black,
                                 weight: AppFont.semiBold,
-                                size: 15,
+                                size: AppDimen.textSize12,
                               ),
                             ],
                           ),
@@ -120,86 +122,28 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           ),
                           child: Column(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PrimaryText(
-                                    text: "Per Tax return",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.regular,
-                                    color: AppColors.black,
-                                  ),
-                                  PrimaryText(
-                                    text:
-                                        "${provider.activePlan[index]["return_of_investment"]}% P.a",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.semiBold,
-                                    color: AppColors.black,
-                                  ),
-                                ],
+                              getRowSectionWithItem(
+                                title: "Per Tax return",
+                                value:
+                                    "${provider.activePlan[index]["return_of_investment"]}% P.a",
                               ),
                               SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PrimaryText(
-                                    text: "Tenure",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.regular,
-                                    color: AppColors.black,
-                                  ),
-                                  PrimaryText(
-                                    text:
-                                        "${provider.activePlan[index]["tenure"]} Months",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.semiBold,
-                                    color: AppColors.black,
-                                  ),
-                                ],
+                              getRowSectionWithItem(
+                                title: "Tenure",
+                                value:
+                                    "${provider.activePlan[index]["tenure"]} Months",
                               ),
                               SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PrimaryText(
-                                    text: "Total fund Required",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.regular,
-                                    color: AppColors.black,
-                                  ),
-                                  PrimaryText(
-                                    text:
-                                        provider
-                                            .activePlan[index]["max_investment_amt"],
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.semiBold,
-                                    color: AppColors.black,
-                                  ),
-                                ],
+                              getRowSectionWithItem(
+                                title: "Total fund Required",
+                                value:
+                                    "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["max_investment_amt"]).toInt())}",
                               ),
                               SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PrimaryText(
-                                    text: "Total fund Raised",
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.regular,
-                                    color: AppColors.black,
-                                  ),
-                                  PrimaryText(
-                                    text:
-                                        provider
-                                            .activePlan[index]["deposit_amount"],
-                                    size: AppDimen.textSize12,
-                                    weight: AppFont.semiBold,
-                                    color: AppColors.black,
-                                  ),
-                                ],
+                              getRowSectionWithItem(
+                                title: "Total fund Raised",
+                                value:
+                                    "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
                               ),
                               InvestmentProgress(
                                 investAmount: double.parse(
@@ -257,7 +201,12 @@ class _InvestmentPageState extends State<InvestmentPage> {
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
-                    GestureDetector(
+                    PrimaryText(
+                      text: "See All",
+                      weight: AppFont.regular,
+                      color: Colors.blue,
+                      size: AppDimen.textSize14,
+                    ).toGesture(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -269,12 +218,6 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           ),
                         );
                       },
-                      child: PrimaryText(
-                        text: "See All",
-                        weight: AppFont.regular,
-                        color: Colors.blue,
-                        size: AppDimen.textSize14,
-                      ),
                     ),
                   ],
                 ),
@@ -289,6 +232,26 @@ class _InvestmentPageState extends State<InvestmentPage> {
     );
   }
 
+  Widget getRowSectionWithItem({required String title, required String value}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        PrimaryText(
+          text: title,
+          size: AppDimen.textSize12,
+          weight: AppFont.regular,
+          color: AppColors.black,
+        ),
+        PrimaryText(
+          text: value,
+          size: AppDimen.textSize12,
+          weight: AppFont.semiBold,
+          color: AppColors.black,
+        ),
+      ],
+    );
+  }
+
   Widget horizondalView({required List<Map<String, dynamic>> completedPlan}) {
     return SizedBox(
       height: 90,
@@ -296,7 +259,46 @@ class _InvestmentPageState extends State<InvestmentPage> {
         scrollDirection: Axis.horizontal,
         itemCount: completedPlan.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(
+                    completedPlan[index]["uploadfiles_url"],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PrimaryText(
+                        text: completedPlan[index]["name"],
+                        weight: AppFont.semiBold,
+                        size: AppDimen.textSize12,
+                        align: TextAlign.start,
+                      ),
+                      PrimaryText(
+                        text:
+                            "\u20B9 ${App().formatIndianNumber(double.parse(completedPlan[index]["total_investment_amt"]).toInt())}",
+                        weight: AppFont.regular,
+                        size: AppDimen.textSize12,
+                        color: AppColors.lightGrey,
+                        align: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ).toGesture(
             onTap: () {
               Navigator.push(
                 context,
@@ -308,46 +310,6 @@ class _InvestmentPageState extends State<InvestmentPage> {
                 ),
               );
             },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      completedPlan[index]["uploadfiles_url"],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PrimaryText(
-                          text: completedPlan[index]["name"],
-                          weight: AppFont.semiBold,
-                          size: AppDimen.textSize14,
-                          align: TextAlign.start,
-                        ),
-                        PrimaryText(
-                          text:
-                              "\u20B9 ${completedPlan[index]["total_investment_amt"]}",
-                          weight: AppFont.regular,
-                          size: AppDimen.textSize14,
-                          color: AppColors.lightGrey,
-                          align: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
           );
         },
       ),

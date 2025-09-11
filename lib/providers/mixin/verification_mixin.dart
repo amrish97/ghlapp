@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/model/aadhaar_model.dart';
-import 'package:ghlapp/pages/otp_page.dart';
+import 'package:ghlapp/pages/login/otp_page.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
@@ -31,6 +31,7 @@ mixin VerificationMixin on ChangeNotifier {
   final TextEditingController nomineeEmailController = TextEditingController();
   final TextEditingController nomineeAadhaarController =
       TextEditingController();
+  final List<Map<String, dynamic>> userPlans = [];
 
   int _seconds = 30;
   bool _canResend = false;
@@ -65,27 +66,27 @@ mixin VerificationMixin on ChangeNotifier {
 
   double get progress {
     int completed = verifiedSection.values.where((value) => value).length;
+    print("completed---->> $completed");
     return completed / verifiedSection.length;
   }
 
-  Future<void> loadVerifiedSections() async {
+  Future<void> loadVerifiedSections(context) async {
     final prefs = await SharedPreferences.getInstance();
+    await userDashboardAPI(context);
     verifiedSection["aadhaar"] =
         prefs.getBool("aadhaar_completed") ?? isAadhaarVerified;
     verifiedSection["pan"] = prefs.getBool("pan_completed") ?? isPanVerified;
     verifiedSection["bank"] = prefs.getBool("bank_completed") ?? isBankVerified;
     verifiedSection["nominee"] =
         prefs.getBool("nominee_completed") ?? isNomineeVerified;
-    aadhaarName = prefs.getString("aadhaar_name") ?? "";
     aadhaarNo = prefs.getString("aadhaar_number") ?? "";
+    print("completed1---->> ${verifiedSection.values}");
     notifyListeners();
   }
 
-  Future<void> statusUpdateNavigate(
-    BuildContext context,
-    String section,
-  ) async {
+  Future<void> statusUpdateNavigate(context, String section) async {
     await updateSection(section, true);
+    await loadVerifiedSections(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (section == "aadhaar") {
         Navigator.pop(context);
@@ -116,16 +117,18 @@ mixin VerificationMixin on ChangeNotifier {
           "Authorization": "Bearer $authToken",
         },
       );
+      final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
+        print("userData------$data");
         isAadhaarVerified = data["aadhaar_status"] == "yes" ? true : false;
         isPanVerified = data["pan_status"] == "yes" ? true : false;
         isBankVerified = data["bank_status"] == "yes" ? true : false;
         isNomineeVerified = data["kyc_status"] == "yes" ? true : false;
         aadhaarName = data["userName"] ?? "";
+        print("aadhaarName------$isAadhaarVerified---$isPanVerified");
         notifyListeners();
       } else {
-        AppSnackBar.show(context, message: "Error ${res.statusCode}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());
@@ -146,9 +149,8 @@ mixin VerificationMixin on ChangeNotifier {
         },
         body: jsonEncode({"aadhaar_number": number.toString()}),
       );
-
+      final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
         if (data["code"] == 200) {
           final message = data["data"]["message"] ?? "";
           referenceID = data["data"]["reference_id"] ?? 0;
@@ -177,7 +179,7 @@ mixin VerificationMixin on ChangeNotifier {
         }
       } else {
         setLoading(false);
-        AppSnackBar.show(context, message: "Error ${response.statusCode}");
+        AppSnackBar.show(context, message: "${data["message"]}");
       }
     } catch (e) {
       setLoading(false);
@@ -279,9 +281,8 @@ mixin VerificationMixin on ChangeNotifier {
         },
         body: jsonEncode({"aadhaar_number": aadhaar}),
       );
-
+      final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
         if (data["code"] == 200) {
           final message = data["data"]["message"];
           startTimer();
@@ -297,7 +298,7 @@ mixin VerificationMixin on ChangeNotifier {
         }
       } else {
         setLoading(false);
-        AppSnackBar.show(context, message: "Error ${response.statusCode}");
+        AppSnackBar.show(context, message: "${data["message"]}");
       }
     } catch (e) {
       setLoading(false);
@@ -319,12 +320,12 @@ mixin VerificationMixin on ChangeNotifier {
           "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
-          "pan": panNumber,
+          "pan": panNumber.toString().trim(),
           "aadhaar_number": aadhaarNo.toString(),
         }),
       );
+      final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
         final message = data["data"]["message"];
         AppSnackBar.show(
           context,
@@ -335,7 +336,7 @@ mixin VerificationMixin on ChangeNotifier {
         await statusUpdateNavigate(context, "pan");
       } else {
         setLoading(false);
-        AppSnackBar.show(context, message: "Error ${res.statusCode}");
+        AppSnackBar.show(context, message: "${data["message"]}");
       }
     } catch (e) {
       setLoading(false);
@@ -355,9 +356,8 @@ mixin VerificationMixin on ChangeNotifier {
         },
         body: jsonEncode({"phone": phone, "otp": otp}),
       );
-
+      final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
         if (data["status"] == 200 && data["ok"] == true) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString("auth_token", data["token"]);
@@ -378,10 +378,7 @@ mixin VerificationMixin on ChangeNotifier {
         }
       } else {
         setLoading(false);
-        AppSnackBar.show(
-          context,
-          message: "Error: ${response.statusCode} - ${response.body}",
-        );
+        AppSnackBar.show(context, message: "${data["message"]}");
       }
     } catch (e) {
       setLoading(false);
@@ -445,8 +442,8 @@ mixin VerificationMixin on ChangeNotifier {
           "ifsc_code": ifscCode,
         }),
       );
+      final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
         final message = data["message"];
         AppSnackBar.show(
           context,
@@ -457,7 +454,7 @@ mixin VerificationMixin on ChangeNotifier {
         await statusUpdateNavigate(context, "bank");
       } else {
         setLoading(false);
-        AppSnackBar.show(context, message: "Error ${res.body}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       setLoading(false);
@@ -489,8 +486,8 @@ mixin VerificationMixin on ChangeNotifier {
           "nominee_aadhaar_number": nomineeAadhaar,
         }),
       );
+      final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
         final message = data["message"];
         AppSnackBar.show(
           context,
@@ -501,7 +498,7 @@ mixin VerificationMixin on ChangeNotifier {
         await statusUpdateNavigate(context, "nominee");
       } else {
         setLoading(false);
-        AppSnackBar.show(context, message: "Error ${res.body}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       setLoading(false);

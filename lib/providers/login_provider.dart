@@ -3,16 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/model/device_detail.dart';
-import 'package:ghlapp/providers/mixin/otp_mixin.dart';
 import 'package:ghlapp/providers/mixin/social_mixin.dart';
 import 'package:ghlapp/providers/mixin/verification_mixin.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
