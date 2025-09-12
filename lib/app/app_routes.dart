@@ -1,4 +1,5 @@
 import 'package:ghlapp/pages/Detail_page.dart';
+import 'package:ghlapp/pages/SideDrawerSection/educational_video_page.dart';
 import 'package:ghlapp/pages/bottom_navigation.dart';
 import 'package:ghlapp/pages/home_page.dart';
 import 'package:ghlapp/pages/Investment/investment_page.dart';
@@ -24,6 +25,7 @@ class AppRoutes {
     AppRouteEnum.detailPage.name: (context) => DetailPage(),
     AppRouteEnum.investment.name: (context) => InvestmentPage(),
     AppRouteEnum.referral.name: (context) => ReferralPage(),
+    AppRouteEnum.educationalVideo.name: (context) => EducationalVideoPage(),
   };
 }
 
@@ -39,4 +41,5 @@ enum AppRouteEnum {
   detailPage,
   investment,
   referral,
+  educationalVideo,
 }

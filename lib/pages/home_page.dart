@@ -375,7 +375,12 @@ class _HomePageState extends State<HomePage> {
       {"image": "assets/images/blog.png", "onTap": () {}, "title": "Blogs"},
       {
         "image": "assets/images/video.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.pop(context);
+          await data.getEducationVideo(context);
+          await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.educationalVideo.name);
+        },
         "title": "Educational Videos",
       },
       {

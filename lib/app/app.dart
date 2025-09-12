@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:ghlapp/widgets/connectivity_listener.dart';
 import 'package:intl/intl.dart';
 
 class App extends StatelessWidget {
   App({super.key});
+
+  MethodChannel locationChannel = MethodChannel('close');
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +30,11 @@ class App extends StatelessWidget {
             textScaler: const TextScaler.linear(1.0),
             devicePixelRatio: 1.0,
           ),
-          child: child!,
+          child: ConnectivityListener(child: child!),
         );
       },
     );
   }
-
-  MethodChannel locationChannel = MethodChannel('close');
 
   void closeApp() {
     if (Platform.isAndroid) {

@@ -663,37 +663,6 @@ class InvestmentDetailPage extends StatelessWidget {
                     content: "(Grab upto 2% cashback on your investments)",
                     isCheck: value.isRememberClick,
                   ),
-                  // CustomButton(
-                  //   text: "Invest Now",
-                  //   onTap: () async {
-                  //     if (value.amountInvestController.text.isEmpty) {
-                  //       AppSnackBar.show(
-                  //         context,
-                  //         message: "Please enter Investment amount!!",
-                  //       );
-                  //       return;
-                  //     } else if (!value.isRememberClick) {
-                  //       AppSnackBar.show(
-                  //         context,
-                  //         message: "Please select a Checkbox in Payment type!!",
-                  //       );
-                  //     } else {
-                  //       await value.getBankDetails(
-                  //         context,
-                  //         id: widget.planDetail["id"],
-                  //       );
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //           builder:
-                  //               (context) => InvestNowPage(
-                  //                 planDetail: widget.planDetail,
-                  //               ),
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  // ),
                   getBottomButton(value: value, context: context),
                   SizedBox(height: 10),
                 ],

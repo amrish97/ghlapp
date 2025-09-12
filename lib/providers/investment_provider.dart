@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:ghlapp/providers/mixin/education_video_mixin.dart';
 import 'package:ghlapp/providers/mixin/investment_mixin.dart';
 import 'package:ghlapp/providers/mixin/kyc_mixin.dart';
 import 'package:ghlapp/resources/AppString.dart';
@@ -12,7 +13,7 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 
 class InvestmentProvider extends ChangeNotifier
-    with InvestmentDetailMixin, KycMixin {
+    with InvestmentDetailMixin, KycMixin, EducationVideoMixin {
   final List<Map<String, dynamic>> activePlan = [];
   final List<Map<String, dynamic>> completedPlan = [];
 

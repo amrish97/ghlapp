@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:another_telephony/telephony.dart';
 import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
+import 'package:ghlapp/providers/mixin/education_video_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
 import 'package:ghlapp/providers/mixin/referral_mixin.dart';
 import 'package:ghlapp/providers/mixin/social_mixin.dart';
@@ -19,7 +20,8 @@ class HomeProvider extends ChangeNotifier
         SocialLoginMixin,
         VerificationMixin,
         GetDetailMixin,
-        ReferralMixin {
+        ReferralMixin,
+        EducationVideoMixin {
   final Telephony telephony = Telephony.instance;
 
   Future<void> checkAndLoadSms(BuildContext context) async {
