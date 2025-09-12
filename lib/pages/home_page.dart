@@ -437,7 +437,12 @@ class _HomePageState extends State<HomePage> {
       },
       {
         "image": "assets/images/contact.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.pop(context);
+          await data.getEducationVideo(context);
+          await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.contactUs.name);
+        },
         "title": "Contact Us",
       },
       {"image": "assets/images/about.png", "onTap": () {}, "title": "About Us"},

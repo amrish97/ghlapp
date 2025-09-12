@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 
 class InvestmentProvider extends ChangeNotifier
-    with InvestmentDetailMixin, KycMixin, EducationVideoMixin {
+    with InvestmentDetailMixin, KycMixin, SideNavigationMixin {
   final List<Map<String, dynamic>> activePlan = [];
   final List<Map<String, dynamic>> completedPlan = [];
 

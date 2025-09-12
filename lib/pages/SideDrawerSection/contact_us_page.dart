@@ -4,12 +4,13 @@ import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:ghlapp/widgets/video_player.dart';
+import 'package:ghlapp/widgets/custom_textField.dart';
 import 'package:provider/provider.dart';
 
-class EducationalVideoPage extends StatelessWidget {
-  const EducationalVideoPage({super.key});
+class ContactUsPage extends StatelessWidget {
+  const ContactUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +47,10 @@ class EducationalVideoPage extends StatelessWidget {
                     ),
                     SizedBox(width: 10),
                     PrimaryText(
-                      text: "Educational Videos",
+                      text: "Contact Us",
+                      color: AppColors.black,
                       weight: AppFont.semiBold,
-                      size: AppDimen.textSize16,
+                      size: AppDimen.textSize18,
                     ),
                   ],
                 ),
@@ -56,39 +58,37 @@ class EducationalVideoPage extends StatelessWidget {
             ),
           ),
           backgroundColor: AppColors.screenBgColor,
-          body: ListView.builder(
-            itemCount: value.educationalVideo.length,
-            itemBuilder: (context, index) {
-              final videoIndex = value.educationalVideo[index];
-              return Container(
-                height: 250,
-                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                decoration: BoxDecoration(color: AppColors.white),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        videoIndex["uploadfiles_url"] ?? "",
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
-                    VideoPlayerScreen(
-                      videoUrl:
-                          videoIndex["y_link"] ??
-                          "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-                    ),
-                  ],
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PrimaryText(
+                  text: "Need assistance? please fill the form",
+                  color: AppColors.black,
+                  weight: AppFont.semiBold,
+                  size: AppDimen.textSize14,
+                  align: TextAlign.start,
                 ),
-              );
-            },
+                SizedBox(height: 20,),
+                CustomTextFormField(label: "Name"),
+                SizedBox(height: 20,),
+                CustomTextFormField(label: "Email Address"),
+                SizedBox(height: 20,),
+                CustomTextFormField(label: "Phone Number"),
+                SizedBox(height: 20,),
+                CustomTextFormField(label: "Write a Message"),
+                SizedBox(height: 20,),
+                CustomButton(text: "Send Message", onTap: (){
+                  value.contactUs(context);
+                }),
+
+              ],
+            ),
           ),
         );
       },
     );
+
   }
 }

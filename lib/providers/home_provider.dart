@@ -21,7 +21,7 @@ class HomeProvider extends ChangeNotifier
         VerificationMixin,
         GetDetailMixin,
         ReferralMixin,
-        EducationVideoMixin {
+        SideNavigationMixin {
   final Telephony telephony = Telephony.instance;
 
   Future<void> checkAndLoadSms(BuildContext context) async {
