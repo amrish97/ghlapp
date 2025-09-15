@@ -27,7 +27,9 @@ class LoginProvider extends ChangeNotifier
   String? _deviceName;
 
   String? get deviceId => _deviceId;
+
   String? get deviceModel => _deviceModel;
+
   String? get deviceName => _deviceName;
 
   int _seconds = 30;
@@ -35,6 +37,7 @@ class LoginProvider extends ChangeNotifier
   Timer? _timer;
 
   int get seconds => _seconds;
+
   bool get canResend => _canResend;
 
   PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -42,7 +45,9 @@ class LoginProvider extends ChangeNotifier
   Position? _currentPosition;
 
   PermissionStatus get permissionStatus => _permissionStatus;
+
   bool get isLocationServiceEnabled => _isLocationServiceEnabled;
+
   Position? get currentPosition => _currentPosition;
 
   Future<void> initLocationCheck() async {
@@ -69,7 +74,7 @@ class LoginProvider extends ChangeNotifier
 
   Future<void> _checkDeviceLocation() async {
     _isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
+    print("isLocationServiceEnabled--->>> $_isLocationServiceEnabled");
     if (_isLocationServiceEnabled) {
       await _getCurrentLocation();
     } else {
@@ -79,18 +84,19 @@ class LoginProvider extends ChangeNotifier
   }
 
   Future<void> _getCurrentLocation() async {
-    _currentPosition = await Geolocator.getCurrentPosition(
-      locationSettings: AndroidSettings(
-        accuracy: LocationAccuracy.best,
-        distanceFilter: 5,
-      ),
+    Position pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
     );
+    _currentPosition = pos;
+    print("pos--->>> $pos");
     notifyListeners();
   }
 
   Future<void> sendOtp(context) async {
     setLoading(true);
-    if (currentPosition!.latitude.toString().isEmpty ||
+    if (currentPosition == null) {
+      initLocationCheck();
+    } else if (currentPosition!.latitude.toString().isEmpty ||
         currentPosition!.longitude.toString().isEmpty) {
       initLocationCheck();
     }
@@ -115,7 +121,7 @@ class LoginProvider extends ChangeNotifier
         }),
       );
       final data = jsonDecode(response.body);
-      print("res--->> ${data}");
+      print("res--->> $data");
       if (data["sms_response"]?["status"] == "success") {
         final message =
             data["sms_response"]?["message"] ?? "OTP Sent Successfully";

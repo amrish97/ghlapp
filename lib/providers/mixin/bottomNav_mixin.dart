@@ -31,6 +31,11 @@ mixin BottomNavigationMixin on ChangeNotifier {
               "title": "Educational Videos",
               "onTap": () {
                 print("Educational Videos");
+                Navigator.pop(context);
+                Navigator.pushNamed(
+                  context,
+                  AppRouteEnum.educationalVideo.name,
+                );
               },
             },
             {
@@ -57,18 +62,23 @@ mixin BottomNavigationMixin on ChangeNotifier {
               },
             },
           ];
+          final size = MediaQuery.of(context).size;
           return Material(
             type: MaterialType.transparency,
             child: Stack(
               children: [
                 Positioned(
-                  bottom: 60,
-                  left: 30,
-                  right: 30,
+                  bottom: size.height * 0.09,
+                  left: size.width * 0.08,
+                  right: size.width * 0.08,
                   child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 20,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: Column(
@@ -76,7 +86,6 @@ mixin BottomNavigationMixin on ChangeNotifier {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        SizedBox(height: 10),
                         ...iconWithTitle.asMap().entries.map((element) {
                           print("ele--->> ${element.key}---${element.value}");
                           return getImageTitle(
@@ -85,7 +94,6 @@ mixin BottomNavigationMixin on ChangeNotifier {
                             onTap: element.value["onTap"],
                           );
                         }),
-                        SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -109,7 +117,7 @@ mixin BottomNavigationMixin on ChangeNotifier {
     return Row(
       children: [
         SizedBox(width: 10),
-        Image.asset(image, scale: 3),
+        image.toImageAsset(),
         SizedBox(width: 10),
         PrimaryText(
           text: title,

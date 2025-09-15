@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
@@ -7,12 +8,12 @@ import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/custom_textField.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class VerificationPage extends StatelessWidget {
   final String routeName;
   final String isFrom;
+
   const VerificationPage({
     super.key,
     required this.routeName,
@@ -90,7 +91,6 @@ class VerificationPage extends StatelessWidget {
                                 ? TextInputType.number
                                 : TextInputType.text,
                         showBorderColor: true,
-
                         controller:
                             isFrom == "aadhaar"
                                 ? value.aadhaarController

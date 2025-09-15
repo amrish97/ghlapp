@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/model/aadhaar_model.dart';
 import 'package:ghlapp/pages/login/otp_page.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +16,7 @@ import '../../constants.dart';
 mixin VerificationMixin on ChangeNotifier {
   //aadhaar
   final TextEditingController aadhaarController = TextEditingController();
+
   //pan
   final TextEditingController panCardController = TextEditingController();
 
@@ -25,12 +26,22 @@ mixin VerificationMixin on ChangeNotifier {
   final TextEditingController accountNumberController = TextEditingController();
   final TextEditingController ifscCodeController = TextEditingController();
 
+  final FocusNode accountHolderFocus = FocusNode();
+  final FocusNode accountNumberFocus = FocusNode();
+  final FocusNode ifscFocus = FocusNode();
+
   //nominee
   final TextEditingController nomineeNameController = TextEditingController();
   final TextEditingController nomineePhoneController = TextEditingController();
   final TextEditingController nomineeEmailController = TextEditingController();
   final TextEditingController nomineeAadhaarController =
       TextEditingController();
+
+  final FocusNode nomineeNameFocus = FocusNode();
+  final FocusNode nomineePhoneFocus = FocusNode();
+  final FocusNode nomineeEmailFocus = FocusNode();
+  final FocusNode nomineeAadhaarFocus = FocusNode();
+
   final List<Map<String, dynamic>> userPlans = [];
 
   int _seconds = 30;
@@ -38,11 +49,13 @@ mixin VerificationMixin on ChangeNotifier {
   Timer? _timer;
 
   int get seconds => _seconds;
+
   bool get canResend => _canResend;
 
   int referenceID = 0;
   String aadhaarNo = "";
   bool isLoading = false;
+
   bool get getIsLoading => isLoading;
 
   void setLoading(bool value) {
@@ -70,9 +83,11 @@ mixin VerificationMixin on ChangeNotifier {
     return completed / verifiedSection.length;
   }
 
-  Future<void> loadVerifiedSections(context) async {
+  Future<void> loadVerifiedSections(context, {bool fetchApi = true}) async {
     final prefs = await SharedPreferences.getInstance();
-    await userDashboardAPI(context);
+    if (fetchApi) {
+      await userDashboardAPI(context);
+    }
     verifiedSection["aadhaar"] =
         prefs.getBool("aadhaar_completed") ?? isAadhaarVerified;
     verifiedSection["pan"] = prefs.getBool("pan_completed") ?? isPanVerified;
@@ -80,21 +95,14 @@ mixin VerificationMixin on ChangeNotifier {
     verifiedSection["nominee"] =
         prefs.getBool("nominee_completed") ?? isNomineeVerified;
     aadhaarNo = prefs.getString("aadhaar_number") ?? "";
-    print("completed1---->> ${verifiedSection.values}");
+    print("completed1---->> ${verifiedSection.values}---$aadhaarNo");
     notifyListeners();
   }
 
   Future<void> statusUpdateNavigate(context, String section) async {
     await updateSection(section, true);
-    await loadVerifiedSections(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (section == "aadhaar") {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      } else {
-        Navigator.pop(context);
-      }
-    });
+    await loadVerifiedSections(context, fetchApi: true);
+    Navigator.pop(context);
   }
 
   AadhaarResponse? _aadhaarResponse;
@@ -155,7 +163,6 @@ mixin VerificationMixin on ChangeNotifier {
           final message = data["data"]["message"] ?? "";
           referenceID = data["data"]["reference_id"] ?? 0;
           await saveAadhaar(number.toString());
-          final aadhaar = await getAadhaar();
           AppSnackBar.show(
             context,
             message: message,
@@ -226,15 +233,18 @@ mixin VerificationMixin on ChangeNotifier {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("aadhaar_name", aadhaarResponse.data.name);
         await prefs.setString("aadhaar_photo", aadhaarResponse.data.photo);
-        aadhaarName = prefs.getString("aadhaar_name") ?? "";
-        prefs.setString("aadhaar_number", aadhaarNumber.toString());
-        aadhaarNo = prefs.getString("aadhaar_number") ?? "";
-        await statusUpdateNavigate(context, "aadhaar");
+        await prefs.setString("aadhaar_number", aadhaarNumber.toString());
+        aadhaarName = aadhaarResponse.data.name;
+        aadhaarNo = aadhaarNumber.toString();
+        await updateSection("aadhaar", true);
+        await loadVerifiedSections(context, fetchApi: true);
+        Navigator.pop(context);
         AppSnackBar.show(
           context,
           message: aadhaarResponse.data.message,
           backgroundColor: AppColors.greenCircleColor,
         );
+        notifyListeners();
         setLoading(false);
       } else {
         final Map<String, dynamic> error = jsonDecode(response.body);
@@ -308,6 +318,8 @@ mixin VerificationMixin on ChangeNotifier {
 
   Future<void> verifyPanNumber(context, String panNumber) async {
     setLoading(true);
+    final aadhaar = await getAadhaar();
+    print("aadhaar---$aadhaar");
     final url = Uri.parse(
       "${AppStrings.baseURL}aadhaar/pan_aadhaar/link_status",
     );
@@ -321,7 +333,7 @@ mixin VerificationMixin on ChangeNotifier {
         },
         body: jsonEncode({
           "pan": panNumber.toString().trim(),
-          "aadhaar_number": aadhaarNo.toString(),
+          "aadhaar_number": aadhaar.toString(),
         }),
       );
       final data = jsonDecode(res.body);

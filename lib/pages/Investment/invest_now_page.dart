@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 class InvestNowPage extends StatelessWidget {
   final Map<String, dynamic> planDetail;
+
   const InvestNowPage({super.key, required this.planDetail});
 
   @override
@@ -118,7 +119,8 @@ class InvestNowPage extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       spacing: 10,
                                       children: [
-                                        ColoredBox(
+                                        Container(
+                                          width: double.infinity,
                                           color: AppColors.brownColor,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -221,7 +223,7 @@ class InvestNowPage extends StatelessWidget {
                                                       weight: AppFont.regular,
                                                       color: AppColors.white,
                                                     ),
-                                                  ),
+                                                  ).toGesture(onTap: () {}),
                                                 ],
                                               ),
                                             ],
@@ -448,7 +450,7 @@ class InvestNowPage extends StatelessWidget {
                                 name: planDetail["name"],
                                 planID: planDetail["plan_id"],
                                 tenure: planDetail["tenure"],
-                                investDate: planDetail["ins_date"].toString(),
+                                investDate: planDetail["ins_date"],
                                 filePath: value.filePath,
                               );
                             }

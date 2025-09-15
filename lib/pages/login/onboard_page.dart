@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/providers/onboard_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OnboardPage extends StatelessWidget {
@@ -40,7 +41,9 @@ class OnboardPage extends StatelessWidget {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(data["image"], fit: BoxFit.contain),
+                            data["image"].toString().toImageAsset(
+                              fit: BoxFit.contain,
+                            ),
                             const SizedBox(height: 30),
                             Wrap(
                               alignment: WrapAlignment.center,

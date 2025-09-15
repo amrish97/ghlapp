@@ -21,6 +21,7 @@ class Assets {
   static const String imagesBank = 'assets/images/bank.png';
   static const String imagesBlog = 'assets/images/blog.png';
   static const String imagesCalc = 'assets/images/calc.png';
+  static const String imagesCalender = 'assets/images/calender.png';
   static const String imagesCashback = 'assets/images/cashback.png';
   static const String imagesCircleArrow = 'assets/images/circleArrow.png';
   static const String imagesContact = 'assets/images/contact.png';
@@ -55,6 +56,7 @@ class Assets {
   static const String imagesTerms = 'assets/images/terms.png';
   static const String imagesTermsPrivacy = 'assets/images/terms-privacy.png';
   static const String imagesTimer = 'assets/images/timer.png';
+  static const String imagesUpload = 'assets/images/upload.png';
   static const String imagesUser = 'assets/images/user.png';
   static const String imagesUserPlus = 'assets/images/user-plus.png';
   static const String imagesVector = 'assets/images/Vector.png';

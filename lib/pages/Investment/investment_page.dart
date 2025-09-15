@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
-import 'package:ghlapp/pages/completed_plan_page.dart';
 import 'package:ghlapp/pages/Investment/investment_about_page.dart';
 import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
+import 'package:ghlapp/pages/completed_plan_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
@@ -10,7 +11,6 @@ import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/progress_view.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InvestmentPage extends StatefulWidget {
@@ -99,8 +99,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                "assets/images/cashback.png",
+                              "assets/images/cashback.png".toImageAsset(
                                 scale: 2.5,
                               ),
                               SizedBox(width: 10),
@@ -181,10 +180,8 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           text: "Invest",
                           color: AppColors.greenCircleColor,
                           width: MediaQuery.of(context).size.width - 200,
-                          iconWidget: Image.asset(
-                            "assets/images/inverstment.png",
-                            scale: 3,
-                          ),
+                          iconWidget:
+                              "assets/images/inverstment.png".toImageAsset(),
                         ),
                       ],
                     ),

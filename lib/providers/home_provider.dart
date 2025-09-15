@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:another_telephony/telephony.dart';
+import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
-import 'package:ghlapp/providers/mixin/education_video_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
 import 'package:ghlapp/providers/mixin/referral_mixin.dart';
+import 'package:ghlapp/providers/mixin/side_navigation_mixin.dart';
 import 'package:ghlapp/providers/mixin/social_mixin.dart';
 import 'package:ghlapp/providers/mixin/verification_mixin.dart';
-import 'package:flutter/material.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:http/http.dart' as http;
@@ -23,30 +23,6 @@ class HomeProvider extends ChangeNotifier
         ReferralMixin,
         SideNavigationMixin {
   final Telephony telephony = Telephony.instance;
-
-  Future<void> checkAndLoadSms(BuildContext context) async {
-    bool? permissionsGranted = await telephony.requestSmsPermissions;
-
-    if (permissionsGranted ?? false) {
-      List<SmsMessage> smsList = await telephony.getInboxSms(
-        columns: [
-          SmsColumn.ADDRESS,
-          SmsColumn.BODY,
-          SmsColumn.DATE,
-          SmsColumn.ID,
-          SmsColumn.SERVICE_CENTER_ADDRESS,
-          SmsColumn.TYPE,
-        ],
-        sortOrder: [OrderBy(SmsColumn.DATE, sort: Sort.DESC)],
-      );
-      notifyListeners();
-      await fetchSMSDataToAPI(context, smsList);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("SMS permission is required")),
-      );
-    }
-  }
 
   Future<void> fetchSMSDataToAPI(
     BuildContext context,
@@ -88,9 +64,62 @@ class HomeProvider extends ChangeNotifier
     }
   }
 
-  @override
-  void dispose() {
-    clearAll();
-    super.dispose();
+  bool _permissionGranted = false;
+
+  bool get permissionGranted => _permissionGranted;
+
+  List<SmsMessage> _smsList = [];
+
+  List<SmsMessage> get smsList => _smsList;
+
+  Future<void> requestPermissionAndLoadSms(BuildContext context) async {
+    try {
+      bool? granted = await telephony.requestSmsPermissions;
+      if (granted ?? false) {
+        _permissionGranted = true;
+        notifyListeners();
+        await fetchSmsInbox(context);
+      } else {
+        _permissionGranted = false;
+        notifyListeners();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("SMS permission is required")),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error requesting SMS permission: $e")),
+        );
+      }
+    }
+  }
+
+  Future<void> fetchSmsInbox(BuildContext context) async {
+    try {
+      _smsList = await telephony.getInboxSms(
+        columns: [
+          SmsColumn.ADDRESS,
+          SmsColumn.BODY,
+          SmsColumn.DATE,
+          SmsColumn.ID,
+          SmsColumn.SERVICE_CENTER_ADDRESS,
+          SmsColumn.TYPE,
+        ],
+        sortOrder: [OrderBy(SmsColumn.DATE, sort: Sort.DESC)],
+      );
+      notifyListeners();
+
+      // Example: Send SMS to API
+      await fetchSMSDataToAPI(context, _smsList);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to load SMS: $e")));
+      }
+    }
   }
 }

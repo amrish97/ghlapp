@@ -1,7 +1,7 @@
-import 'package:ghlapp/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
@@ -38,7 +38,9 @@ class SplashPage extends StatelessWidget {
                 }
               }
             },
-            child: Image.asset('assets/images/ghl-logo.png', scale: 2),
+            child: 'assets/images/ghl-logo.png'.toString().toImageAsset(
+              scale: 2,
+            ),
           ),
         ),
       ),

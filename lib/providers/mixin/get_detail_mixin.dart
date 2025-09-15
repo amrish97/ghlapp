@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:ghlapp/constants.dart';
 import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 mixin GetDetailMixin on ChangeNotifier {
@@ -12,6 +13,10 @@ mixin GetDetailMixin on ChangeNotifier {
 
   String termsContent = "";
   int isAgreeTermsCondition = 0;
+
+  final Map<String, dynamic> kycInformation = {};
+  final Map<String, dynamic> bankInformation = {};
+  final Map<String, dynamic> nomineeInformation = {};
 
   Future getPrivacy(context) async {
     final url = Uri.parse("${AppStrings.baseURL}privacy");
@@ -24,9 +29,8 @@ mixin GetDetailMixin on ChangeNotifier {
           'Authorization': 'Bearer $authToken',
         },
       );
-
+      final data = jsonDecode(request.body);
       if (request.statusCode == 200) {
-        final data = jsonDecode(request.body);
         privacyContent = data["data"]["privacy"];
         isAgreePrivacyPolicy = data["privacy_policy"];
         notifyListeners();
@@ -34,7 +38,7 @@ mixin GetDetailMixin on ChangeNotifier {
           "isAgreePrivacyPolicy--->> $isAgreePrivacyPolicy------$privacyContent",
         );
       } else {
-        AppSnackBar.show(context, message: "Error ${request.statusCode}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());
@@ -52,17 +56,13 @@ mixin GetDetailMixin on ChangeNotifier {
           'Authorization': 'Bearer $authToken',
         },
       );
-
+      final data = jsonDecode(request.body);
       if (request.statusCode == 200) {
-        final data = jsonDecode(request.body);
         termsContent = data["data"]["terms"];
         isAgreeTermsCondition = data["terms_and_conditions"];
         notifyListeners();
-        print(
-          "isAgreeTermsCondition--->> $isAgreeTermsCondition------$termsContent",
-        );
       } else {
-        AppSnackBar.show(context, message: "Error ${request.statusCode}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());
@@ -82,7 +82,11 @@ mixin GetDetailMixin on ChangeNotifier {
         body: jsonEncode({"privacy_policy": isAgreePrivacyPolicy}),
       );
       if (request.statusCode == 200) {
-        AppSnackBar.show(context, message: "Success");
+        AppSnackBar.show(
+          context,
+          message: "Success",
+          backgroundColor: AppColors.greenCircleColor,
+        );
       } else {
         AppSnackBar.show(context, message: "Error ${request.statusCode}");
       }
@@ -107,6 +111,41 @@ mixin GetDetailMixin on ChangeNotifier {
         AppSnackBar.show(context, message: "Success");
       } else {
         AppSnackBar.show(context, message: "Error ${request.statusCode}");
+      }
+    } catch (e) {
+      AppSnackBar.show(context, message: e.toString());
+    }
+  }
+
+  Future getKYCDetail(context) async {
+    final url = Uri.parse("${AppStrings.baseURL}kyc-details");
+    try {
+      final request = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+      final data = jsonDecode(request.body);
+      print("data--->> $data");
+      if (request.statusCode == 200) {
+        kycInformation.clear();
+        kycInformation.addAll(data["data"] ?? {});
+
+        nomineeInformation.clear();
+        nomineeInformation.addAll(data["nomineeDetail"] ?? {});
+
+        bankInformation.clear();
+        bankInformation.addAll(data["bankDetail"] ?? {});
+
+        print("kycInformation--->> $kycInformation");
+        print("nomineeInformation--->> $nomineeInformation");
+        print("bankInformation--->> $bankInformation");
+        notifyListeners();
+      } else {
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());

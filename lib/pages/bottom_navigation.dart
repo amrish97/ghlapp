@@ -5,6 +5,7 @@ import 'package:ghlapp/pages/home_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_style.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavigationPage extends StatefulWidget {
@@ -105,11 +106,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               )
               : Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Image.asset(
-                  icon,
+                child: icon.toImageAsset(
                   color:
-                      value?.selectedIndex == index ? AppColors.primary : null,
-                  scale: 3,
+                      value?.selectedIndex == index
+                          ? AppColors.white
+                          : AppColors.primary,
                 ),
               ),
       label: label,

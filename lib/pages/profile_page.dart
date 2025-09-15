@@ -1,6 +1,7 @@
-import 'package:ghlapp/app/app.dart';
-import 'package:ghlapp/app/app_routes.dart';
+import 'package:flutter/material.dart';
 import 'package:ghlapp/constants.dart';
+import 'package:ghlapp/pages/Detail_page.dart';
+import 'package:ghlapp/pages/document/document_page.dart';
 import 'package:ghlapp/pages/html_content_page.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
@@ -9,7 +10,6 @@ import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -22,10 +22,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProfileProvider>().getPrivacy(context);
-      context.read<ProfileProvider>().getTermsCondition(context);
-    });
+    context.read<ProfileProvider>().getKYCDetail(context);
+    context.read<ProfileProvider>().getDocuments(context);
     super.initState();
   }
 
@@ -35,18 +33,47 @@ class _ProfilePageState extends State<ProfilePage> {
       {
         "image": "assets/images/kyc-detail.png",
         "onTap": () {
-          Navigator.pushNamed(context, AppRouteEnum.detailPage.name);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DetailPage(title: "KYC")),
+          );
         },
         "title": "KYC Details",
       },
       {
         "image": "assets/images/account-detail.png",
-        "onTap": () {},
+        "onTap": () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailPage(title: "Account"),
+            ),
+          );
+        },
         "title": "Account Detail",
       },
       {
+        "image": "assets/images/account-detail.png",
+        "onTap": () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailPage(title: "Nominee"),
+            ),
+          );
+        },
+        "title": "Nominee Detail",
+      },
+      {
         "image": "assets/images/my-document.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DocumentPage(title: "initialView"),
+            ),
+          );
+        },
         "title": "My Documents",
       },
       {
@@ -75,7 +102,13 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         "title": AppStrings.termsPrivacy,
       },
-      {"image": "assets/images/logout.png", "onTap": () {}, "title": "Logout"},
+      {
+        "image": "assets/images/logout.png",
+        "onTap": () {
+          context.read<ProfileProvider>().logOut(context);
+        },
+        "title": "Logout",
+      },
     ];
     return Scaffold(
       backgroundColor: AppColors.screenBgColor,
@@ -86,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 color: AppColors.primary,
                 width: double.infinity,
-                height: 400,
+                height: MediaQuery.of(context).size.height / 2.2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -104,10 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: CircleAvatar(
                             radius: 80,
                             backgroundImage:
-                                Image.asset(
-                                  "assets/images/user.png",
-                                  fit: BoxFit.cover,
-                                ).image,
+                                "assets/images/user.png".toImageAsset().image,
                           ),
                         ),
                         Positioned(

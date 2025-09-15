@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/Investment/investment_detail_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -7,11 +8,11 @@ import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/video_player.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InvestmentAboutPage extends StatelessWidget {
   final Map<String, dynamic> planDetail;
+
   const InvestmentAboutPage({super.key, required this.planDetail});
 
   @override
@@ -66,8 +67,8 @@ class InvestmentAboutPage extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            child: VideoPlayerScreen(
-                              videoUrl:
+                            child: YoutubeVideoPlayer(
+                              url:
                                   planDetail["y_link1"] ??
                                   "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
                             ),
@@ -75,8 +76,8 @@ class InvestmentAboutPage extends StatelessWidget {
                           const SizedBox(width: 8),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            child: VideoPlayerScreen(
-                              videoUrl:
+                            child: YoutubeVideoPlayer(
+                              url:
                                   planDetail["y_link2"] ??
                                   "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
                             ),
@@ -139,10 +140,7 @@ class InvestmentAboutPage extends StatelessWidget {
               },
               text: "Invest Now",
               color: AppColors.greenCircleColor,
-              iconWidget: Image.asset(
-                "assets/images/inverstment.png",
-                scale: 3,
-              ),
+              iconWidget: "assets/images/inverstment.png".toImageAsset(),
             ),
           ),
         );

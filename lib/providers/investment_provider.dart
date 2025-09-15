@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:ghlapp/providers/mixin/education_video_mixin.dart';
+import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/mixin/investment_mixin.dart';
 import 'package:ghlapp/providers/mixin/kyc_mixin.dart';
+import 'package:ghlapp/providers/mixin/side_navigation_mixin.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
@@ -18,12 +18,15 @@ class InvestmentProvider extends ChangeNotifier
   final List<Map<String, dynamic>> completedPlan = [];
 
   bool _isRememberClick = false;
+
   bool get isRememberClick => _isRememberClick;
 
   String? _fileName;
+
   String? get fileName => _fileName;
 
   String? _filePath;
+
   String get filePath => _filePath ?? "";
 
   void setRememberClick() {
@@ -106,7 +109,7 @@ class InvestmentProvider extends ChangeNotifier
         "ins_amt": investmentAmount.toString(),
         "monthly_return": monthlyReturn.toString(),
         "ins_date": investDate,
-        "t_id": transactionIDController.text,
+        "t_id": transactionIDController.text.toString(),
       });
 
       if (filePath.isNotEmpty) {
@@ -115,8 +118,9 @@ class InvestmentProvider extends ChangeNotifier
         );
       }
       var response = await request.send();
+      final res = await response.stream.bytesToString();
+      print("res--->> $res");
       if (response.statusCode == 200) {
-        // final res = await response.stream.bytesToString();
         AppSnackBar.show(
           context,
           message: "Investment Successfully Done",
@@ -124,7 +128,7 @@ class InvestmentProvider extends ChangeNotifier
         );
         notifyListeners();
       } else {
-        AppSnackBar.show(context, message: "Error ${response.statusCode}");
+        AppSnackBar.show(context, message: res);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());

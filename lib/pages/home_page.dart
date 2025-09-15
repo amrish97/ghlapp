@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/constants.dart';
@@ -9,9 +10,7 @@ import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../widgets/chart_page.dart';
 
@@ -28,7 +27,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<HomeProvider>().loadVerifiedSections(context);
+      //context.read<HomeProvider>().requestPermissionAndLoadSms(context);
+      context.read<HomeProvider>().loadVerifiedSections(
+        context,
+        fetchApi: true,
+      );
     });
     super.initState();
   }
@@ -372,25 +375,42 @@ class _HomePageState extends State<HomePage> {
         "onTap": () {},
         "title": "Investment Calculator",
       },
-      {"image": "assets/images/blog.png", "onTap": () {}, "title": "Blogs"},
       {
-        "image": "assets/images/video.png",
+        "image": "assets/images/blog.png",
         "onTap": () async {
           Navigator.pop(context);
-          await data.getEducationVideo(context);
+          await data.getBlog(context);
           await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.blog.name);
+        },
+        "title": "Blogs",
+      },
+      {
+        "image": "assets/images/video.png",
+        "onTap": () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, AppRouteEnum.educationalVideo.name);
         },
         "title": "Educational Videos",
       },
       {
         "image": "assets/images/economy.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.pop(context);
+          await data.getEconomicInsights(context);
+          await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.economyInsights.name);
+        },
         "title": "Economy Insights",
       },
       {
         "image": "assets/images/finance.png",
-        "onTap": () {},
+        "onTap": () async {
+          Navigator.pop(context);
+          await data.getFinancialData(context);
+          await Future.delayed(Duration(milliseconds: 130));
+          Navigator.pushNamed(context, AppRouteEnum.financialIQ.name);
+        },
         "title": "Financial IQ",
       },
       {
@@ -439,7 +459,6 @@ class _HomePageState extends State<HomePage> {
         "image": "assets/images/contact.png",
         "onTap": () async {
           Navigator.pop(context);
-          await data.getEducationVideo(context);
           await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.contactUs.name);
         },
@@ -468,9 +487,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     SizedBox(width: 20),
-                    Image.asset(
-                      data["image"],
-                      scale: 3,
+                    data["image"].toString().toImageAsset(
                       color: AppColors.black,
                     ),
                     SizedBox(width: 10),
@@ -478,7 +495,6 @@ class _HomePageState extends State<HomePage> {
                       text: data["title"],
                       size: AppDimen.textSize14,
                       weight: AppFont.semiBold,
-                      color: AppColors.black,
                     ),
                   ],
                 ),
@@ -499,7 +515,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Row(
           children: [
-            Image.asset("assets/images/timer.png", scale: 3),
+            "assets/images/timer.png".toImageAsset(),
             SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -520,7 +536,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Spacer(),
-            Image.asset("assets/images/circleArrow.png", scale: 3),
+            "assets/images/circleArrow.png".toImageAsset(),
           ],
         ).toGesture(
           onTap: () {
@@ -553,14 +569,14 @@ class _HomePageState extends State<HomePage> {
                   aadhaarName.toString().isEmpty
                       ? "User"
                       : aadhaarName.toString(),
-              size: AppDimen.textSize12,
+              size: AppDimen.textSize14,
               weight: AppFont.semiBold,
               maxLines: 1,
               color: AppColors.black,
             ),
             PrimaryText(
               text: "Welcome Back!",
-              size: AppDimen.textSize12,
+              size: AppDimen.textSize14,
               weight: AppFont.regular,
               maxLines: 1,
               color: AppColors.lightGrey,

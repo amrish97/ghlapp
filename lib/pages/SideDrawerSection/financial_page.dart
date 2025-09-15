@@ -1,28 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/pages/SideDrawerSection/financial_detail_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:ghlapp/widgets/video_player.dart';
 import 'package:provider/provider.dart';
 
-class EducationalVideoPage extends StatefulWidget {
-  const EducationalVideoPage({super.key});
-
-  @override
-  State<EducationalVideoPage> createState() => _EducationalVideoPageState();
-}
-
-class _EducationalVideoPageState extends State<EducationalVideoPage> {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<HomeProvider>().getEducationVideo(context);
-    });
-    super.initState();
-  }
+class FinancialPage extends StatelessWidget {
+  const FinancialPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +46,7 @@ class _EducationalVideoPageState extends State<EducationalVideoPage> {
                     ),
                     SizedBox(width: 10),
                     PrimaryText(
-                      text: "Educational Videos",
+                      text: "Financial IQ",
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
@@ -70,30 +57,49 @@ class _EducationalVideoPageState extends State<EducationalVideoPage> {
           ),
           backgroundColor: AppColors.screenBgColor,
           body: ListView.builder(
-            itemCount: value.educationalVideo.length,
+            itemCount: value.financialIQ.length,
             itemBuilder: (context, index) {
-              final videoIndex = value.educationalVideo[index];
-              print("links---->> ${videoIndex["y_link"]}");
+              final financialData = value.financialIQ[index];
               return Container(
-                height: 250,
                 margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(color: AppColors.white),
-                child: Stack(
-                  alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        videoIndex["uploadfiles_url"] ?? "",
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
+                    SizedBox(
+                      height: 150,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.network(
+                          financialData["uploadfiles_url"] ?? "",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
                       ),
                     ),
-                    YoutubeVideoPlayer(url: videoIndex["y_link"]),
+                    SizedBox(height: 20),
+                    PrimaryText(
+                      text: financialData["title"],
+                      align: TextAlign.start,
+                      size: AppDimen.textSize14,
+                      weight: AppFont.semiBold,
+                    ),
                   ],
                 ),
+              ).toGesture(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              FinancialDetailPage(financeDetail: financialData),
+                    ),
+                  );
+                },
               );
             },
           ),

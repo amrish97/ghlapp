@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class ConnectivityListener extends StatefulWidget {
   final Widget child;
+
   const ConnectivityListener({super.key, required this.child});
 
   @override
@@ -17,8 +18,8 @@ class ConnectivityListener extends StatefulWidget {
 }
 
 class _ConnectivityListenerState extends State<ConnectivityListener> {
-  bool _showOnlineBanner = false; // controls the green banner visibility
-  bool? _lastIsOnline; // keeps previous connectivity value
+  bool _showOnlineBanner = false;
+  bool? _lastIsOnline;
   Timer? _timer;
 
   @override

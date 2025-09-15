@@ -85,13 +85,13 @@ class ReferralPage extends StatelessWidget {
                         weight: AppFont.semiBold,
                         size: AppDimen.textSize24,
                       ),
-                      Image.asset("assets/images/reward.png", scale: 3),
+                      "assets/images/reward.png".toImageAsset(),
                       SizedBox(height: 8),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/dollar.png", scale: 3),
+                          "assets/images/dollar.png".toImageAsset(),
                           SizedBox(width: 3),
                           PrimaryText(
                             text: "100",

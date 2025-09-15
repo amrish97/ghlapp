@@ -20,4 +20,5 @@ class AppColors {
   static const Color brownColor = Color(0xFF640003);
   static const Color closeButtonColor = Color(0xFF6C757E);
   static const Color referralBoxColor = Color(0xFF22222B);
+  static const Color uploadCardColor = Color(0xF8C8C852);
 }

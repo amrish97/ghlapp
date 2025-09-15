@@ -1,7 +1,7 @@
-import 'package:ghlapp/resources/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:ghlapp/resources/app_style.dart';
 import 'package:flutter/services.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_style.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String label;

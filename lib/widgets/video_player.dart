@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:ghlapp/utils/extension/extension.dart';
-import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class VideoPlayerScreen extends StatefulWidget {
-  final String videoUrl;
+class YoutubeVideoPlayer extends StatefulWidget {
+  final String url;
 
-  const VideoPlayerScreen({super.key, required this.videoUrl});
+  const YoutubeVideoPlayer({super.key, required this.url});
 
   @override
-  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+  State<YoutubeVideoPlayer> createState() => _YoutubeVideoPlayerState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late VideoPlayerController _controller;
-  bool _showControls = true;
+class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
+  late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    final videoId = YoutubePlayer.convertUrlToId(widget.url);
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId ?? "",
+      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
+    );
   }
 
   @override
@@ -30,63 +29,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.dispose();
   }
 
-  void _togglePlayPause() {
-    setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
-    });
-  }
-
-  void _toggleControls() {
-    setState(() {
-      _showControls = !_showControls;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _controller.value.isInitialized
-        ? Stack(
-          alignment: Alignment.center,
-          children: [
-            AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            ),
-
-            // Overlay play/pause button
-            if (_showControls)
-              IconButton(
-                iconSize: 60,
-                color: Colors.white,
-                icon: Icon(
-                  _controller.value.isPlaying
-                      ? Icons.pause_circle_filled
-                      : Icons.play_circle_fill,
-                ),
-                onPressed: _togglePlayPause,
-              ),
-
-            // Progress bar at bottom
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: VideoProgressIndicator(
-                _controller,
-                allowScrubbing: true,
-                colors: VideoProgressColors(
-                  playedColor: Colors.red,
-                  backgroundColor: Colors.grey,
-                  bufferedColor: Colors.white54,
-                ),
-              ),
-            ),
-          ],
-        ).toGesture(onTap: _toggleControls)
-        : const Center(child: CircularProgressIndicator());
+    return YoutubePlayer(
+      controller: _controller,
+      showVideoProgressIndicator: true,
+      progressIndicatorColor: Colors.red,
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/verification_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -20,7 +19,6 @@ class KycPage extends StatelessWidget {
         final allVerified = value.verifiedSection.values.every(
           (v) => v == true,
         );
-        print("allVerified-->> $allVerified");
         return Scaffold(
           backgroundColor: AppColors.screenBgColor,
           body: LayoutBuilder(
@@ -115,7 +113,7 @@ class KycPage extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: AppColors.primaryLight,
                     ),
-                    child: Image.asset(item["image"], scale: 3),
+                    child: item["image"].toString().toImageAsset(),
                   ),
                   const SizedBox(width: 20),
                   PrimaryText(
