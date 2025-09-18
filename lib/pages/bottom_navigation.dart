@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/Investment/investment_page.dart';
+import 'package:ghlapp/pages/faq/faq_page.dart';
 import 'package:ghlapp/pages/home_page.dart';
+import 'package:ghlapp/pages/portfolio_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_style.dart';
@@ -17,11 +19,11 @@ class BottomNavigationPage extends StatefulWidget {
 
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final List<Widget> _pages = [
-    HomePage(),
-    InvestmentPage(),
+    const HomePage(),
+    const InvestmentPage(),
     const SizedBox(),
-    const Center(child: Text("Portfolio")),
-    const Center(child: Text("FAQ Page")),
+    const PortfolioPage(),
+    const FaqPage(),
   ];
 
   @override
@@ -32,7 +34,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop) {
-              App().closeApp();
+              BaseFunction().closeApp();
             }
           },
           child: Scaffold(

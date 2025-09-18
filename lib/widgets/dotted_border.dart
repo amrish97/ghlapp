@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 
 class DottedBorder extends StatelessWidget {
   final Widget child;
@@ -11,7 +12,7 @@ class DottedBorder extends StatelessWidget {
     super.key,
     required this.child,
     this.strokeWidth = 1,
-    this.color = Colors.black,
+    this.color = AppColors.black,
     this.gap = 4,
     this.dash = 6,
   });
@@ -59,7 +60,6 @@ class _DottedBorderPainter extends CustomPainter {
           ),
         );
 
-    // Draw the path with dash effect
     double distance = 0.0;
     final pathMetrics = path.computeMetrics();
 
@@ -69,7 +69,7 @@ class _DottedBorderPainter extends CustomPainter {
         canvas.drawPath(segment, paint);
         distance += dash + gap;
       }
-      distance = 0.0; // reset for next side
+      distance = 0.0;
     }
   }
 

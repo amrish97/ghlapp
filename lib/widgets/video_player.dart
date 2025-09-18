@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubeVideoPlayer extends StatefulWidget {
@@ -26,6 +27,7 @@ class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
   @override
   void dispose() {
     _controller.dispose();
+    _controller.mute();
     super.dispose();
   }
 
@@ -34,7 +36,7 @@ class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
     return YoutubePlayer(
       controller: _controller,
       showVideoProgressIndicator: true,
-      progressIndicatorColor: Colors.red,
+      progressIndicatorColor: AppColors.primary,
     );
   }
 }

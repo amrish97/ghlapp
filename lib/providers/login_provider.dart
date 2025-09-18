@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ghlapp/app/app_routes.dart';
@@ -52,9 +53,22 @@ class LoginProvider extends ChangeNotifier
 
   Future<void> initLocationCheck() async {
     await _checkAppPermission();
+    requestNotificationPermission();
     if (_permissionStatus.isGranted) {
       await _checkDeviceLocation();
     }
+  }
+
+  void requestNotificationPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
   }
 
   Future<void> _checkAppPermission() async {
@@ -95,6 +109,7 @@ class LoginProvider extends ChangeNotifier
   Future<void> sendOtp(context) async {
     setLoading(true);
     if (currentPosition == null) {
+      print("currentPosition--->>> $currentPosition");
       initLocationCheck();
     } else if (currentPosition!.latitude.toString().isEmpty ||
         currentPosition!.longitude.toString().isEmpty) {

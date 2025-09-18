@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:ghlapp/app/app_routes.dart';
+import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -16,7 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 
-class ProfileProvider extends ChangeNotifier with GetDetailMixin {
+class ProfileProvider extends ChangeNotifier
+    with GetDetailMixin, BottomNavigationMixin {
   String? frontAadhaarPath;
   String? backAadhaarPath;
   String? panCardPath;

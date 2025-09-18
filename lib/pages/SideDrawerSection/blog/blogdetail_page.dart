@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -79,6 +80,11 @@ class BlogDetailPage extends StatelessWidget {
                     const SizedBox(height: 10),
                     HtmlWidget(
                       blogDetail["description"].replaceAll("\"", ""),
+                      onTapUrl: (url) async {
+                        bool? result = await BaseFunction().onUrlLaunch(url);
+                        result ??= false;
+                        return result;
+                      },
                       customStylesBuilder: (element) {
                         if (element.localName == "p" ||
                             element.localName == "body" ||

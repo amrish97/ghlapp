@@ -27,7 +27,6 @@ mixin KycMixin on ChangeNotifier {
         print("userStatus--->> $kycStatus");
         notifyListeners();
       } else {
-        print("userError--->> ${res.body}---${res.statusCode}");
         AppSnackBar.show(context, message: "Error ${res.statusCode}");
       }
     } catch (e) {

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ghlapp/pages/SideDrawerSection/blogdetail_page.dart';
+import 'package:ghlapp/pages/SideDrawerSection/financial/financial_detail_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/app_colors.dart';
+import 'package:ghlapp/resources/app_dimention.dart';
+import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
-import 'package:intl/intl.dart';
+import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
-import '../../resources/app_colors.dart';
-import '../../resources/app_dimention.dart';
-import '../../resources/app_font.dart';
-import '../../widgets/custom_text.dart';
-
-class Blog extends StatelessWidget {
-  const Blog({super.key});
+class FinancialPage extends StatelessWidget {
+  const FinancialPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +41,16 @@ class Blog extends StatelessWidget {
                       ),
                     ).toGesture(
                       onTap: () {
+                        Provider.of<HomeProvider>(
+                          context,
+                          listen: false,
+                        ).reset();
                         Navigator.pop(context);
                       },
                     ),
                     SizedBox(width: 10),
                     PrimaryText(
-                      text: "Blog",
+                      text: "Financial IQ",
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
@@ -59,71 +61,43 @@ class Blog extends StatelessWidget {
           ),
           backgroundColor: AppColors.screenBgColor,
           body: ListView.builder(
-            itemCount: value.blogData.length,
+            itemCount: value.financialIQ.length,
             itemBuilder: (context, index) {
-              final data = value.blogData[index];
-              String formattedDate = DateFormat(
-                'dd/MM/yyyy',
-              ).format(DateTime.parse(data["create_date"]));
+              final financialData = value.financialIQ[index];
+              value.financialIQ.sort((a, b) {
+                DateTime dateA = DateTime.parse(a["create_date"]);
+                DateTime dateB = DateTime.parse(b["create_date"]);
+                return dateB.compareTo(dateA);
+              });
+              List<Map<String, dynamic>> latestUpdates = [
+                value.financialIQ.first,
+              ];
               return Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(color: AppColors.white),
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          PrimaryText(
-                            text: data["title"],
-                            weight: AppFont.semiBold,
-                            size: AppDimen.textSize14,
-                            align: TextAlign.start,
-                          ),
-                          SizedBox(height: 5),
-                          PrimaryText(
-                            text: "Post Date: $formattedDate",
-                            weight: AppFont.regular,
-                            size: AppDimen.textSize12,
-                            color: AppColors.lightGrey,
-                            align: TextAlign.start,
-                          ),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                color: AppColors.primary,
-                                size: AppDimen.textSize14,
-                              ),
-                              SizedBox(width: 5),
-                              PrimaryText(
-                                text: data["AuthorName"].toString().trim(),
-                                weight: AppFont.semiBold,
-                                size: AppDimen.textSize12,
-                                color: AppColors.primary,
-                                align: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10),
                     SizedBox(
-                      width: 140,
-                      height: 90,
+                      height: 150,
+                      width: double.infinity,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(15),
                         child: Image.network(
-                          data["uploadfiles_url"] ?? "",
+                          financialData["uploadfiles_url"] ?? "",
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
                         ),
                       ),
+                    ),
+                    SizedBox(height: 20),
+                    PrimaryText(
+                      text: financialData["title"],
+                      align: TextAlign.start,
+                      size: AppDimen.textSize14,
+                      weight: AppFont.semiBold,
                     ),
                   ],
                 ),
@@ -132,7 +106,12 @@ class Blog extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BlogDetailPage(blogDetail: data),
+                      builder:
+                          (context) => FinancialDetailPage(
+                            financeDetail: financialData,
+                            latestUpdates: latestUpdates,
+                            index: index,
+                          ),
                     ),
                   );
                 },

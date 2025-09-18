@@ -121,7 +121,7 @@ class ContactUsPage extends StatelessWidget {
                         TileLayer(
                           urlTemplate:
                               'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.example.ghlapp',
+                          userAgentPackageName: 'com.ghl.app',
                         ),
                         MarkerLayer(
                           markers: [

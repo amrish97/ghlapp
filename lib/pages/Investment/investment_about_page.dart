@@ -127,8 +127,7 @@ class InvestmentAboutPage extends StatelessWidget {
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: CustomButton(
-              onTap: () async {
-                await value.getKycStatus(context);
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -24,7 +24,6 @@ mixin ReferralMixin on ChangeNotifier {
       final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
         referralCode = data["refferalId"];
-        print("referralCode--->> $referralCode");
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: data["message"]);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/model/aadhaar_model.dart';
@@ -55,6 +56,8 @@ mixin VerificationMixin on ChangeNotifier {
   int referenceID = 0;
   String aadhaarNo = "";
   bool isLoading = false;
+  double thisMonth = 0;
+  double totalInvestments = 0;
 
   bool get getIsLoading => isLoading;
 
@@ -72,8 +75,8 @@ mixin VerificationMixin on ChangeNotifier {
 
   Future<void> updateSection(String section, bool status) async {
     verifiedSection[section] = status;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("${section}_completed", status);
+    print("Updated Section -> $section : $status");
+    print("Verified Map -> $verifiedSection");
     notifyListeners();
   }
 
@@ -83,26 +86,29 @@ mixin VerificationMixin on ChangeNotifier {
     return completed / verifiedSection.length;
   }
 
-  Future<void> loadVerifiedSections(context, {bool fetchApi = true}) async {
+  Future<void> loadVerifiedSections(context) async {
     final prefs = await SharedPreferences.getInstance();
-    if (fetchApi) {
-      await userDashboardAPI(context);
-    }
-    verifiedSection["aadhaar"] =
-        prefs.getBool("aadhaar_completed") ?? isAadhaarVerified;
-    verifiedSection["pan"] = prefs.getBool("pan_completed") ?? isPanVerified;
-    verifiedSection["bank"] = prefs.getBool("bank_completed") ?? isBankVerified;
-    verifiedSection["nominee"] =
-        prefs.getBool("nominee_completed") ?? isNomineeVerified;
+    await userDashboardAPI(context);
+    verifiedSection["aadhaar"] = isAadhaarVerified;
+    verifiedSection["pan"] = isPanVerified;
+    verifiedSection["bank"] = isBankVerified;
+    verifiedSection["nominee"] = isNomineeVerified;
     aadhaarNo = prefs.getString("aadhaar_number") ?? "";
-    print("completed1---->> ${verifiedSection.values}---$aadhaarNo");
     notifyListeners();
   }
 
   Future<void> statusUpdateNavigate(context, String section) async {
     await updateSection(section, true);
-    await loadVerifiedSections(context, fetchApi: true);
-    Navigator.pop(context);
+    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (section == "aadhaar") {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        await loadVerifiedSections(context);
+      } else {
+        Navigator.pop(context);
+      }
+    });
   }
 
   AadhaarResponse? _aadhaarResponse;
@@ -127,19 +133,27 @@ mixin VerificationMixin on ChangeNotifier {
       );
       final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        print("userData------$data");
+        print("userData------>>> $data");
         isAadhaarVerified = data["aadhaar_status"] == "yes" ? true : false;
         isPanVerified = data["pan_status"] == "yes" ? true : false;
         isBankVerified = data["bank_status"] == "yes" ? true : false;
         isNomineeVerified = data["kyc_status"] == "yes" ? true : false;
         aadhaarName = data["userName"] ?? "";
-        print("aadhaarName------$isAadhaarVerified---$isPanVerified");
+        final List<dynamic> plans = data["userPlans"] ?? [];
+        userPlans.clear();
+        userPlans.addAll(plans.map((e) => Map<String, dynamic>.from(e)));
+        print("userPlans------>>> $userPlans");
+        thisMonth = double.tryParse(data["thisMonth"].toString()) ?? 0;
+        totalInvestments =
+            double.tryParse(data["totalInvestments"].toString()) ?? 0;
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: data["message"]);
+        print("Error: ${data["message"]}");
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());
+      print("Error: $e");
     }
     notifyListeners();
   }
@@ -158,17 +172,18 @@ mixin VerificationMixin on ChangeNotifier {
         body: jsonEncode({"aadhaar_number": number.toString()}),
       );
       final data = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        if (data["code"] == 200) {
-          final message = data["data"]["message"] ?? "";
-          referenceID = data["data"]["reference_id"] ?? 0;
-          await saveAadhaar(number.toString());
-          AppSnackBar.show(
-            context,
-            message: message,
-            backgroundColor: AppColors.greenCircleColor,
-          );
-          setLoading(false);
+      print("API Response: $data");
+      if (response.statusCode == 200 && data["code"] == 200) {
+        final message = data["data"]["message"] ?? "";
+        referenceID = data["data"]["reference_id"] ?? 0;
+        await saveAadhaar(number.toString());
+        AppSnackBar.show(
+          context,
+          message: message,
+          backgroundColor: AppColors.greenCircleColor,
+        );
+        setLoading(false);
+        if (message.contains("OTP")) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -180,9 +195,6 @@ mixin VerificationMixin on ChangeNotifier {
                   ),
             ),
           );
-        } else {
-          setLoading(false);
-          AppSnackBar.show(context, message: data["data"]["message"]);
         }
       } else {
         setLoading(false);
@@ -236,9 +248,7 @@ mixin VerificationMixin on ChangeNotifier {
         await prefs.setString("aadhaar_number", aadhaarNumber.toString());
         aadhaarName = aadhaarResponse.data.name;
         aadhaarNo = aadhaarNumber.toString();
-        await updateSection("aadhaar", true);
-        await loadVerifiedSections(context, fetchApi: true);
-        Navigator.pop(context);
+        await statusUpdateNavigate(context, "aadhaar");
         AppSnackBar.show(
           context,
           message: aadhaarResponse.data.message,
@@ -332,7 +342,7 @@ mixin VerificationMixin on ChangeNotifier {
           "Authorization": "Bearer $authToken",
         },
         body: jsonEncode({
-          "pan": panNumber.toString().trim(),
+          "pan": panNumber,
           "aadhaar_number": aadhaar.toString(),
         }),
       );
@@ -374,6 +384,7 @@ mixin VerificationMixin on ChangeNotifier {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString("auth_token", data["token"]);
           authToken = prefs.getString("auth_token") ?? "";
+          await sendDeviceToken(context);
           AppSnackBar.show(
             context,
             message: data["message"] ?? "OTP Verified Successfully",
@@ -397,6 +408,44 @@ mixin VerificationMixin on ChangeNotifier {
       AppSnackBar.show(context, message: e.toString());
     }
     notifyListeners();
+  }
+
+  Future<void> sendDeviceToken(context) async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token == null) {
+        AppSnackBar.show(context, message: "Unable to get device token");
+        return;
+      }
+      setLoading(true);
+      final url = Uri.parse("${AppStrings.baseURL}user/device/register");
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $authToken",
+        },
+        body: jsonEncode({"device_token": token}),
+      );
+
+      final data = jsonDecode(response.body);
+      print("API Response: $data");
+
+      if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("device_token", token);
+        print("Device-->> $token");
+        setLoading(false);
+      } else {
+        setLoading(false);
+        AppSnackBar.show(context, message: "Failed to send token");
+      }
+    } catch (e) {
+      setLoading(false);
+      AppSnackBar.show(context, message: e.toString());
+      print("Error: $e");
+    }
   }
 
   Future<void> resendOtp(context, phoneNumber) async {

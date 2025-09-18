@@ -221,7 +221,7 @@ class VerificationPage extends StatelessWidget {
                             }
                           },
                           "pan": () {
-                            final text = value.panCardController.text;
+                            final text = value.panCardController.text.trim();
                             if (FieldValidator.validateField(
                               context: context,
                               value: text,

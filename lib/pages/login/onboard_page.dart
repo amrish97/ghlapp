@@ -21,7 +21,7 @@ class OnboardPage extends StatelessWidget {
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop) {
-              App().closeApp();
+              BaseFunction().closeApp();
             }
           },
           child: Scaffold(

@@ -4,15 +4,17 @@ import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/constants.dart';
 import 'package:ghlapp/pages/html_content_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/providers/profile_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/widgets/chart_page.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import '../widgets/chart_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,10 +30,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       //context.read<HomeProvider>().requestPermissionAndLoadSms(context);
-      context.read<HomeProvider>().loadVerifiedSections(
-        context,
-        fetchApi: true,
-      );
+      context.read<HomeProvider>().loadVerifiedSections(context);
+      context.read<HomeProvider>().getFAQData(context);
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("device_token") ?? "";
+      print("token----->>>>> $token");
     });
     super.initState();
   }
@@ -40,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, value, child) {
+        final investments = buildMonthlyInvestments(value.userPlans);
         final allVerified = value.verifiedSection.values.every(
           (v) => v == true,
         );
@@ -47,7 +51,7 @@ class _HomePageState extends State<HomePage> {
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop) {
-              App().closeApp();
+              BaseFunction().closeApp();
             }
           },
           child: Scaffold(
@@ -96,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 10),
                                 Icon(Icons.currency_rupee, size: 30),
                                 PrimaryText(
-                                  text: "7,645.25",
+                                  text: value.totalInvestments.toString(),
                                   size: 36,
                                   weight: AppFont.semiBold,
                                   color: AppColors.black,
@@ -163,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       PrimaryText(
-                                        text: "Operations",
+                                        text: "This Month",
                                         size: 16,
                                         weight: AppFont.semiBold,
                                       ),
@@ -182,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Icon(Icons.currency_rupee, size: 25),
                                       PrimaryText(
-                                        text: "9,645.25",
+                                        text: value.thisMonth.toString(),
                                         size: 32,
                                         weight: AppFont.semiBold,
                                         color: AppColors.black,
@@ -261,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.black,
                                   ),
                                   SizedBox(height: 10),
-                                  LineChart(),
+                                  LineChart(investmentData: investments),
                                 ],
                               ),
                             ),
@@ -331,6 +335,32 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<InvestmentData> buildMonthlyInvestments(List<dynamic> userPlans) {
+    Map<String, double> monthlyTotals = {};
+
+    for (var plan in userPlans) {
+      DateTime date = DateTime.parse(plan['insert_date']);
+      String month = DateFormat.MMM().format(date);
+      double amount = double.tryParse(plan['ins_amt'].toString()) ?? 0.0;
+      monthlyTotals[month] = (monthlyTotals[month] ?? 0) + amount;
+    }
+    List<String> months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return months.map((m) => InvestmentData(m, monthlyTotals[m] ?? 0)).toList();
+  }
+
   Widget getCommonButton(
     context, {
     required String imageData,
@@ -370,17 +400,16 @@ class _HomePageState extends State<HomePage> {
         },
         "title": "profile",
       },
-      {
-        "image": "assets/images/calc.png",
-        "onTap": () {},
-        "title": "Investment Calculator",
-      },
+      // {
+      //   "image": "assets/images/calc.png",
+      //   "onTap": () {},
+      //   "title": "Investment Calculator",
+      // },
       {
         "image": "assets/images/blog.png",
         "onTap": () async {
           Navigator.pop(context);
           await data.getBlog(context);
-          await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.blog.name);
         },
         "title": "Blogs",
@@ -398,7 +427,6 @@ class _HomePageState extends State<HomePage> {
         "onTap": () async {
           Navigator.pop(context);
           await data.getEconomicInsights(context);
-          await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.economyInsights.name);
         },
         "title": "Economy Insights",
@@ -408,7 +436,6 @@ class _HomePageState extends State<HomePage> {
         "onTap": () async {
           Navigator.pop(context);
           await data.getFinancialData(context);
-          await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.financialIQ.name);
         },
         "title": "Financial IQ",
@@ -418,7 +445,6 @@ class _HomePageState extends State<HomePage> {
         "onTap": () async {
           Navigator.pop(context);
           await data.getReferralCode(context);
-          await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.referral.name);
         },
         "title": "Refer & Earn",
@@ -459,7 +485,6 @@ class _HomePageState extends State<HomePage> {
         "image": "assets/images/contact.png",
         "onTap": () async {
           Navigator.pop(context);
-          await Future.delayed(Duration(milliseconds: 130));
           Navigator.pushNamed(context, AppRouteEnum.contactUs.name);
         },
         "title": "Contact Us",
@@ -475,7 +500,13 @@ class _HomePageState extends State<HomePage> {
         "onTap": () {},
         "title": "Disclaimer",
       },
-      {"image": "assets/images/logout.png", "onTap": () {}, "title": "Logout"},
+      {
+        "image": "assets/images/logout.png",
+        "onTap": () {
+          context.read<ProfileProvider>().logout(context);
+        },
+        "title": "Logout",
+      },
     ];
     return SingleChildScrollView(
       child: Column(

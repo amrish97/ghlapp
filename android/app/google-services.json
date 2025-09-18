@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "142874087932",
-    "project_id": "ghlapp-aff30",
-    "storage_bucket": "ghlapp-aff30.firebasestorage.app"
+    "project_number": "2814632136",
+    "project_id": "ghl-india-assets",
+    "storage_bucket": "ghl-india-assets.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:142874087932:android:d3dbf8c33f4f5d1ed52279",
+        "mobilesdk_app_id": "1:2814632136:android:10439c90fc21246d4e85fd",
         "android_client_info": {
-          "package_name": "com.example.ghlapp"
+          "package_name": "com.ghl.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA02l1WALMk_N6uCoWfHnbBits_zuwTLyw"
+          "current_key": "AIzaSyAmK7Nv3PKDf5AKuXoEccPBPRLrnspivvE"
         }
       ],
       "services": {

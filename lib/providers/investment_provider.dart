@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:ghlapp/providers/mixin/callculator_mixin.dart';
 import 'package:ghlapp/providers/mixin/investment_mixin.dart';
 import 'package:ghlapp/providers/mixin/kyc_mixin.dart';
 import 'package:ghlapp/providers/mixin/side_navigation_mixin.dart';
@@ -13,7 +14,7 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 
 class InvestmentProvider extends ChangeNotifier
-    with InvestmentDetailMixin, KycMixin, SideNavigationMixin {
+    with InvestmentDetailMixin, KycMixin, SideNavigationMixin, CalculatorMixin {
   final List<Map<String, dynamic>> activePlan = [];
   final List<Map<String, dynamic>> completedPlan = [];
 
@@ -121,6 +122,7 @@ class InvestmentProvider extends ChangeNotifier
       final res = await response.stream.bytesToString();
       print("res--->> $res");
       if (response.statusCode == 200) {
+        clearData();
         AppSnackBar.show(
           context,
           message: "Investment Successfully Done",
@@ -136,7 +138,7 @@ class InvestmentProvider extends ChangeNotifier
   }
 
   Future<void> uploadFile(String authToken) async {
-    var url = Uri.parse("https://example.com/api/upload");
+    var url = Uri.parse("https://ghl.com/api/upload");
 
     var request = http.MultipartRequest("POST", url);
 

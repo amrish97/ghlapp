@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/constants.dart';
-import 'package:ghlapp/pages/Detail_page.dart';
-import 'package:ghlapp/pages/document/document_page.dart';
 import 'package:ghlapp/pages/html_content_page.dart';
+import 'package:ghlapp/pages/profile/Detail_page.dart';
+import 'package:ghlapp/pages/profile/document/document_page.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -78,13 +78,16 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       {
         "image": "assets/images/support.png",
-        "onTap": () {},
+        "onTap": () {
+          print("ontapped--> $AppStrings");
+          context.read<ProfileProvider>().setIndex(4, context);
+        },
         "title": "Support",
       },
       {
         "image": "assets/images/preferrence.png",
         "onTap": () {},
-        "title": "Prefference",
+        "title": "Preference",
       },
       {
         "image": "assets/images/terms-privacy.png",

@@ -1,4 +1,4 @@
-package com.example.ghlapp
+package com.ghl.app
 
 import android.os.Process
 import io.flutter.embedding.android.FlutterActivity

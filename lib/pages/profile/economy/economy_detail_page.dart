@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
-import 'package:ghlapp/resources/app_style.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:ghlapp/widgets/readmore_widget.dart';
 
-class FinancialDetailPage extends StatelessWidget {
-  final Map<String, dynamic> financeDetail;
+class EconomyDetailPage extends StatelessWidget {
+  final Map<String, dynamic> economyDetail;
+  final List<Map<String, dynamic>> latestUpdates;
+  final int index;
 
-  const FinancialDetailPage({super.key, required this.financeDetail});
+  const EconomyDetailPage({
+    super.key,
+    required this.economyDetail,
+    required this.index,
+    required this.latestUpdates,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +59,10 @@ class FinancialDetailPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 17.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PrimaryText(
-                text: financeDetail["title"],
+                text: economyDetail["title"],
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize16,
               ),
@@ -66,7 +73,7 @@ class FinancialDetailPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.network(
-                    financeDetail["uploadfiles_url"] ?? "",
+                    economyDetail["uploadfiles_url"] ?? "",
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
@@ -74,20 +81,47 @@ class FinancialDetailPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              HtmlWidget(
-                financeDetail["description"].toString().replaceAll("\"", ""),
-                customStylesBuilder: (element) {
-                  if (element.localName == "p" ||
-                      element.localName == "body" ||
-                      element.localName == "h1" ||
-                      element.localName == "h2") {
-                    return {'padding': '0', 'margin': '0'};
-                  } else if (element.localName == "a") {
-                    return {"color": "blue"};
-                  }
-                  return null;
-                },
-                textStyle: AppTextStyles.bodyStyle,
+              ReadMoreWidget(
+                text: economyDetail["description"].toString().replaceAll(
+                  "\"",
+                  "",
+                ),
+                trimLength:
+                    (economyDetail["description"].toString().length / 2)
+                        .toInt(),
+                index: index,
+              ),
+              SizedBox(height: 20),
+              PrimaryText(
+                text: "Latest Updates",
+                weight: AppFont.semiBold,
+                size: AppDimen.textSize16,
+              ),
+              SizedBox(height: 20),
+              Container(
+                color: AppColors.white,
+                padding: EdgeInsets.only(top: 20, right: 20, left: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        latestUpdates[0]["uploadfiles_url"] ?? "",
+                        fit: BoxFit.cover,
+                        height: 160,
+                        width: double.infinity,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    PrimaryText(
+                      text: latestUpdates[0]["title"] ?? "",
+                      weight: AppFont.semiBold,
+                      size: AppDimen.textSize14,
+                      align: TextAlign.start,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 20),
             ],

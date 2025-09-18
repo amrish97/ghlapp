@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ghlapp/pages/verification_page.dart';
+import 'package:ghlapp/pages/kyc/verification_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
@@ -9,8 +9,19 @@ import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
-class KycPage extends StatelessWidget {
+class KycPage extends StatefulWidget {
   const KycPage({super.key});
+
+  @override
+  State<KycPage> createState() => _KycPageState();
+}
+
+class _KycPageState extends State<KycPage> {
+  @override
+  void initState() {
+    context.read<HomeProvider>().loadVerifiedSections(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

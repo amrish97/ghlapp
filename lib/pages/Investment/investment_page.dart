@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
-import 'package:ghlapp/pages/Investment/investment_about_page.dart';
+import 'package:ghlapp/pages/Investment/completed_plan_page.dart';
+import 'package:ghlapp/pages/Investment/investment_calculator.dart';
 import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
-import 'package:ghlapp/pages/completed_plan_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
@@ -24,6 +24,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
   @override
   void initState() {
     context.read<InvestmentProvider>().getPlan(context);
+    context.read<InvestmentProvider>().getKycStatus(context);
     super.initState();
   }
 
@@ -76,7 +77,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                                 ),
                                 PrimaryText(
                                   text:
-                                      "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
+                                      "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
                                   size: AppDimen.textSize20,
                                   weight: AppFont.semiBold,
                                   color: AppColors.primary,
@@ -93,7 +94,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: AppColors.primaryLight,
+                            color: Color.fromRGBO(255, 166, 0, 0.32),
                           ),
                           width: double.infinity,
                           child: Row(
@@ -117,7 +118,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: AppColors.greyContainerColor.withAlpha(10),
+                            color: Color.fromRGBO(6, 139, 15, 0.1),
                           ),
                           child: Column(
                             children: [
@@ -136,13 +137,13 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               getRowSectionWithItem(
                                 title: "Total fund Required",
                                 value:
-                                    "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["max_investment_amt"]).toInt())}",
+                                    "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["max_investment_amt"]).toInt())}",
                               ),
                               SizedBox(height: 10),
                               getRowSectionWithItem(
                                 title: "Total fund Raised",
                                 value:
-                                    "\u20B9 ${App().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
+                                    "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
                               ),
                               InvestmentProgress(
                                 investAmount: double.parse(
@@ -171,7 +172,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => InvestmentAboutPage(
+                                    (context) => InvestmentCalculator(
                                       planDetail: provider.activePlan[index],
                                     ),
                               ),
@@ -220,7 +221,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                 ),
               ),
               SizedBox(height: 10),
-              horizondalView(completedPlan: provider.completedPlan),
+              horizontalView(completedPlan: provider.completedPlan),
               SizedBox(height: 20),
             ],
           );
@@ -229,27 +230,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
     );
   }
 
-  Widget getRowSectionWithItem({required String title, required String value}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        PrimaryText(
-          text: title,
-          size: AppDimen.textSize12,
-          weight: AppFont.regular,
-          color: AppColors.black,
-        ),
-        PrimaryText(
-          text: value,
-          size: AppDimen.textSize12,
-          weight: AppFont.semiBold,
-          color: AppColors.black,
-        ),
-      ],
-    );
-  }
-
-  Widget horizondalView({required List<Map<String, dynamic>> completedPlan}) {
+  Widget horizontalView({required List<Map<String, dynamic>> completedPlan}) {
     return SizedBox(
       height: 90,
       child: ListView.builder(
@@ -284,7 +265,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                       ),
                       PrimaryText(
                         text:
-                            "\u20B9 ${App().formatIndianNumber(double.parse(completedPlan[index]["total_investment_amt"]).toInt())}",
+                            "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(completedPlan[index]["total_investment_amt"]).toInt())}",
                         weight: AppFont.regular,
                         size: AppDimen.textSize12,
                         color: AppColors.lightGrey,
@@ -310,6 +291,26 @@ class _InvestmentPageState extends State<InvestmentPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget getRowSectionWithItem({required String title, required String value}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        PrimaryText(
+          text: title,
+          size: AppDimen.textSize12,
+          weight: AppFont.regular,
+          color: AppColors.black,
+        ),
+        PrimaryText(
+          text: value,
+          size: AppDimen.textSize12,
+          weight: AppFont.semiBold,
+          color: AppColors.black,
+        ),
+      ],
     );
   }
 

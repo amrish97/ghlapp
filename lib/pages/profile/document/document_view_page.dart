@@ -7,9 +7,8 @@ import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
+import 'package:ghlapp/widgets/document_upload.dart';
 import 'package:provider/provider.dart';
-
-import '../../widgets/document_upload.dart';
 
 class DocumentViewPage extends StatelessWidget {
   final String title;

@@ -21,16 +21,15 @@ mixin BottomNavigationMixin on ChangeNotifier {
         barrierColor: Colors.black54.withAlpha(90),
         pageBuilder: (context, anim1, anim2) {
           final List<Map<String, dynamic>> iconWithTitle = [
-            {
-              "image": "assets/images/calc.png",
-              "title": "Investment Calculator",
-              "onTap": () {},
-            },
+            // {
+            //   "image": "assets/images/calc.png",
+            //   "title": "Investment Calculator",
+            //   "onTap": () {},
+            // },
             {
               "image": "assets/images/video.png",
               "title": "Educational Videos",
               "onTap": () {
-                print("Educational Videos");
                 Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
@@ -41,15 +40,19 @@ mixin BottomNavigationMixin on ChangeNotifier {
             {
               "image": "assets/images/economy.png",
               "title": "Economy Insights",
-              "onTap": () {
-                print("Economy Insights");
+              "onTap": () async {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRouteEnum.economyInsights.name);
+                await value?.getEconomicInsights(context);
               },
             },
             {
               "image": "assets/images/finance.png",
               "title": "Financial IQ",
-              "onTap": () {
-                print("Financial IQ");
+              "onTap": () async {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRouteEnum.financialIQ.name);
+                await value?.getFinancialData(context);
               },
             },
             {
@@ -57,8 +60,8 @@ mixin BottomNavigationMixin on ChangeNotifier {
               "title": "Refer & Earn",
               "onTap": () async {
                 Navigator.pop(context);
-                await value?.getReferralCode(context);
                 Navigator.pushNamed(context, AppRouteEnum.referral.name);
+                await value?.getReferralCode(context);
               },
             },
           ];

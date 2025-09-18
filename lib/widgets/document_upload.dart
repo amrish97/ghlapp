@@ -91,7 +91,7 @@ class DocumentUploadWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (filePath!.endsWith(".pdf"))
-                Icon(Icons.picture_as_pdf, size: 100, color: Colors.red)
+                Icon(Icons.picture_as_pdf, size: 100, color: AppColors.primary)
               else if (filePath!.startsWith("http"))
                 Image.network(
                   filePath!,

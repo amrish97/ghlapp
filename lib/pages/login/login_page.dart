@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop) {
-              App().closeApp();
+              BaseFunction().closeApp();
             }
           },
           child: Scaffold(

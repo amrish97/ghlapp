@@ -31,8 +31,12 @@ class Assets {
   static const String imagesEdit = 'assets/images/edit.png';
   static const String imagesFacebook = 'assets/images/facebook.png';
   static const String imagesFinance = 'assets/images/finance.png';
+  static const String imagesFundRaise = 'assets/images/fund_raise.png';
+  static const String imagesFundReq = 'assets/images/fund_req.png';
   static const String imagesGhlLogo = 'assets/images/ghl-logo.png';
   static const String imagesGoogle = 'assets/images/google.png';
+  static const String imagesGroupImage = 'assets/images/group_image.png';
+  static const String imagesHand = 'assets/images/hand.png';
   static const String imagesInfo = 'assets/images/info.png';
   static const String imagesInverstment = 'assets/images/inverstment.png';
   static const String imagesKycDetail = 'assets/images/kyc-detail.png';
@@ -41,6 +45,7 @@ class Assets {
   static const String imagesLogoutRed = 'assets/images/logout-red.png';
   static const String imagesMilestone = 'assets/images/milestone.png';
   static const String imagesMyDocument = 'assets/images/my-document.png';
+  static const String imagesNoMessage = 'assets/images/no_message.png';
   static const String imagesOnboard1 = 'assets/images/onboard1.png';
   static const String imagesOnboard2 = 'assets/images/onboard2.png';
   static const String imagesOnboard3 = 'assets/images/onboard3.png';
@@ -50,9 +55,11 @@ class Assets {
   static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesRefer = 'assets/images/refer.png';
   static const String imagesReferal = 'assets/images/referal.png';
+  static const String imagesReturn = 'assets/images/return.png';
   static const String imagesReward = 'assets/images/reward.png';
   static const String imagesRightArrow = 'assets/images/right_arrow.png';
   static const String imagesSupport = 'assets/images/support.png';
+  static const String imagesTenure = 'assets/images/tenure.png';
   static const String imagesTerms = 'assets/images/terms.png';
   static const String imagesTermsPrivacy = 'assets/images/terms-privacy.png';
   static const String imagesTimer = 'assets/images/timer.png';

@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 
 class AppSnackBar {
   static void show(
@@ -21,7 +21,7 @@ class AppSnackBar {
           color: AppColors.white,
           size: AppDimen.textSize14,
           align: TextAlign.start,
-          weight: AppFont.regular,
+          weight: AppFont.medium,
         ),
         backgroundColor: backgroundColor,
         behavior: behavior,

@@ -29,8 +29,22 @@ mixin SideNavigationMixin on ChangeNotifier {
   final List<Map<String, dynamic>> financialIQ = [];
   final List<Map<String, dynamic>> economyInsights = [];
 
+  final Map<int, bool> _expandedMap = {};
+
+  bool isExpanded(int index) => _expandedMap[index] ?? false;
+
+  void toggle(int index) {
+    _expandedMap[index] = !(_expandedMap[index] ?? false);
+    notifyListeners();
+  }
+
+  void reset() {
+    _expandedMap.clear();
+    notifyListeners();
+  }
+
   final MapController mapController = MapController();
-  String _address =
+  final String _address =
       "2D, Queens Court, 6, Red Cross Rd, beside alsa mall complex, Egmore, Chennai, Tamil Nadu 600008";
   Position? _currentPosition;
 
@@ -104,7 +118,16 @@ mixin SideNavigationMixin on ChangeNotifier {
         final List<dynamic> finance = res["FinancialIQ"] ?? [];
         financialIQ.clear();
         financialIQ.addAll(finance.map((e) => Map<String, dynamic>.from(e)));
-        print("financialIQ)---->> $financialIQ");
+        print("financialIQ---->> $finance");
+
+        // Sort
+        financialIQ.sort((a, b) {
+          DateTime dateA = DateTime.parse(a["create_date"]);
+          DateTime dateB = DateTime.parse(b["create_date"]);
+          return dateB.compareTo(dateA);
+        });
+        List<Map<String, dynamic>> latestNews = [financialIQ.first];
+
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: res["message"]);

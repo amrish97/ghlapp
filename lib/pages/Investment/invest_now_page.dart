@@ -75,7 +75,7 @@ class InvestNowPage extends StatelessWidget {
                           ),
                           PrimaryText(
                             text:
-                                "\u20B9${App().formatIndianNumber(int.parse(value.investmentAmount.toStringAsFixed(0)))}",
+                                "\u20B9${BaseFunction().formatIndianNumber(int.parse(value.investmentAmount.toStringAsFixed(0)))}",
                             weight: AppFont.semiBold,
                             color: AppColors.greenCircleColor,
                             size: AppDimen.textSize16,
@@ -254,7 +254,7 @@ class InvestNowPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "Investment Amount",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse(value.amountInvestController.text.isEmpty ? "" : value.amountInvestController.text))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.amountInvestController.text.isEmpty ? "" : value.amountInvestController.text))}",
                         ),
                         getRowSectionWithItem(
                           title: "Tenure",
@@ -267,7 +267,7 @@ class InvestNowPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "Pre Tax Return",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse(value.withoutTDS.toStringAsFixed(0)))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.withoutTDS.toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
                           title: "TDS Applicable",
@@ -276,7 +276,7 @@ class InvestNowPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "Post TDS Return",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
                         ),
                       ],
                     ),

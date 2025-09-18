@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:another_telephony/telephony.dart';
 import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
+import 'package:ghlapp/providers/mixin/faq_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
+import 'package:ghlapp/providers/mixin/portfolio_mixin.dart';
 import 'package:ghlapp/providers/mixin/referral_mixin.dart';
 import 'package:ghlapp/providers/mixin/side_navigation_mixin.dart';
 import 'package:ghlapp/providers/mixin/social_mixin.dart';
@@ -21,7 +23,9 @@ class HomeProvider extends ChangeNotifier
         VerificationMixin,
         GetDetailMixin,
         ReferralMixin,
-        SideNavigationMixin {
+        SideNavigationMixin,
+        FaqMixin,
+        PortfolioMixin {
   final Telephony telephony = Telephony.instance;
 
   Future<void> fetchSMSDataToAPI(

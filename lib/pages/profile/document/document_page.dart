@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ghlapp/pages/document/document_view_page.dart';
+import 'package:ghlapp/pages/profile/document/document_view_page.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -99,14 +99,13 @@ class DocumentPage extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: AppColors.primaryLight,
                       ),
-                      child: item["image"].toImageAsset(),
+                      child: item["image"].toString().toImageAsset(),
                     ),
                     const SizedBox(width: 20),
                     PrimaryText(
                       text: item["title"],
                       size: AppDimen.textSize16,
                       weight: AppFont.semiBold,
-                      color: AppColors.black,
                     ),
                   ],
                 ),

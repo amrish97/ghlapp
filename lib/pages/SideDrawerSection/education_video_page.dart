@@ -18,9 +18,7 @@ class EducationalVideoPage extends StatefulWidget {
 class _EducationalVideoPageState extends State<EducationalVideoPage> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<HomeProvider>().getEducationVideo(context);
-    });
+    context.read<HomeProvider>().getEducationVideo(context);
     super.initState();
   }
 
@@ -69,34 +67,36 @@ class _EducationalVideoPageState extends State<EducationalVideoPage> {
             ),
           ),
           backgroundColor: AppColors.screenBgColor,
-          body: ListView.builder(
-            itemCount: value.educationalVideo.length,
-            itemBuilder: (context, index) {
-              final videoIndex = value.educationalVideo[index];
-              print("links---->> ${videoIndex["y_link"]}");
-              return Container(
-                height: 250,
-                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                decoration: BoxDecoration(color: AppColors.white),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        videoIndex["uploadfiles_url"] ?? "",
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
+          body:
+              value.educationalVideo.isEmpty
+                  ? Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                      strokeWidth: 2,
                     ),
-                    YoutubeVideoPlayer(url: videoIndex["y_link"]),
-                  ],
-                ),
-              );
-            },
-          ),
+                  )
+                  : ListView.builder(
+                    itemCount: value.educationalVideo.length,
+                    itemBuilder: (context, index) {
+                      final videoIndex = value.educationalVideo[index];
+                      return Container(
+                        height: 250,
+                        margin: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 20,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 20,
+                        ),
+                        decoration: BoxDecoration(color: AppColors.white),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: YoutubeVideoPlayer(url: videoIndex["y_link"]),
+                        ),
+                      );
+                    },
+                  ),
         );
       },
     );

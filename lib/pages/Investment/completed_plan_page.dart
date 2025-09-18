@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -5,10 +6,10 @@ import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 
 class CompletedPlanPage extends StatelessWidget {
   final List<Map<String, dynamic>> completedPlans;
+
   const CompletedPlanPage({super.key, required this.completedPlans});
 
   @override
@@ -90,7 +91,7 @@ class CompletedPlanPage extends StatelessWidget {
                       ),
                       PrimaryText(
                         text:
-                            "\u20B9 ${App().formatIndianNumber(double.parse(completedPlans[index]["total_investment_amt"]).toInt())}",
+                            "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(completedPlans[index]["total_investment_amt"]).toInt())}",
                         weight: AppFont.regular,
                         size: AppDimen.textSize14,
                         color: AppColors.lightGrey,

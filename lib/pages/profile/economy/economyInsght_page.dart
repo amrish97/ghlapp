@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/pages/profile/economy/economy_detail_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
@@ -41,6 +42,10 @@ class EconomyInsightPage extends StatelessWidget {
                       ),
                     ).toGesture(
                       onTap: () {
+                        Provider.of<HomeProvider>(
+                          context,
+                          listen: false,
+                        ).reset();
                         Navigator.pop(context);
                       },
                     ),
@@ -76,7 +81,15 @@ class EconomyInsightPage extends StatelessWidget {
           body: ListView.builder(
             itemCount: value.economyInsights.length,
             itemBuilder: (context, index) {
-              final financialData = value.economyInsights[index];
+              final economyData = value.economyInsights[index];
+              value.economyInsights.sort((a, b) {
+                DateTime dateA = DateTime.parse(a["create_date"]);
+                DateTime dateB = DateTime.parse(b["create_date"]);
+                return dateB.compareTo(dateA);
+              });
+              List<Map<String, dynamic>> latestUpdates = [
+                value.economyInsights.first,
+              ];
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -90,7 +103,7 @@ class EconomyInsightPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Image.network(
-                          financialData["uploadfiles_url"] ?? "",
+                          economyData["uploadfiles_url"] ?? "",
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
@@ -99,14 +112,28 @@ class EconomyInsightPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     PrimaryText(
-                      text: financialData["title"],
+                      text: economyData["title"],
                       align: TextAlign.start,
                       size: AppDimen.textSize14,
                       weight: AppFont.semiBold,
                     ),
                   ],
                 ),
-              ).toGesture(onTap: () {});
+              ).toGesture(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => EconomyDetailPage(
+                            economyDetail: economyData,
+                            index: index,
+                            latestUpdates: latestUpdates,
+                          ),
+                    ),
+                  );
+                },
+              );
             },
           ),
         );
@@ -114,10 +141,7 @@ class EconomyInsightPage extends StatelessWidget {
     );
   }
 
-  Future<void> _pickDate(
-    BuildContext context,
-    List<Map<String, dynamic>> newsList,
-  ) async {
+  Future<void> _pickDate(context, List<Map<String, dynamic>> newsList) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),

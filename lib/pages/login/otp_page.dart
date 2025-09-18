@@ -1,15 +1,12 @@
-import 'package:ghlapp/app/app.dart';
-import 'package:ghlapp/providers/home_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/login_provider.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/resources/app_style.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
-import 'package:ghlapp/widgets/custom_scaffold.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/otp_field.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OtpPage extends StatefulWidget {
@@ -61,7 +58,7 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                           PrimaryText(
                             text: "Enter Your OTP",
-                            size: AppDimen.textSize14,
+                            size: AppDimen.textSize22,
                             color: AppColors.black,
                             weight: FontWeight.bold,
                           ),
@@ -69,7 +66,7 @@ class _OtpPageState extends State<OtpPage> {
                           PrimaryText(
                             text:
                                 "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
-                            size: 15,
+                            size: AppDimen.textSize14,
                             align: TextAlign.center,
                             weight: AppFont.regular,
                             color: AppColors.lightGrey,

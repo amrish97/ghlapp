@@ -109,7 +109,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                 ),
                                 PrimaryText(
                                   text:
-                                      "\u20B9 ${App().formatIndianNumber(double.parse(planDetail["deposit_amount"]).toInt())}",
+                                      "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(planDetail["deposit_amount"]).toInt())}",
                                   size: AppDimen.textSize12,
                                   weight: AppFont.bold,
                                   color: AppColors.greenCircleColor,
@@ -128,7 +128,6 @@ class InvestmentDetailPage extends StatelessWidget {
                         SizedBox(height: 10),
                         PrimaryText(
                           text: "Funding Process",
-                          color: AppColors.black,
                           weight: AppFont.regular,
                           size: AppDimen.textSize12,
                         ),
@@ -162,14 +161,14 @@ class InvestmentDetailPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "MINIMUM INVESTMENT",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(double.parse(planDetail["min_investment_amt"]).toInt())}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(planDetail["min_investment_amt"]).toInt())}",
                         ),
                         getRowSectionWithItem(
                           title: "CAPITAL INVESTED",
                           value:
                               value.amountInvestController.text.isEmpty
                                   ? ""
-                                  : "\u20B9 ${App().formatIndianNumber(int.parse(value.amountInvestController.text))}",
+                                  : "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.amountInvestController.text))}",
                         ),
                         getRowSectionWithItem(
                           title: "TDS APPLICABLE",
@@ -178,17 +177,17 @@ class InvestmentDetailPage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: "MONTHLY RETURNS",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse(value.monthlyReturn.toStringAsFixed(0)))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.monthlyReturn.toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
                           title: "YEARLY RETURNS",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse((value.monthlyReturn * 12).toStringAsFixed(0)))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse((value.monthlyReturn * 12).toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
                           title: "SUM OF CAPITAL & ROI",
                           value:
-                              "\u20B9 ${App().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
+                              "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
                         ),
                       ],
                     ),
@@ -199,7 +198,6 @@ class InvestmentDetailPage extends StatelessWidget {
                     children: [
                       PrimaryText(
                         text: "Enter or choose an amount to invest below",
-                        color: AppColors.black,
                         weight: AppFont.regular,
                         size: AppDimen.textSize12,
                       ),
@@ -734,198 +732,6 @@ class InvestmentDetailPage extends StatelessWidget {
         );
     }
   }
-
-  // Future<void> _exportPDF(dynamic res, String planName) async {
-  //   print("res---$res");
-  //   final poppinsRegular = pw.Font.ttf(
-  //     await rootBundle.load("assets/fonts/Poppins-Regular.ttf"),
-  //   );
-  //
-  //   final poppinsBold = pw.Font.ttf(
-  //     await rootBundle.load("assets/fonts/Poppins-Bold.ttf"),
-  //   );
-  //
-  //   final pdf = pw.Document();
-  //   final datetime = DateTime.now();
-  //   String formattedDate = DateFormat('dd-MM-yyyy').format(datetime);
-  //   pdf.addPage(
-  //     pw.Page(
-  //       build: (pw.Context context) {
-  //         return pw.Stack(
-  //           children: [
-  //             pw.Positioned.fill(
-  //               child: pw.Center(
-  //                 child: pw.Transform.rotate(
-  //                   angle: 0.5,
-  //                   child: pw.Opacity(
-  //                     opacity: 0.1,
-  //                     child: pw.Text(
-  //                       AppStrings.appName,
-  //                       style: pw.TextStyle(
-  //                         font: poppinsRegular,
-  //                         fontSize: 80,
-  //                         color: PdfColors.grey,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //             pw.Column(
-  //               crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //               children: [
-  //                 pw.Row(
-  //                   children: [
-  //                     pw.Text(
-  //                       planName,
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsRegular,
-  //                         fontWeight: pw.FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     pw.SizedBox(width: 10),
-  //                     pw.Text(
-  //                       "(Download Date",
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsRegular,
-  //                         color: PdfColor.fromInt(0xFFDA0000),
-  //                         fontWeight: pw.FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     pw.Text(
-  //                       ": $formattedDate)",
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         fontWeight: pw.FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 pw.SizedBox(height: 10),
-  //                 pw.Row(
-  //                   children: [
-  //                     pw.Text(
-  //                       "Investment Amount (\u20B9):",
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsRegular,
-  //                         fontWeight: pw.FontWeight.normal,
-  //                       ),
-  //                     ),
-  //                     pw.SizedBox(width: 5),
-  //                     pw.Text(
-  //                       res["capital_invested"],
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsBold,
-  //                         fontWeight: pw.FontWeight.normal,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 pw.SizedBox(height: 10),
-  //                 pw.Row(
-  //                   children: [
-  //                     pw.Text(
-  //                       "Total Net Intrest (\u20B9):",
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsRegular,
-  //                         fontWeight: pw.FontWeight.normal,
-  //                       ),
-  //                     ),
-  //                     pw.SizedBox(width: 5),
-  //                     pw.Text(
-  //                       res["returns"].toString(),
-  //                       style: pw.TextStyle(
-  //                         fontSize: 16,
-  //                         font: poppinsBold,
-  //                         fontWeight: pw.FontWeight.normal,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 pw.SizedBox(height: 10),
-  //                 pw.TableHelper.fromTextArray(
-  //                   headers: [
-  //                     "Tentative Date",
-  //                     "Gross Interest (\u20B9)",
-  //                     "TDS (\u20B9)",
-  //                     "Net Interest (\u20B9)",
-  //                   ],
-  //                   data: List.generate(res["paymentSchedule"].length, (i) {
-  //                     final item = res["paymentSchedule"][i];
-  //                     String formattedDateInTable = DateFormat(
-  //                       'dd-MM-yyyy',
-  //                     ).format(DateTime.parse(item["payment_date"].toString()));
-  //                     return [
-  //                       formattedDateInTable,
-  //                       item["gross_amount"].toString(),
-  //                       item["tds"].toString(),
-  //                       item["net_return"].toString(),
-  //                     ];
-  //                   }),
-  //
-  //                   headerStyle: pw.TextStyle(
-  //                     fontWeight: pw.FontWeight.bold,
-  //                     color: PdfColors.white,
-  //                     font: poppinsBold, // text color
-  //                   ),
-  //                   headerDecoration: const pw.BoxDecoration(
-  //                     color: PdfColor.fromInt(0xFFDA0000),
-  //                   ),
-  //                   cellStyle: pw.TextStyle(
-  //                     fontSize: 12,
-  //                     color: PdfColors.black,
-  //                   ),
-  //                   cellHeight: 25,
-  //                   cellAlignments: {
-  //                     0: pw.Alignment.center,
-  //                     1: pw.Alignment.center,
-  //                     2: pw.Alignment.center,
-  //                     3: pw.Alignment.center,
-  //                   },
-  //                 ),
-  //                 pw.SizedBox(height: 10),
-  //                 pw.Text(
-  //                   "Principal: \u20B9 ${res["capital_invested"]}",
-  //                   style: pw.TextStyle(
-  //                     fontSize: 16,
-  //                     font: poppinsRegular,
-  //                     fontWeight: pw.FontWeight.normal,
-  //                   ),
-  //                 ),
-  //                 pw.Text(
-  //                   "Return: \u20B9 ${res["returns"]}",
-  //                   style: pw.TextStyle(
-  //                     fontSize: 16,
-  //                     font: poppinsRegular,
-  //                     fontWeight: pw.FontWeight.normal,
-  //                   ),
-  //                 ),
-  //                 pw.Text(
-  //                   "Total: \u20B9 ${res["sum_of_capital"]}",
-  //                   style: pw.TextStyle(
-  //                     fontSize: 16,
-  //                     font: poppinsRegular,
-  //                     fontWeight: pw.FontWeight.normal,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     ),
-  //   );
-  //
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   final file = File("${dir.path}/payment_schedule.pdf");
-  //   await file.writeAsBytes(await pdf.save());
-  //   await OpenFilex.open(file.path);
-  // }
 
   Future<void> _exportPDF(dynamic res, String planName) async {
     print("res---->> $res");
