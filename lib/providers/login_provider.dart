@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ghlapp/app/app_routes.dart';
@@ -37,8 +36,10 @@ class LoginProvider extends ChangeNotifier
   bool _canResend = false;
   Timer? _timer;
 
+  @override
   int get seconds => _seconds;
 
+  @override
   bool get canResend => _canResend;
 
   PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -53,22 +54,9 @@ class LoginProvider extends ChangeNotifier
 
   Future<void> initLocationCheck() async {
     await _checkAppPermission();
-    requestNotificationPermission();
     if (_permissionStatus.isGranted) {
-      await _checkDeviceLocation();
+      await _getCurrentLocation();
     }
-  }
-
-  void requestNotificationPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    print('User granted permission: ${settings.authorizationStatus}');
   }
 
   Future<void> _checkAppPermission() async {
@@ -86,23 +74,49 @@ class LoginProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<void> _checkDeviceLocation() async {
-    _isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-    print("isLocationServiceEnabled--->>> $_isLocationServiceEnabled");
-    if (_isLocationServiceEnabled) {
-      await _getCurrentLocation();
-    } else {
-      await Geolocator.openLocationSettings();
-    }
-    notifyListeners();
-  }
-
   Future<void> _getCurrentLocation() async {
-    Position pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    _currentPosition = pos;
-    print("pos--->>> $pos");
+    _isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!_isLocationServiceEnabled) {
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print("Location permission denied");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      print("Location permission permanently denied");
+      return;
+    }
+
+    try {
+      _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+    } catch (e) {
+      print("Error fetching current position: $e");
+      _currentPosition = await Geolocator.getLastKnownPosition();
+    }
+
+    if (_currentPosition == null) {
+      await Future.delayed(const Duration(seconds: 2));
+      _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+    }
+
+    if (_currentPosition != null) {
+      print("Fetched position --->>> $_currentPosition");
+    } else {
+      print("Unable to fetch location");
+    }
+
     notifyListeners();
   }
 
@@ -110,7 +124,7 @@ class LoginProvider extends ChangeNotifier
     setLoading(true);
     if (currentPosition == null) {
       print("currentPosition--->>> $currentPosition");
-      initLocationCheck();
+      _getCurrentLocation();
     } else if (currentPosition!.latitude.toString().isEmpty ||
         currentPosition!.longitude.toString().isEmpty) {
       initLocationCheck();

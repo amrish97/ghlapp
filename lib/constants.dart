@@ -1,5 +1,6 @@
 String authToken = "";
-String? aadhaarName;
+String? userName;
+String? profilePicture;
 
 bool isAadhaarVerified = false;
 bool isPanVerified = false;

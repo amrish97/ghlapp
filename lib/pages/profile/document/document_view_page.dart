@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
-import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
@@ -31,24 +32,7 @@ class DocumentViewPage extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
                 child: Row(
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ).toGesture(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    getBackButton(context),
                     SizedBox(width: 10),
                     PrimaryText(
                       text: title,
@@ -127,6 +111,16 @@ class DocumentViewPage extends StatelessWidget {
                     onUpload: () => value.pickNomineeBack(),
                   ),
                 ],
+                if (title == "CML Report") ...[
+                  DocumentUploadWidget(
+                    label: "Upload Your $title",
+                    filePath:
+                        (value.cmlReport == null || value.cmlReport!.isEmpty)
+                            ? null
+                            : value.cmlReport,
+                    onUpload: () => value.pickCMLReport(),
+                  ),
+                ],
               ],
             ),
           ),
@@ -166,10 +160,14 @@ class DocumentViewPage extends StatelessWidget {
         docFront = value.nomineeFrontPath;
         docBack = value.nomineeBackPath;
         break;
+      case "CML Report":
+        isUploaded = value.isCMLUploaded;
+        docFront = value.cmlReport;
+        break;
     }
 
     return CustomButton(
-      text: isUploaded ? "Change Document" : "Submit",
+      text: isUploaded ? "Change Document" : AppStrings.submit,
       color: isUploaded ? AppColors.primary : AppColors.greenCircleColor,
       onTap: () {
         if (isUploaded) {
@@ -185,6 +183,8 @@ class DocumentViewPage extends StatelessWidget {
               break;
             case "Nominee Documents":
               value.resetNominee();
+            case "CML Report":
+              value.resetCMLReport();
               break;
           }
         } else {

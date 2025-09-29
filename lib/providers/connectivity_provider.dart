@@ -8,6 +8,7 @@ class ConnectivityProvider with ChangeNotifier {
   late StreamSubscription<List<ConnectivityResult>> _subscription;
 
   bool _isOnline = true;
+
   bool get isOnline => _isOnline;
 
   ConnectivityProvider() {
@@ -26,7 +27,6 @@ class ConnectivityProvider with ChangeNotifier {
 
   void _updateStatus(List<ConnectivityResult> results) {
     _isOnline = results.any((r) => r != ConnectivityResult.none);
-    print("isOnline--->> $_isOnline----${results.toString()}");
     notifyListeners();
   }
 

@@ -17,6 +17,7 @@ mixin GetDetailMixin on ChangeNotifier {
   final Map<String, dynamic> kycInformation = {};
   final Map<String, dynamic> bankInformation = {};
   final Map<String, dynamic> nomineeInformation = {};
+  final Map<String, dynamic> personalDetails = {};
 
   Future getPrivacy(context) async {
     final url = Uri.parse("${AppStrings.baseURL}privacy");
@@ -31,8 +32,8 @@ mixin GetDetailMixin on ChangeNotifier {
       );
       final data = jsonDecode(request.body);
       if (request.statusCode == 200) {
-        privacyContent = data["data"]["privacy"];
-        isAgreePrivacyPolicy = data["privacy_policy"];
+        privacyContent = data["data"]["terms"]["privacy"];
+        isAgreePrivacyPolicy = data["data"]["user_agreed"];
         notifyListeners();
         print(
           "isAgreePrivacyPolicy--->> $isAgreePrivacyPolicy------$privacyContent",
@@ -58,8 +59,8 @@ mixin GetDetailMixin on ChangeNotifier {
       );
       final data = jsonDecode(request.body);
       if (request.statusCode == 200) {
-        termsContent = data["data"]["terms"];
-        isAgreeTermsCondition = data["terms_and_conditions"];
+        termsContent = data["data"]["terms"]["terms"];
+        isAgreeTermsCondition = data["data"]["user_agreed"];
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: data["message"]);
@@ -69,8 +70,9 @@ mixin GetDetailMixin on ChangeNotifier {
     }
   }
 
-  Future<void> postPrivacy(context) async {
+  void postPrivacy(context) async {
     final url = Uri.parse("${AppStrings.baseURL}privacy");
+    print("isAgreePrivacyPolicy--->> $isAgreePrivacyPolicy");
     try {
       final request = await http.post(
         url,
@@ -87,6 +89,8 @@ mixin GetDetailMixin on ChangeNotifier {
           message: "Success",
           backgroundColor: AppColors.greenCircleColor,
         );
+        isAgreePrivacyPolicy = 1;
+        notifyListeners();
       } else {
         AppSnackBar.show(context, message: "Error ${request.statusCode}");
       }
@@ -96,6 +100,7 @@ mixin GetDetailMixin on ChangeNotifier {
   }
 
   Future<void> postTermsCondition(context) async {
+    print("isAgreeTermsCondition--->> $isAgreeTermsCondition");
     final url = Uri.parse("${AppStrings.baseURL}terms/conditions");
     try {
       final request = await http.post(
@@ -108,7 +113,13 @@ mixin GetDetailMixin on ChangeNotifier {
         body: jsonEncode({"terms_and_conditions": isAgreeTermsCondition}),
       );
       if (request.statusCode == 200) {
-        AppSnackBar.show(context, message: "Success");
+        AppSnackBar.show(
+          context,
+          message: "Success",
+          backgroundColor: AppColors.greenCircleColor,
+        );
+        isAgreeTermsCondition = 1;
+        notifyListeners();
       } else {
         AppSnackBar.show(context, message: "Error ${request.statusCode}");
       }
@@ -129,20 +140,39 @@ mixin GetDetailMixin on ChangeNotifier {
         },
       );
       final data = jsonDecode(request.body);
-      print("data--->> $data");
+      print("data1--->> $data");
       if (request.statusCode == 200) {
         kycInformation.clear();
         kycInformation.addAll(data["data"] ?? {});
-
         nomineeInformation.clear();
         nomineeInformation.addAll(data["nomineeDetail"] ?? {});
-
         bankInformation.clear();
         bankInformation.addAll(data["bankDetail"] ?? {});
+        notifyListeners();
+      } else {
+        AppSnackBar.show(context, message: data["message"]);
+      }
+    } catch (e) {
+      AppSnackBar.show(context, message: e.toString());
+    }
+  }
 
-        print("kycInformation--->> $kycInformation");
-        print("nomineeInformation--->> $nomineeInformation");
-        print("bankInformation--->> $bankInformation");
+  Future getPersonalDetail(context) async {
+    final url = Uri.parse("${AppStrings.baseURL}personal/details");
+    try {
+      final request = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+      final data = jsonDecode(request.body);
+      if (request.statusCode == 200) {
+        personalDetails.clear();
+        personalDetails.addAll(data["data"] ?? {});
+        print("personalDetails--->> $personalDetails");
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: data["message"]);

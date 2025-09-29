@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/profile/document/document_view_page.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 
 class DocumentPage extends StatelessWidget {
-  final String title;
-
-  const DocumentPage({super.key, required this.title});
+  const DocumentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +34,11 @@ class DocumentPage extends StatelessWidget {
         "image": "assets/images/user-plus.png",
         "title": "Nominee Documents",
       },
+      {
+        "key": "cml",
+        "image": "assets/images/pan_detail.png",
+        "title": "CML Report",
+      },
     ];
     return Scaffold(
       appBar: PreferredSize(
@@ -46,27 +51,10 @@ class DocumentPage extends StatelessWidget {
             padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
             child: Row(
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                  ),
-                  child: Icon(
-                    Icons.arrow_back_ios_new,
-                    color: AppColors.black,
-                    size: 20,
-                  ),
-                ).toGesture(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                getBackButton(context),
                 SizedBox(width: 10),
                 PrimaryText(
-                  text: "My Documents",
+                  text: AppStrings.myDocument,
                   weight: AppFont.semiBold,
                   size: AppDimen.textSize16,
                 ),

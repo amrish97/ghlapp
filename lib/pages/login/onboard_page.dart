@@ -51,7 +51,6 @@ class OnboardPage extends StatelessWidget {
                               children: [
                                 PrimaryText(
                                   text: data["content"],
-                                  color: AppColors.black,
                                   weight: AppFont.semiBold,
                                   size: 24,
                                 ),
@@ -69,7 +68,6 @@ class OnboardPage extends StatelessWidget {
                             const SizedBox(height: 12),
                             PrimaryText(
                               text: data["subContent"],
-                              color: AppColors.black,
                               weight: AppFont.regular,
                               size: 17,
                             ),
@@ -91,7 +89,7 @@ class OnboardPage extends StatelessWidget {
                           color:
                               provider.currentPage == index
                                   ? AppColors.primary
-                                  : Color(0xFF949494),
+                                  : AppColors.progressGreyColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -117,7 +115,7 @@ class OnboardPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
-                    text: "Skip",
+                    text: AppStrings.skip,
                     width: MediaQuery.of(context).size.width - 150,
                     color: AppColors.white,
                     showBorderColor: true,

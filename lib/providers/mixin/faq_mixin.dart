@@ -50,6 +50,7 @@ mixin FaqMixin on ChangeNotifier {
       if (response.statusCode == 200) {
         print("send--->> $data");
         await getMessages(context);
+        chatMessageController.clear();
       } else {
         _messages.add(
           ChatMessage(
@@ -73,8 +74,8 @@ mixin FaqMixin on ChangeNotifier {
   }
 
   Future<void> uploadImageOnChatPage(filePath, context) async {
-    final url = Uri.parse("${AppStrings.baseURL}chat/send");
     try {
+      final url = Uri.parse("${AppStrings.baseURL}chat/send");
       var request = http.MultipartRequest("POST", url);
       request.headers.addAll({
         "Accept": "application/json",
@@ -88,6 +89,7 @@ mixin FaqMixin on ChangeNotifier {
       var response = await request.send();
       final res = await response.stream.bytesToString();
       if (response.statusCode == 200) {
+        await getMessages(context);
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: res);
@@ -109,15 +111,17 @@ mixin FaqMixin on ChangeNotifier {
         },
       );
       final data = jsonDecode(res.body);
+      print("messages--->> $data");
       if (res.statusCode == 200) {
         final List<dynamic> messagesJson = data["messages"];
         _messages.clear();
         for (var item in messagesJson) {
           final attachment = item["attachment_url"] ?? "";
+          print("attachmentNmae--->> ${item["sender_name"]}");
           _messages.add(
             ChatMessage(
               text: item["message"] ?? "",
-              isSender: item["sender_name"] == aadhaarName,
+              isSender: item["sender_name"] != "admin",
               attachment: attachment,
             ),
           );

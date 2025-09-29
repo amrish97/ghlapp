@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -28,7 +29,7 @@ mixin BottomNavigationMixin on ChangeNotifier {
             // },
             {
               "image": "assets/images/video.png",
-              "title": "Educational Videos",
+              "title": AppStrings.educationVideo,
               "onTap": () {
                 Navigator.pop(context);
                 Navigator.pushNamed(
@@ -39,29 +40,29 @@ mixin BottomNavigationMixin on ChangeNotifier {
             },
             {
               "image": "assets/images/economy.png",
-              "title": "Economy Insights",
+              "title": AppStrings.economyInsight,
               "onTap": () async {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, AppRouteEnum.economyInsights.name);
-                await value?.getEconomicInsights(context);
+                value?.getEconomicInsights(context);
               },
             },
             {
               "image": "assets/images/finance.png",
-              "title": "Financial IQ",
-              "onTap": () async {
+              "title": AppStrings.financial,
+              "onTap": () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, AppRouteEnum.financialIQ.name);
-                await value?.getFinancialData(context);
+                value?.getFinancialData(context);
               },
             },
             {
               "image": "assets/images/refer.png",
               "title": "Refer & Earn",
-              "onTap": () async {
+              "onTap": () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, AppRouteEnum.referral.name);
-                await value?.getReferralCode(context);
+                value?.getReferralCode(context);
               },
             },
           ];
@@ -90,7 +91,6 @@ mixin BottomNavigationMixin on ChangeNotifier {
                       spacing: 10,
                       children: [
                         ...iconWithTitle.asMap().entries.map((element) {
-                          print("ele--->> ${element.key}---${element.value}");
                           return getImageTitle(
                             image: element.value["image"],
                             title: element.value["title"],

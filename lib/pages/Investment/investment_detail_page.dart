@@ -96,13 +96,12 @@ class InvestmentDetailPage extends StatelessWidget {
                                 text: planDetail["name"],
                                 size: AppDimen.textSize14,
                                 weight: AppFont.bold,
-                                color: AppColors.black,
                               ),
                             ),
                             Column(
                               children: [
                                 PrimaryText(
-                                  text: "Investment Raised",
+                                  text: AppStrings.investmentRaised,
                                   size: AppDimen.textSize12,
                                   weight: AppFont.bold,
                                   color: AppColors.hintTextColor,
@@ -127,7 +126,7 @@ class InvestmentDetailPage extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         PrimaryText(
-                          text: "Funding Process",
+                          text: AppStrings.fundingProcess,
                           weight: AppFont.regular,
                           size: AppDimen.textSize12,
                         ),
@@ -696,20 +695,15 @@ class InvestmentDetailPage extends StatelessWidget {
       case "Approved":
         return CustomButton(
           text: "Invest Now",
-          onTap: () async {
+          onTap: () {
             if (value.amountInvestController.text.isEmpty) {
               AppSnackBar.show(
                 context,
                 message: "Please enter Investment amount!!",
               );
               return;
-            } else if (!value.isRememberClick) {
-              AppSnackBar.show(
-                context,
-                message: "Please select a Checkbox in Payment type!!",
-              );
             } else {
-              await value.getBankDetails(context, id: planDetail["id"]);
+              value.getBankDetails(context, id: planDetail["id"]);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -734,7 +728,6 @@ class InvestmentDetailPage extends StatelessWidget {
   }
 
   Future<void> _exportPDF(dynamic res, String planName) async {
-    print("res---->> $res");
     final poppinsRegular = pw.Font.ttf(
       await rootBundle.load("assets/fonts/Poppins-Regular.ttf"),
     );
@@ -752,7 +745,6 @@ class InvestmentDetailPage extends StatelessWidget {
         build: (pw.Context context) {
           return pw.Stack(
             children: [
-              // Watermark
               pw.Positioned.fill(
                 child: pw.Center(
                   child: pw.Transform.rotate(
@@ -771,8 +763,6 @@ class InvestmentDetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Content
               pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
@@ -798,12 +788,10 @@ class InvestmentDetailPage extends StatelessWidget {
                     ],
                   ),
                   pw.SizedBox(height: 10),
-
-                  // Investment Amount
                   pw.Row(
                     children: [
                       pw.Text(
-                        "Investment Amount (\u20B9):",
+                        "${AppStrings.investAmount} (\u20B9):",
                         style: pw.TextStyle(fontSize: 16, font: poppinsRegular),
                       ),
                       pw.SizedBox(width: 5),
@@ -895,6 +883,7 @@ class InvestmentDetailPage extends StatelessWidget {
   }
 
   Future<void> _exportCSV(dynamic res) async {
+    print("res---->> $res");
     List<List<dynamic>> rows = [];
     String padRight(String value, int width) {
       return value.padRight(width);
@@ -928,6 +917,7 @@ class InvestmentDetailPage extends StatelessWidget {
     final file = File("${dir.path}/payment_schedule.csv");
     await file.writeAsString(csvData);
     await OpenFilex.open(file.path);
+    getExternalStorageDirectory();
   }
 
   Widget getRowSectionWithItem({required String title, required String value}) {
@@ -938,7 +928,6 @@ class InvestmentDetailPage extends StatelessWidget {
           text: title,
           size: AppDimen.textSize12,
           weight: AppFont.regular,
-          color: AppColors.black,
         ),
         PrimaryText(
           text: value,

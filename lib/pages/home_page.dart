@@ -1,8 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/constants.dart';
-import 'package:ghlapp/pages/html_content_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
@@ -29,14 +29,31 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //context.read<HomeProvider>().requestPermissionAndLoadSms(context);
+      // context.read<HomeProvider>().requestPermissionAndLoadSms(context);
       context.read<HomeProvider>().loadVerifiedSections(context);
       context.read<HomeProvider>().getFAQData(context);
+      requestFirebaseNotificationPermission();
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString("device_token") ?? "";
-      print("token----->>>>> $token");
+      final device = prefs.getString("device_token") ?? "";
+      print("authToken---->> $device");
     });
     super.initState();
+  }
+
+  Future<void> requestFirebaseNotificationPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User granted permission");
+    } else {
+      print("User declined or has not accepted permission");
+    }
   }
 
   @override
@@ -44,9 +61,18 @@ class _HomePageState extends State<HomePage> {
     return Consumer<HomeProvider>(
       builder: (context, value, child) {
         final investments = buildMonthlyInvestments(value.userPlans);
+        double received = value.thisMonth.toDouble();
+        double target = 6000000;
+        final percentage = (received / target).clamp(0.0, 1.0);
         final allVerified = value.verifiedSection.values.every(
           (v) => v == true,
         );
+        final count =
+            (allVerified && value.isPersonalDetail) == true
+                ? 0
+                : allVerified == true
+                ? 1
+                : 2;
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
@@ -68,6 +94,7 @@ class _HomePageState extends State<HomePage> {
                     value,
                     scaffoldKey: scaffoldKey,
                     context: context,
+                    count: count,
                   ),
                 ),
               ),
@@ -90,39 +117,16 @@ class _HomePageState extends State<HomePage> {
                             kycCard(!allVerified, context),
                             SizedBox(height: 20),
                             PrimaryText(
-                              text: "Total Investment",
+                              text: AppStrings.totalInvest,
                               size: 16,
                               weight: AppFont.regular,
                               color: AppColors.textColorLightBlack,
                             ),
-                            Row(
-                              children: [
-                                SizedBox(height: 10),
-                                Icon(Icons.currency_rupee, size: 30),
-                                PrimaryText(
-                                  text: value.totalInvestments.toString(),
-                                  size: 36,
-                                  weight: AppFont.semiBold,
-                                  color: AppColors.black,
-                                ),
-                                Spacer(),
-                                Column(
-                                  children: [
-                                    PrimaryText(
-                                      text: " +25.52%",
-                                      color: Color(0xFF628C5E),
-                                      size: 16,
-                                      weight: AppFont.medium,
-                                    ),
-                                    PrimaryText(
-                                      text: " Last Month",
-                                      color: Colors.black,
-                                      size: 12,
-                                      weight: AppFont.medium,
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            PrimaryText(
+                              text:
+                                  "\u20B9 ${value.totalInvestments.toString()}",
+                              size: 36,
+                              weight: AppFont.semiBold,
                             ),
                             SizedBox(height: 20),
                             Row(
@@ -130,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                                 getCommonButton(
                                   context,
                                   imageData: "assets/images/inverstment.png",
-                                  text: "Investment",
+                                  text: AppStrings.invest,
                                   onTap: () {
                                     value.setIndex(1, context);
                                   },
@@ -139,9 +143,9 @@ class _HomePageState extends State<HomePage> {
                                 getCommonButton(
                                   context,
                                   imageData: "assets/images/referal.png",
-                                  text: "Referral",
-                                  onTap: () async {
-                                    await value.getReferralCode(context);
+                                  text: AppStrings.referral,
+                                  onTap: () {
+                                    value.getReferralCode(context);
                                     Navigator.pushNamed(
                                       context,
                                       AppRouteEnum.referral.name,
@@ -176,6 +180,10 @@ class _HomePageState extends State<HomePage> {
                                         size: 14,
                                         weight: AppFont.regular,
                                         color: AppColors.lightGrey,
+                                      ).toGesture(
+                                        onTap: () {
+                                          value.setIndex(3, context);
+                                        },
                                       ),
                                     ],
                                   ),
@@ -184,12 +192,11 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.currency_rupee, size: 25),
                                       PrimaryText(
-                                        text: value.thisMonth.toString(),
+                                        text:
+                                            "\u20B9 ${value.thisMonth.toString()}",
                                         size: 32,
                                         weight: AppFont.semiBold,
-                                        color: AppColors.black,
                                       ),
                                       SizedBox(width: 5),
                                       Padding(
@@ -213,33 +220,53 @@ class _HomePageState extends State<HomePage> {
                                     height: 10,
                                     width: double.infinity,
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppColors.greenCircleColor,
-                                          AppColors.greenCircleColor,
-                                          Colors.blue,
-                                          Colors.blue,
-                                          Colors.red,
-                                          Colors.red,
-                                          AppColors.yellowShadeColor,
-                                          AppColors.yellowShadeColor,
-                                          AppColors.lightGrey,
-                                          AppColors.lightGrey,
-                                        ],
-                                        stops: [
-                                          0.0,
-                                          0.3,
-                                          0.3,
-                                          0.4,
-                                          0.4,
-                                          0.5,
-                                          0.5,
-                                          0.7,
-                                          0.7,
-                                          1.0,
-                                        ],
-                                      ),
                                       borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.lightGrey.withAlpha(90),
+                                    ),
+                                    child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  height: 60,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  height: 60,
+                                                  color: Colors.blue,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  height: 60,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  height: 60,
+                                                  color: Colors.yellow,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  height: 60,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -259,10 +286,9 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   PrimaryText(
-                                    text: "My Investment",
+                                    text: "My ${AppStrings.invest}",
                                     size: AppDimen.textSize16,
                                     weight: AppFont.semiBold,
-                                    color: AppColors.black,
                                   ),
                                   SizedBox(height: 10),
                                   LineChart(investmentData: investments),
@@ -299,17 +325,20 @@ class _HomePageState extends State<HomePage> {
                               CircleAvatar(
                                 radius: 35,
                                 backgroundImage:
-                                    Image.asset(
-                                      value.photoUrl ??
-                                          "assets/images/user.png",
-                                    ).image,
+                                    (profilePicture != null &&
+                                            profilePicture != "")
+                                        ? Image.network(
+                                          profilePicture.toString(),
+                                        ).image
+                                        : "assets/images/user.png"
+                                            .toAssetImageProvider(),
                               ),
                               const SizedBox(height: 10),
                               PrimaryText(
                                 text:
-                                    aadhaarName.toString().isEmpty
+                                    userName.toString().isEmpty
                                         ? "User"
-                                        : aadhaarName.toString(),
+                                        : userName.toString(),
                                 size: AppDimen.textSize16,
                                 color: AppColors.white,
                                 weight: AppFont.semiBold,
@@ -337,7 +366,6 @@ class _HomePageState extends State<HomePage> {
 
   List<InvestmentData> buildMonthlyInvestments(List<dynamic> userPlans) {
     Map<String, double> monthlyTotals = {};
-
     for (var plan in userPlans) {
       DateTime date = DateTime.parse(plan['insert_date']);
       String month = DateFormat.MMM().format(date);
@@ -396,20 +424,16 @@ class _HomePageState extends State<HomePage> {
       {
         "image": "assets/images/profile.png",
         "onTap": () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, AppRouteEnum.profile.name);
         },
-        "title": "profile",
+        "title": AppStrings.profile,
       },
-      // {
-      //   "image": "assets/images/calc.png",
-      //   "onTap": () {},
-      //   "title": "Investment Calculator",
-      // },
       {
         "image": "assets/images/blog.png",
-        "onTap": () async {
+        "onTap": () {
           Navigator.pop(context);
-          await data.getBlog(context);
+          data.getBlog(context);
           Navigator.pushNamed(context, AppRouteEnum.blog.name);
         },
         "title": "Blogs",
@@ -420,31 +444,31 @@ class _HomePageState extends State<HomePage> {
           Navigator.pop(context);
           Navigator.pushNamed(context, AppRouteEnum.educationalVideo.name);
         },
-        "title": "Educational Videos",
+        "title": AppStrings.educationVideo,
       },
       {
         "image": "assets/images/economy.png",
-        "onTap": () async {
+        "onTap": () {
           Navigator.pop(context);
-          await data.getEconomicInsights(context);
+          data.getEconomicInsights(context);
           Navigator.pushNamed(context, AppRouteEnum.economyInsights.name);
         },
-        "title": "Economy Insights",
+        "title": AppStrings.economyInsight,
       },
       {
         "image": "assets/images/finance.png",
-        "onTap": () async {
+        "onTap": () {
           Navigator.pop(context);
-          await data.getFinancialData(context);
+          data.getFinancialData(context);
           Navigator.pushNamed(context, AppRouteEnum.financialIQ.name);
         },
-        "title": "Financial IQ",
+        "title": AppStrings.financial,
       },
       {
         "image": "assets/images/refer.png",
-        "onTap": () async {
+        "onTap": () {
           Navigator.pop(context);
-          await data.getReferralCode(context);
+          data.getReferralCode(context);
           Navigator.pushNamed(context, AppRouteEnum.referral.name);
         },
         "title": "Refer & Earn",
@@ -452,32 +476,16 @@ class _HomePageState extends State<HomePage> {
       {
         "image": "assets/images/terms.png",
         "onTap": () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => HtmlContentView(
-                    isFrom: AppStrings.termsCondition,
-                    showTermsPrivacy: true,
-                  ),
-            ),
-          );
+          Navigator.pop(context);
+          Navigator.pushNamed(context, AppRouteEnum.terms.name);
         },
         "title": AppStrings.termsCondition,
       },
       {
         "image": "assets/images/privacy.png",
         "onTap": () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => HtmlContentView(
-                    isFrom: 'Privacy policy',
-                    showTermsPrivacy: false,
-                  ),
-            ),
-          );
+          Navigator.pop(context);
+          Navigator.pushNamed(context, AppRouteEnum.privacy.name);
         },
         "title": "Privacy Policy",
       },
@@ -489,7 +497,14 @@ class _HomePageState extends State<HomePage> {
         },
         "title": "Contact Us",
       },
-      {"image": "assets/images/about.png", "onTap": () {}, "title": "About Us"},
+      {
+        "image": "assets/images/about.png",
+        "onTap": () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, AppRouteEnum.about.name);
+        },
+        "title": "About Us",
+      },
       {
         "image": "assets/images/milestone.png",
         "onTap": () {},
@@ -503,7 +518,7 @@ class _HomePageState extends State<HomePage> {
       {
         "image": "assets/images/logout.png",
         "onTap": () {
-          context.read<ProfileProvider>().logout(context);
+          Provider.of<ProfileProvider>(context, listen: false).logOut(context);
         },
         "title": "Logout",
       },
@@ -553,16 +568,14 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 PrimaryText(
-                  text: "KYC is Pending",
-                  size: 15,
+                  text: AppStrings.kycPending,
+                  size: AppDimen.textSize14,
                   weight: AppFont.semiBold,
-                  color: AppColors.black,
                 ),
                 PrimaryText(
-                  text: "Please Fill the KYC",
-                  size: 12,
+                  text: AppStrings.fillKyc,
+                  size: AppDimen.textSize12,
                   weight: AppFont.semiBold,
-                  color: AppColors.black,
                 ),
               ],
             ),
@@ -582,31 +595,31 @@ class _HomePageState extends State<HomePage> {
     HomeProvider value, {
     required scaffoldKey,
     required context,
+    required int count,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         CircleAvatar(
           backgroundImage:
-              Image.asset(value.photoUrl ?? "assets/images/user.png").image,
+              (profilePicture != null && profilePicture != "")
+                  ? Image.network(profilePicture.toString()).image
+                  : Image.asset("assets/images/user.png").image,
         ),
+        const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PrimaryText(
-              text:
-                  aadhaarName.toString().isEmpty
-                      ? "User"
-                      : aadhaarName.toString(),
+              text: userName.toString().isEmpty ? "User" : userName.toString(),
               size: AppDimen.textSize14,
               weight: AppFont.semiBold,
               maxLines: 1,
-              color: AppColors.black,
             ),
             PrimaryText(
-              text: "Welcome Back!",
+              text: AppStrings.welcomeBack,
               size: AppDimen.textSize14,
               weight: AppFont.regular,
               maxLines: 1,
@@ -614,13 +627,17 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        Spacer(),
-        getRowIcon(
-          selectedIndex: 0,
-          scaffoldKey: scaffoldKey,
-          context: context,
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: getRowIcon(
+            selectedIndex: 0,
+            scaffoldKey: scaffoldKey,
+            context: context,
+            pendingCount: count,
+          ),
         ),
-        SizedBox(width: 5),
+        const SizedBox(width: 5),
       ],
     );
   }
@@ -629,6 +646,7 @@ class _HomePageState extends State<HomePage> {
     int selectedIndex = 0,
     required scaffoldKey,
     required context,
+    int pendingCount = 0,
   }) {
     final List<Map<String, dynamic>> icons = [
       {
@@ -646,7 +664,9 @@ class _HomePageState extends State<HomePage> {
       {
         "image": "assets/images/Vector3.png",
         "onTap": () {
-          debugPrint("Notification tapped");
+          if (pendingCount > 0) {
+            Navigator.pushNamed(context, AppRouteEnum.notification.name);
+          }
         },
       },
     ];
@@ -655,20 +675,54 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(icons.length, (index) {
         final entry = icons[index];
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: index == selectedIndex ? AppColors.primary : AppColors.white,
-          ),
-          child: Image.asset(
-            entry["image"],
-            scale: 3.5,
-            color: index == selectedIndex ? null : AppColors.black,
-          ),
-        ).toGesture(onTap: entry["onTap"]);
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    index == selectedIndex
+                        ? AppColors.primary
+                        : AppColors.white,
+              ),
+              child: Image.asset(
+                entry["image"],
+                scale: 3.5,
+                color: index == selectedIndex ? null : AppColors.black,
+              ),
+            ).toGesture(onTap: entry["onTap"]),
+            if (index == 2 && pendingCount > 0)
+              Positioned(
+                top: -5,
+                right: -5,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "$pendingCount",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
       }),
     );
   }

@@ -21,4 +21,15 @@ class AppColors {
   static const Color closeButtonColor = Color(0xFF6C757E);
   static const Color referralBoxColor = Color(0xFF22222B);
   static const Color uploadCardColor = Color(0xF8C8C852);
+  static const Color timerColor = Color.fromRGBO(255, 102, 102, 0.17);
+  static const Color faqColor = Color.fromRGBO(91, 91, 91, 1);
+  static const Color faqColor1 = Color.fromRGBO(223, 223, 223, 0.53);
+  static const Color investCalcSlider = Color.fromRGBO(200, 200, 200, 1);
+  static const Color calcGridColor = Color.fromRGBO(255, 251, 0, 0.19);
+  static const Color calcGridColor1 = Color.fromRGBO(6, 139, 15, 0.19);
+  static const Color calcGridColor2 = Color.fromRGBO(52, 155, 245, 0.16);
+  static const Color calcGridColor3 = Color.fromRGBO(245, 52, 219, 0.16);
+  static const Color referralPageColor = Color.fromRGBO(248, 34, 34, 0.17);
+  static const Color notificationCardColor = Color.fromRGBO(151, 151, 151, 1);
+  static const Color historyCardColor = Color.fromRGBO(217, 217, 217, 0.68);
 }

@@ -1,23 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
-import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
-import 'package:ghlapp/widgets/custom_textField.dart';
 import 'package:ghlapp/widgets/progress_view.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InvestmentCompletePage extends StatelessWidget {
   final Map<String, dynamic> planDetail;
+
   const InvestmentCompletePage({super.key, required this.planDetail});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<InvestmentProvider>(
       builder: (context, value, child) {
+        print("planDetail---->>> $planDetail");
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60),
@@ -29,24 +32,7 @@ class InvestmentCompletePage extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
                 child: Row(
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ).toGesture(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    getBackButton(context),
                     Spacer(),
                     Container(
                       width: 40,
@@ -57,6 +43,10 @@ class InvestmentCompletePage extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(Icons.download, color: AppColors.white),
+                    ).toGesture(
+                      onTap: () {
+                        BaseFunction().openPdf(planDetail["documentfiles_url"]);
+                      },
                     ),
                     SizedBox(width: 10),
                   ],
@@ -103,13 +93,12 @@ class InvestmentCompletePage extends StatelessWidget {
                                 text: planDetail["name"],
                                 size: AppDimen.textSize14,
                                 weight: AppFont.bold,
-                                color: AppColors.black,
                               ),
                             ),
                             Column(
                               children: [
                                 PrimaryText(
-                                  text: "Investment Raised",
+                                  text: AppStrings.investmentRaised,
                                   size: AppDimen.textSize12,
                                   weight: AppFont.bold,
                                   color: AppColors.hintTextColor,
@@ -134,8 +123,7 @@ class InvestmentCompletePage extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         PrimaryText(
-                          text: "Funding Process",
-                          color: AppColors.black,
+                          text: AppStrings.fundingProcess,
                           weight: AppFont.regular,
                           size: AppDimen.textSize12,
                         ),
@@ -162,31 +150,28 @@ class InvestmentCompletePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         getRowSectionWithItem(
-                          title: "PER TAX RETURN",
+                          title: AppStrings.preTax.toUpperCase(),
                           value: "${planDetail["return_of_investment"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "MINIMUM INVESTMENT",
+                          title: AppStrings.minInvestment.toUpperCase(),
                           value: planDetail["min_investment_amt"],
                         ),
                         getRowSectionWithItem(
-                          title: "CAPITAL INVESTED",
-                          value:
-                              value.amountInvestController.text.isEmpty
-                                  ? ""
-                                  : "\u20B9 ${value.amountInvestController.text}",
+                          title: AppStrings.capitalInvestment.toUpperCase(),
+                          value: "",
                         ),
                         getRowSectionWithItem(
-                          title: "TDS APPLICABLE",
+                          title: AppStrings.tdsApplicable.toUpperCase(),
                           value: "${planDetail["tax_applicable"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "MONTHLY RETURNS",
+                          title: AppStrings.monthlyReturn.toUpperCase(),
                           value:
                               "\u20B9 ${value.monthlyReturn.toStringAsFixed(2)}",
                         ),
                         getRowSectionWithItem(
-                          title: "YEARLY RETURNS",
+                          title: AppStrings.yearlyReturns.toUpperCase(),
                           value: "\u20B9 ${value.monthlyReturn * 12}",
                         ),
                         getRowSectionWithItem(
@@ -213,13 +198,11 @@ class InvestmentCompletePage extends StatelessWidget {
           text: title,
           size: AppDimen.textSize12,
           weight: AppFont.regular,
-          color: AppColors.black,
         ),
         PrimaryText(
           text: value,
           size: AppDimen.textSize12,
           weight: AppFont.bold,
-          color: AppColors.black,
         ),
       ],
     );

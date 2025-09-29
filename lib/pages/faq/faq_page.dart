@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/constants.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/expansion_widget.dart';
@@ -33,24 +35,24 @@ class FaqPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     Row(
                       children: [
-                        Image.asset("assets/images/hand.png", scale: 3),
-                        SizedBox(width: 10),
+                        "assets/images/hand.png".toImageAsset(scale: 3),
+                        const SizedBox(width: 10),
                         PrimaryText(
                           text:
-                              "Hi ${aadhaarName.toString().isEmpty ? "User" : aadhaarName.toString()}",
+                              "Hi ${userName.toString().isEmpty ? "User" : userName.toString()}",
                           size: AppDimen.textSize20,
                           weight: AppFont.semiBold,
                           color: AppColors.white,
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     PrimaryText(
-                      text:
-                          "Lorem ipsum dolor sit amet consectetur. Fermentum ullamcorper placerat ultricies feugiat turpis risus lacus nibh in. Vulputate hac adipiscing integer mattis varius. ",
+                      text: "",
+                      // "Lorem ipsum dolor sit amet consectetur. Fermentum ullamcorper placerat ultricies feugiat turpis risus lacus nibh in. Vulputate hac adipiscing integer mattis varius. ",
                       size: AppDimen.textSize12,
                       weight: AppFont.semiBold,
                       color: AppColors.white,
@@ -79,30 +81,29 @@ class FaqPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PrimaryText(
-                        text: "Start consultation",
+                        text: AppStrings.startConversation,
                         size: AppDimen.textSize12,
                         weight: AppFont.medium,
                         color: Color.fromRGBO(159, 152, 152, 1),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            "assets/images/group_image.png",
-                            scale: 3,
-                          ),
-                          SizedBox(width: 10),
+                          "assets/images/group_image.png"
+                              .toString()
+                              .toImageAsset(),
+                          const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               PrimaryText(
-                                text: "Start consultation",
+                                text: AppStrings.startConversation,
                                 size: AppDimen.textSize14,
                                 weight: AppFont.semiBold,
                               ),
                               PrimaryText(
-                                text: "Get a reply in a minute",
+                                text: AppStrings.getMinute,
                                 size: AppDimen.textSize12,
                                 weight: AppFont.regular,
                                 color: AppColors.lightGrey,
@@ -111,9 +112,9 @@ class FaqPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomButton(
-                        text: "Start consultation",
+                        text: AppStrings.conversation,
                         onTap: () {
                           Navigator.pushNamed(context, AppRouteEnum.chat.name);
                         },

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:another_telephony/telephony.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/mixin/bottomNav_mixin.dart';
 import 'package:ghlapp/providers/mixin/faq_mixin.dart';
 import 'package:ghlapp/providers/mixin/get_detail_mixin.dart';
+import 'package:ghlapp/providers/mixin/personalDetail_mixin.dart';
 import 'package:ghlapp/providers/mixin/portfolio_mixin.dart';
 import 'package:ghlapp/providers/mixin/referral_mixin.dart';
 import 'package:ghlapp/providers/mixin/side_navigation_mixin.dart';
@@ -25,7 +27,8 @@ class HomeProvider extends ChangeNotifier
         ReferralMixin,
         SideNavigationMixin,
         FaqMixin,
-        PortfolioMixin {
+        PortfolioMixin,
+        PersonalDetailMixin {
   final Telephony telephony = Telephony.instance;
 
   Future<void> fetchSMSDataToAPI(
@@ -76,7 +79,7 @@ class HomeProvider extends ChangeNotifier
 
   List<SmsMessage> get smsList => _smsList;
 
-  Future<void> requestPermissionAndLoadSms(BuildContext context) async {
+  Future<void> requestPermissionAndLoadSms(context) async {
     try {
       bool? granted = await telephony.requestSmsPermissions;
       if (granted ?? false) {
@@ -94,9 +97,7 @@ class HomeProvider extends ChangeNotifier
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error requesting SMS permission: $e")),
-        );
+        AppSnackBar.show(context, message: "unable to user SMS permission");
       }
     }
   }
@@ -115,8 +116,6 @@ class HomeProvider extends ChangeNotifier
         sortOrder: [OrderBy(SmsColumn.DATE, sort: Sort.DESC)],
       );
       notifyListeners();
-
-      // Example: Send SMS to API
       await fetchSMSDataToAPI(context, _smsList);
     } catch (e) {
       if (context.mounted) {

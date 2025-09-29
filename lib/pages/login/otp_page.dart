@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/login_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -59,13 +60,12 @@ class _OtpPageState extends State<OtpPage> {
                           PrimaryText(
                             text: "Enter Your OTP",
                             size: AppDimen.textSize22,
-                            color: AppColors.black,
                             weight: FontWeight.bold,
                           ),
                           SizedBox(height: 20),
                           PrimaryText(
-                            text:
-                                "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
+                            text: "",
+                            // "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
                             size: AppDimen.textSize14,
                             align: TextAlign.center,
                             weight: AppFont.regular,
@@ -74,7 +74,6 @@ class _OtpPageState extends State<OtpPage> {
                           SizedBox(height: 20),
                           OtpField(
                             isFrom: widget.isFromVerification,
-                            focusNode: FocusNode(),
                             controller:
                                 widget.isFromVerification
                                     ? value.aadhaarVerifyOTPController
@@ -84,7 +83,10 @@ class _OtpPageState extends State<OtpPage> {
                           resendOTP(
                             onTap: () {
                               if (widget.isFromVerification) {
+                                value.otpController.clear();
+                                value.aadhaarVerifyOTPController.clear();
                                 value.resendAadhaarOTP(context);
+                                value.startTimerLogin();
                               } else {
                                 value.resendOtp(
                                   context,
@@ -98,13 +100,15 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                           SizedBox(height: 20),
                           CustomButton(
-                            text: "Verify",
+                            text: AppStrings.verify,
                             onTap: () {
                               if (widget.isFromVerification) {
                                 value.verifyAadhaarOTP(
                                   context,
                                   value.aadhaarVerifyOTPController.text,
-                                  widget.referenceID,
+                                  (value.resendReferenceID != 0)
+                                      ? value.resendReferenceID
+                                      : widget.referenceID,
                                   widget.aadhaarNumber,
                                 );
                               } else {

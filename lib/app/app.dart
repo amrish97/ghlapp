@@ -64,6 +64,15 @@ class BaseFunction {
     }
   }
 
+  Future<void> openPdf(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw "Could not launch $url";
+    }
+  }
+
   String formatIndianNumber(int number) {
     final formatter = NumberFormat.decimalPattern('en_IN');
     return formatter.format(number);

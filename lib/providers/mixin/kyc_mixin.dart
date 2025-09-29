@@ -47,14 +47,14 @@ mixin KycMixin on ChangeNotifier {
           "Authorization": "Bearer $authToken",
         },
       );
+      final data = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
         bankDetail.clear();
         bankDetail.add(data);
         print("getDetail--->> $data");
         notifyListeners();
       } else {
-        AppSnackBar.show(context, message: "Error ${res.statusCode}");
+        AppSnackBar.show(context, message: data["message"]);
       }
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());

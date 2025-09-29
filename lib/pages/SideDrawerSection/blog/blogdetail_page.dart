@@ -5,7 +5,7 @@ import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/resources/app_style.dart';
-import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:intl/intl.dart';
 
@@ -25,14 +25,14 @@ class BlogDetailPage extends StatelessWidget {
   Widget getTopSection(context) {
     String formattedDate = DateFormat(
       'dd/MM/yyyy',
-    ).format(DateTime.parse(blogDetail["create_date"]));
+    ).format(DateTime.parse(blogDetail["created_at"]));
     return Stack(
       children: [
         Positioned(
           left: 0,
           right: 0,
           child: Image.network(
-            blogDetail["uploadfiles_url"] ?? "",
+            blogDetail["upload_files"] ?? "",
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.height / 1.5,
           ),
@@ -69,7 +69,7 @@ class BlogDetailPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         PrimaryText(
-                          text: blogDetail["AuthorName"].toString().trim(),
+                          text: blogDetail["author"].toString().trim(),
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize20,
                           color: AppColors.primary,
@@ -114,7 +114,7 @@ class BlogDetailPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             child: PrimaryText(
-              text: blogDetail["CategoryName"],
+              text: blogDetail["category"],
               weight: AppFont.regular,
               size: AppDimen.textSize10,
               color: AppColors.white,
@@ -134,28 +134,7 @@ class BlogDetailPage extends StatelessWidget {
             align: TextAlign.start,
           ),
         ),
-        Positioned(
-          top: 50,
-          left: 20,
-          child: Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.white,
-            ),
-            child: Icon(
-              Icons.arrow_back_ios_new,
-              color: AppColors.black,
-              size: 20,
-            ),
-          ).toGesture(
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
+        Positioned(top: 50, left: 20, child: getBackButton(context)),
       ],
     );
   }

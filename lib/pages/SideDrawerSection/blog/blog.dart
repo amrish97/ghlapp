@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/SideDrawerSection/blog/blogdetail_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -28,27 +30,10 @@ class Blog extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
                 child: Row(
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ).toGesture(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    getBackButton(context),
                     SizedBox(width: 10),
                     PrimaryText(
-                      text: "Blog",
+                      text: AppStrings.blog,
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
@@ -64,7 +49,7 @@ class Blog extends StatelessWidget {
               final data = value.blogData[index];
               String formattedDate = DateFormat(
                 'dd/MM/yyyy',
-              ).format(DateTime.parse(data["create_date"]));
+              ).format(DateTime.parse(data["created_at"]));
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -100,7 +85,7 @@ class Blog extends StatelessWidget {
                               ),
                               SizedBox(width: 5),
                               PrimaryText(
-                                text: data["AuthorName"].toString().trim(),
+                                text: data["author"].toString().trim(),
                                 weight: AppFont.semiBold,
                                 size: AppDimen.textSize12,
                                 color: AppColors.primary,
@@ -118,7 +103,7 @@ class Blog extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          data["uploadfiles_url"] ?? "",
+                          data["upload_files"] ?? "",
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,

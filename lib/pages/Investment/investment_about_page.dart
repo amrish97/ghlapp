@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/Investment/investment_detail_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
@@ -19,6 +21,7 @@ class InvestmentAboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InvestmentProvider>(
       builder: (context, value, child) {
+        print("planDetail---->> ${planDetail["y_link1"]}");
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60),
@@ -28,28 +31,7 @@ class InvestmentAboutPage extends StatelessWidget {
               backgroundColor: AppColors.screenBgColor,
               flexibleSpace: Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ).toGesture(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
+                child: Row(children: [getBackButton(context)]),
               ),
             ),
           ),
@@ -86,16 +68,16 @@ class InvestmentAboutPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       PrimaryText(
-                        text: "About the Plan",
+                        text: AppStrings.aboutPlan,
                         color: AppColors.primary,
                         weight: AppFont.semiBold,
                         size: AppDimen.textSize14,
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Container(
                         height: 10,
                         width: 10,
@@ -112,14 +94,14 @@ class InvestmentAboutPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   PrimaryText(
                     text: planDetail["short_description"],
                     align: TextAlign.start,
                     weight: AppFont.regular,
                     size: AppDimen.textSize12,
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -137,7 +119,7 @@ class InvestmentAboutPage extends StatelessWidget {
                   ),
                 );
               },
-              text: "Invest Now",
+              text: AppStrings.investNow,
               color: AppColors.greenCircleColor,
               iconWidget: "assets/images/inverstment.png".toImageAsset(),
             ),

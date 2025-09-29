@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/SideDrawerSection/financial/financial_detail_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
@@ -26,20 +28,8 @@ class FinancialPage extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
                 child: Row(
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.black,
-                        size: 20,
-                      ),
-                    ).toGesture(
+                    getBackButton(
+                      context,
                       onTap: () {
                         Provider.of<HomeProvider>(
                           context,
@@ -50,7 +40,7 @@ class FinancialPage extends StatelessWidget {
                     ),
                     SizedBox(width: 10),
                     PrimaryText(
-                      text: "Financial IQ",
+                      text: AppStrings.financial,
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
@@ -65,8 +55,8 @@ class FinancialPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final financialData = value.financialIQ[index];
               value.financialIQ.sort((a, b) {
-                DateTime dateA = DateTime.parse(a["create_date"]);
-                DateTime dateB = DateTime.parse(b["create_date"]);
+                DateTime dateA = DateTime.parse(a["created_at"]);
+                DateTime dateB = DateTime.parse(b["created_at"]);
                 return dateB.compareTo(dateA);
               });
               List<Map<String, dynamic>> latestUpdates = [
@@ -85,7 +75,7 @@ class FinancialPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Image.network(
-                          financialData["uploadfiles_url"] ?? "",
+                          financialData["upload_files"] ?? "",
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,

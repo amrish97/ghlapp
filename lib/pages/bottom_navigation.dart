@@ -3,8 +3,9 @@ import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/Investment/investment_page.dart';
 import 'package:ghlapp/pages/faq/faq_page.dart';
 import 'package:ghlapp/pages/home_page.dart';
-import 'package:ghlapp/pages/portfolio_page.dart';
+import 'package:ghlapp/pages/profile/portfolio/portfolio_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_style.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
@@ -21,20 +22,38 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const InvestmentPage(),
-    const SizedBox(),
+    const SizedBox.shrink(),
     const PortfolioPage(),
     const FaqPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    DateTime? lastBackPress;
+
+    void handleBackPress() {
+      final now = DateTime.now();
+      if (lastBackPress == null ||
+          now.difference(lastBackPress!) > const Duration(seconds: 2)) {
+        lastBackPress = now;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Press back again to exit ${AppStrings.appName}"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        BaseFunction().closeApp();
+      }
+    }
+
     return Consumer<HomeProvider>(
       builder: (context, value, child) {
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop) {
-              BaseFunction().closeApp();
+              handleBackPress();
             }
           },
           child: Scaffold(
@@ -58,26 +77,26 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               items: [
                 getBottomItem(
                   icon: "assets/images/bottom_nav_image/home.png",
-                  label: "Home",
+                  label: AppStrings.home,
                   index: 0,
                   value: value,
                 ),
                 getBottomItem(
                   icon: "assets/images/bottom_nav_image/money.png",
-                  label: "Investment",
+                  label: AppStrings.invest,
                   index: 1,
                   value: value,
                 ),
                 getBottomItem(icon: "", label: "", index: 2, value: value),
                 getBottomItem(
                   icon: "assets/images/bottom_nav_image/portfolio.png",
-                  label: "Portfolio",
+                  label: AppStrings.portfolio,
                   index: 3,
                   value: value,
                 ),
                 getBottomItem(
                   icon: "assets/images/bottom_nav_image/help.png",
-                  label: "FAQ",
+                  label: AppStrings.faq,
                   index: 4,
                   value: value,
                 ),
@@ -111,8 +130,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
                 child: icon.toImageAsset(
                   color:
                       value?.selectedIndex == index
-                          ? AppColors.white
-                          : AppColors.primary,
+                          ? AppColors.primary
+                          : AppColors.black,
                 ),
               ),
       label: label,

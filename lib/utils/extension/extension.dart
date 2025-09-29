@@ -6,14 +6,25 @@ extension WidgetExtension on Widget {
   }
 }
 
-extension ImageAssetExtension on String {
-  Image toImageAsset({
-    double? width,
+extension ImageExtension on String {
+  Widget toImageAsset({
+    double? scale,
     double? height,
+    double? width,
     BoxFit? fit,
     Color? color,
-    double? scale,
   }) {
-    return Image.asset(this, fit: fit ?? BoxFit.cover, scale: scale ?? 3.0);
+    return Image.asset(
+      this,
+      scale: scale ?? 3.0,
+      height: height,
+      width: width,
+      color: color,
+      fit: fit ?? BoxFit.cover,
+    );
+  }
+
+  ImageProvider toAssetImageProvider() {
+    return AssetImage(this);
   }
 }

@@ -31,6 +31,7 @@ void _showLocalNotification(RemoteMessage message) async {
     channelDescription: 'Default channel for notifications',
     importance: Importance.high,
     priority: Priority.high,
+    icon: '@drawable/ic_launcher',
   );
 
   const NotificationDetails platformDetails = NotificationDetails(

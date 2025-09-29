@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/providers/mixin/callculator_mixin.dart';
 import 'package:ghlapp/providers/mixin/investment_mixin.dart';
 import 'package:ghlapp/providers/mixin/kyc_mixin.dart';
@@ -111,8 +112,9 @@ class InvestmentProvider extends ChangeNotifier
         "monthly_return": monthlyReturn.toString(),
         "ins_date": investDate,
         "t_id": transactionIDController.text.toString(),
+        "bank_mode": isRememberClick.toString(),
       });
-
+      print("Request Fields: ${request.fields}");
       if (filePath.isNotEmpty) {
         request.files.add(
           await http.MultipartFile.fromPath("puimage", filePath),
@@ -122,11 +124,16 @@ class InvestmentProvider extends ChangeNotifier
       final res = await response.stream.bytesToString();
       print("res--->> $res");
       if (response.statusCode == 200) {
-        clearData();
         AppSnackBar.show(
           context,
           message: "Investment Successfully Done",
           backgroundColor: AppColors.greenCircleColor,
+        );
+        clearFields();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRouteEnum.bottomPage.name,
+          (route) => false,
         );
         notifyListeners();
       } else {
@@ -135,6 +142,13 @@ class InvestmentProvider extends ChangeNotifier
     } catch (e) {
       AppSnackBar.show(context, message: e.toString());
     }
+  }
+
+  clearFields() {
+    transactionIDController.clear();
+    _fileName = "";
+    clearData();
+    notifyListeners();
   }
 
   Future<void> uploadFile(String authToken) async {

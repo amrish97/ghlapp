@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
-import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 import 'package:ghlapp/widgets/readmore_widget.dart';
 
@@ -30,28 +31,7 @@ class FinancialDetailPage extends StatelessWidget {
           backgroundColor: AppColors.screenBgColor,
           flexibleSpace: Padding(
             padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                  ),
-                  child: Icon(
-                    Icons.arrow_back_ios_new,
-                    color: AppColors.black,
-                    size: 20,
-                  ),
-                ).toGesture(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
+            child: Row(children: [getBackButton(context)]),
           ),
         ),
       ),
@@ -73,7 +53,7 @@ class FinancialDetailPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.network(
-                    financeDetail["uploadfiles_url"] ?? "",
+                    financeDetail["upload_files"] ?? "",
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
@@ -93,7 +73,7 @@ class FinancialDetailPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               PrimaryText(
-                text: "Latest Updates",
+                text: AppStrings.latestUpdates,
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize16,
               ),
@@ -107,7 +87,7 @@ class FinancialDetailPage extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.network(
-                        latestUpdates[0]["uploadfiles_url"] ?? "",
+                        latestUpdates[0]["upload_files"] ?? "",
                         fit: BoxFit.cover,
                         height: 160,
                         width: double.infinity,

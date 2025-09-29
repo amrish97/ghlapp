@@ -25,11 +25,13 @@ class ProfileProvider extends ChangeNotifier
   String? bankDocPath;
   String? nomineeFrontPath;
   String? nomineeBackPath;
+  String? cmlReport;
 
   bool isAadhaarUploaded = false;
   bool isPanUploaded = false;
   bool isBankUploaded = false;
   bool isNomineeUploaded = false;
+  bool isCMLUploaded = false;
 
   Future<String?> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -43,10 +45,7 @@ class ProfileProvider extends ChangeNotifier
   }
 
   Future<File?> compressFile(File file) async {
-    // get extension
     final ext = path.extension(file.path).toLowerCase();
-
-    // ✅ Skip compression for PDF or unsupported formats
     if (ext == ".pdf") {
       return file;
     }
@@ -60,12 +59,12 @@ class ProfileProvider extends ChangeNotifier
     final XFile? result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
-      quality: 70, // adjust quality (60–80 usually good)
-      minWidth: 1080, // resize if too large
+      quality: 70,
+      minWidth: 1080,
       minHeight: 1080,
+      format: CompressFormat.jpeg,
     );
 
-    // ✅ Convert XFile? → File?
     return result != null ? File(result.path) : file;
   }
 
@@ -89,6 +88,14 @@ class ProfileProvider extends ChangeNotifier
     final path = await _pickFile();
     if (path != null) {
       panCardPath = path;
+      notifyListeners();
+    }
+  }
+
+  Future<void> pickCMLReport() async {
+    final path = await _pickFile();
+    if (path != null) {
+      cmlReport = path;
       notifyListeners();
     }
   }
@@ -130,6 +137,12 @@ class ProfileProvider extends ChangeNotifier
     notifyListeners();
   }
 
+  void resetCMLReport() {
+    cmlReport = null;
+    isCMLUploaded = false;
+    notifyListeners();
+  }
+
   void resetBank() {
     bankDocPath = null;
     isBankUploaded = false;
@@ -152,6 +165,8 @@ class ProfileProvider extends ChangeNotifier
       return bankDocPath != null;
     } else if (title == "Nominee Documents") {
       return nomineeFrontPath != null || nomineeBackPath != null;
+    } else if (title == "CML Report") {
+      return cmlReport != null;
     }
     return false;
   }
@@ -220,6 +235,16 @@ class ProfileProvider extends ChangeNotifier
               "nominee_aadhaar_back",
               compressed.path,
             ),
+          );
+        }
+      }
+    }
+    if (title == "CML Report") {
+      if (cmlReport != null) {
+        final compressed = await compressFile(File(cmlReport!));
+        if (compressed != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath("cdslproof", compressed.path),
           );
         }
       }
@@ -319,6 +344,6 @@ class ProfileProvider extends ChangeNotifier
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("auth_token");
     authToken = "";
-    aadhaarName = "";
+    userName = "";
   }
 }

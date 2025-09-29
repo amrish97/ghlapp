@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
-import 'package:ghlapp/utils/extension/extension.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
@@ -39,28 +40,10 @@ class VerificationPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 50, right: 10, left: 10),
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.black,
-                      size: 20, // scale icon too
-                    ),
-                  ).toGesture(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  getBackButton(context),
                   SizedBox(width: 10),
                   PrimaryText(
-                    text: "$routeName Details",
-                    color: AppColors.black,
+                    text: "$routeName ${AppStrings.details}",
                     weight: AppFont.semiBold,
                     size: AppDimen.textSize18,
                   ),
@@ -79,7 +62,6 @@ class VerificationPage extends StatelessWidget {
                     if (isFrom == "aadhaar" || isFrom == "pan") ...[
                       PrimaryText(
                         text: "$routeName Number",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -99,12 +81,12 @@ class VerificationPage extends StatelessWidget {
                             isFrom == "aadhaar"
                                 ? TextCapitalization.none
                                 : TextCapitalization.characters,
+                        textInputAction: TextInputAction.done,
                       ),
                     ],
                     if (isFrom == "bank") ...[
                       PrimaryText(
                         text: "Account Holder Name",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -113,12 +95,20 @@ class VerificationPage extends StatelessWidget {
                         label: "Enter Account Holder Name",
                         keyboardType: TextInputType.text,
                         showBorderColor: true,
+                        textInputAction: TextInputAction.next,
+                        focusNode: value.accountHolderNameFocusNode,
+                        onFieldSubmitted: (v) {
+                          fieldFocusChange(
+                            context,
+                            value.accountHolderNameFocusNode,
+                            value.accountNumberFocusNode,
+                          );
+                        },
                         controller: value.accountHolderNameController,
                       ),
                       SizedBox(height: 20),
                       PrimaryText(
                         text: "Account Number",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -126,13 +116,21 @@ class VerificationPage extends StatelessWidget {
                       CustomTextFormField(
                         label: "Enter Account Number",
                         keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        focusNode: value.accountNumberFocusNode,
+                        onFieldSubmitted: (v) {
+                          fieldFocusChange(
+                            context,
+                            value.accountNumberFocusNode,
+                            value.accountIfscCodeFocusNode,
+                          );
+                        },
                         showBorderColor: true,
                         controller: value.accountNumberController,
                       ),
                       SizedBox(height: 20),
                       PrimaryText(
                         text: "IFSC Code",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -140,6 +138,11 @@ class VerificationPage extends StatelessWidget {
                       CustomTextFormField(
                         label: "Enter IFSC Code",
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        focusNode: value.accountIfscCodeFocusNode,
+                        onFieldSubmitted: (v) {
+                          value.accountIfscCodeFocusNode.unfocus();
+                        },
                         showBorderColor: true,
                         textCapitalization: TextCapitalization.characters,
                         controller: value.ifscCodeController,
@@ -148,7 +151,6 @@ class VerificationPage extends StatelessWidget {
                     if (isFrom == "nominee") ...[
                       PrimaryText(
                         text: "Full Name",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -156,13 +158,21 @@ class VerificationPage extends StatelessWidget {
                       CustomTextFormField(
                         label: "Enter Full Name",
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        focusNode: value.nomineeNameFocusNode,
+                        onFieldSubmitted: (v) {
+                          fieldFocusChange(
+                            context,
+                            value.nomineeNameFocusNode,
+                            value.nomineePhoneFocusNode,
+                          );
+                        },
                         showBorderColor: true,
                         controller: value.nomineeNameController,
                       ),
                       SizedBox(height: 20),
                       PrimaryText(
                         text: "Phone Number",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -171,12 +181,20 @@ class VerificationPage extends StatelessWidget {
                         label: "Enter Phone Number",
                         keyboardType: TextInputType.number,
                         showBorderColor: true,
+                        textInputAction: TextInputAction.next,
+                        focusNode: value.nomineePhoneFocusNode,
+                        onFieldSubmitted: (v) {
+                          fieldFocusChange(
+                            context,
+                            value.nomineePhoneFocusNode,
+                            value.nomineeEmailFocusNode,
+                          );
+                        },
                         controller: value.nomineePhoneController,
                       ),
                       SizedBox(height: 20),
                       PrimaryText(
                         text: "Email Address",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -186,11 +204,19 @@ class VerificationPage extends StatelessWidget {
                         keyboardType: TextInputType.emailAddress,
                         showBorderColor: true,
                         controller: value.nomineeEmailController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: value.nomineeEmailFocusNode,
+                        onFieldSubmitted: (v) {
+                          fieldFocusChange(
+                            context,
+                            value.nomineeEmailFocusNode,
+                            value.nomineeAadhaarFocusNode,
+                          );
+                        },
                       ),
                       SizedBox(height: 20),
                       PrimaryText(
                         text: "Aadhaar Number",
-                        color: AppColors.black,
                         size: AppDimen.textSize16,
                         weight: AppFont.semiBold,
                       ),
@@ -198,6 +224,11 @@ class VerificationPage extends StatelessWidget {
                       CustomTextFormField(
                         label: "Enter Aadhaar Number",
                         keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        focusNode: value.nomineeAadhaarFocusNode,
+                        onFieldSubmitted: (v) {
+                          value.nomineeAadhaarFocusNode.unfocus();
+                        },
                         showBorderColor: true,
                         controller: value.nomineeAadhaarController,
                       ),

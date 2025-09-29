@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/Investment/investment_about_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -17,7 +18,6 @@ class InvestmentCalculator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("planDetail--->> $planDetail");
     int tenureMonths = int.parse(planDetail["tenure"]);
     double tenureYears = tenureMonths / 12;
     return Scaffold(
@@ -28,6 +28,9 @@ class InvestmentCalculator extends StatelessWidget {
       ),
       body: Consumer<InvestmentProvider>(
         builder: (context, provider, child) {
+          final minAmt = double.parse(planDetail["min_investment_amt"]);
+          final maxAmt = double.parse(planDetail["max_investment_amt"]);
+          final diff = maxAmt - minAmt;
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             children: [
@@ -35,7 +38,7 @@ class InvestmentCalculator extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   PrimaryText(
-                    text: "Minimum Investment",
+                    text: AppStrings.minInvestment,
                     align: TextAlign.start,
                     size: AppDimen.textSize14,
                     weight: AppFont.semiBold,
@@ -63,7 +66,7 @@ class InvestmentCalculator extends StatelessWidget {
                             ),
                           );
                         },
-                        text: "Investment",
+                        text: AppStrings.invest,
                         color: AppColors.primary,
                         width: MediaQuery.of(context).size.width - 250,
                         iconWidget:
@@ -77,10 +80,10 @@ class InvestmentCalculator extends StatelessWidget {
               SizedBox(height: 10),
               buildPlanGrid(planDetail),
               PrimaryText(
-                text: "Calculate your ROI",
-                weight: AppFont.regular,
-                size: AppDimen.textSize16,
+                text: AppStrings.calculateROI,
                 align: TextAlign.start,
+                size: AppDimen.textSize14,
+                weight: AppFont.semiBold,
               ),
               SizedBox(height: 10),
               Container(
@@ -92,25 +95,26 @@ class InvestmentCalculator extends StatelessWidget {
                 child: Column(
                   children: [
                     getRowView(
-                      title: "Capital Investment",
+                      title: AppStrings.capitalInvestment,
                       value:
                           "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.initialInvestmentAmount.toStringAsFixed(0)).toInt())}",
                     ),
                     Slider(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      value: provider.initialInvestmentAmount.clamp(
-                        double.parse(planDetail["min_investment_amt"]),
-                        double.parse(planDetail["max_investment_amt"]),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
                       ),
-                      min: double.parse(planDetail["min_investment_amt"]),
-                      max: double.parse(planDetail["max_investment_amt"]),
+                      value: provider.initialInvestmentAmount.clamp(
+                        minAmt,
+                        maxAmt,
+                      ),
+                      min: minAmt,
+                      max: maxAmt,
                       divisions:
-                          ((double.parse(planDetail["max_investment_amt"]) -
-                                      double.parse(
-                                        planDetail["min_investment_amt"],
-                                      )) /
-                                  10000)
-                              .round(),
+                          diff > 0
+                              ? (diff / 10000).round().clamp(1, 1000)
+                              : null,
+                      // ✅ safe
                       label:
                           '₹${provider.initialInvestmentAmount.toStringAsFixed(0)}',
                       activeColor: AppColors.primary,
@@ -144,7 +148,7 @@ class InvestmentCalculator extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     getRowView(
-                      title: "Annual Interest Rate",
+                      title: AppStrings.annualInt,
                       value:
                           "${(double.parse(planDetail["tenure"]) * 2).toStringAsFixed(0)}%",
                     ),
@@ -157,20 +161,15 @@ class InvestmentCalculator extends StatelessWidget {
                         ),
                         overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
                         inactiveTrackColor: AppColors.primary,
-                        disabledActiveTrackColor: Color.fromRGBO(
-                          200,
-                          200,
-                          200,
-                          1,
-                        ),
+                        disabledActiveTrackColor: AppColors.investCalcSlider,
                         disabledInactiveTrackColor: AppColors.primary,
-                        disabledThumbColor: Color.fromRGBO(200, 200, 200, 1),
+                        disabledThumbColor: AppColors.investCalcSlider,
                       ),
                       child: Slider(
                         value: 100,
                         min: 0,
                         max: 100,
-                        onChanged: null, // disables movement
+                        onChanged: null,
                       ),
                     ),
                     SizedBox(height: 10),
@@ -195,7 +194,7 @@ class InvestmentCalculator extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     getRowView(
-                      title: "Number of Years",
+                      title: AppStrings.noOfYears,
                       value: "${tenureYears.toStringAsFixed(0)} Years",
                     ),
                     SizedBox(height: 10),
@@ -207,20 +206,15 @@ class InvestmentCalculator extends StatelessWidget {
                         ),
                         overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
                         inactiveTrackColor: AppColors.primary,
-                        disabledActiveTrackColor: Color.fromRGBO(
-                          200,
-                          200,
-                          200,
-                          1,
-                        ),
+                        disabledActiveTrackColor: AppColors.investCalcSlider,
                         disabledInactiveTrackColor: AppColors.primary,
-                        disabledThumbColor: Color.fromRGBO(200, 200, 200, 1),
+                        disabledThumbColor: AppColors.investCalcSlider,
                       ),
                       child: Slider(
                         value: 100,
                         min: 0,
                         max: 100,
-                        onChanged: null, // disables movement
+                        onChanged: null,
                       ),
                     ),
                     SizedBox(height: 10),
@@ -260,7 +254,7 @@ class InvestmentCalculator extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         PrimaryText(
-                          text: "Capital Investment",
+                          text: AppStrings.capitalInvestment,
                           align: TextAlign.start,
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
@@ -323,7 +317,7 @@ class InvestmentCalculator extends StatelessWidget {
                     const Divider(),
                     SizedBox(height: 10),
                     PrimaryText(
-                      text: "Monthly Return",
+                      text: AppStrings.monthlyReturn,
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize12,
                       color: AppColors.white,
@@ -377,29 +371,29 @@ class InvestmentCalculator extends StatelessWidget {
     final List<Map<String, dynamic>> activePlanCard = [
       {
         "image": "assets/images/return.png",
-        "title": "Per Tax Return",
+        "title": AppStrings.preTax,
         "amount": "${planDetail["tenure"]}% (P.A)",
-        "color": const Color.fromRGBO(255, 251, 0, 0.19),
+        "color": AppColors.calcGridColor,
       },
       {
         "image": "assets/images/tenure.png",
-        "title": "Tenure",
+        "title": AppStrings.tenure,
         "amount": "${planDetail["tenure"]} Months",
-        "color": const Color.fromRGBO(6, 139, 15, 0.19),
+        "color": AppColors.calcGridColor1,
       },
       {
         "image": "assets/images/fund_req.png",
-        "title": "Fund Required",
+        "title": AppStrings.fundRequired,
         "amount":
             "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(planDetail["max_investment_amt"]).toInt())}",
-        "color": const Color.fromRGBO(52, 155, 245, 0.16),
+        "color": AppColors.calcGridColor2,
       },
       {
         "image": "assets/images/fund_raise.png",
-        "title": "Fund Raised",
+        "title": AppStrings.fundRaise,
         "amount":
             "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(planDetail["deposit_amount"]).toInt())}",
-        "color": const Color.fromRGBO(245, 52, 219, 0.16),
+        "color": AppColors.calcGridColor3,
       },
     ];
     return GridView.builder(
@@ -407,9 +401,9 @@ class InvestmentCalculator extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 2.0,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 2.2,
       ),
       itemCount: activePlanCard.length,
       itemBuilder: (context, index) {
@@ -431,14 +425,18 @@ class InvestmentCalculator extends StatelessWidget {
                     size: AppDimen.textSize12,
                   ),
                   Spacer(),
-                  Image.asset(item["image"], scale: 3, height: 20, width: 20),
+                  item["image"].toString().toImageAsset(
+                    scale: 3,
+                    height: 20,
+                    width: 20,
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
               PrimaryText(
                 text: item["amount"],
                 weight: AppFont.semiBold,
-                size: AppDimen.textSize20,
+                size: AppDimen.textSize18,
               ),
             ],
           ),

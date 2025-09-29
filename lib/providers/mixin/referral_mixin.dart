@@ -10,7 +10,7 @@ import '../../constants.dart';
 mixin ReferralMixin on ChangeNotifier {
   String referralCode = "";
 
-  Future<void> getReferralCode(context) async {
+  void getReferralCode(context) async {
     final url = Uri.parse("${AppStrings.baseURL}refer-earn");
     try {
       final res = await http.get(

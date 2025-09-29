@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/pages/kyc/verification_page.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
@@ -41,7 +43,7 @@ class _KycPageState extends State<KycPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        getTopSection(context, provider: value),
+                        getTopSection(context, progress: value.progress),
                         const SizedBox(height: 20),
                         getBottomSection(context, provider: value),
                       ],
@@ -58,15 +60,14 @@ class _KycPageState extends State<KycPage> {
               children: [
                 PrimaryText(
                   text:
-                      "Lorem ipsum dolor sit amet consectetur. Arcu lacus netus enim tempus at. Ornare quis ipsum quis sodales orci turpis.",
+                      "As per regulatory guidelines, it is mandatory to update your KYC (Know Your Customer) details to continue using our services.",
                   size: AppDimen.textSize14,
                   align: TextAlign.start,
                   weight: AppFont.medium,
-                  color: AppColors.black,
                 ),
                 const SizedBox(height: 5),
                 CustomButton(
-                  text: allVerified ? "Done" : "Got it",
+                  text: allVerified ? AppStrings.done : AppStrings.gotIt,
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -131,7 +132,6 @@ class _KycPageState extends State<KycPage> {
                     text: item["title"],
                     size: AppDimen.textSize16,
                     weight: AppFont.semiBold,
-                    color: AppColors.black,
                   ),
                   const Spacer(),
                   Container(
@@ -171,7 +171,7 @@ class _KycPageState extends State<KycPage> {
     );
   }
 
-  Widget getTopSection(context, {required HomeProvider provider}) {
+  Widget getTopSection(context, {required double progress}) {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
@@ -181,28 +181,10 @@ class _KycPageState extends State<KycPage> {
           child: Row(
             children: [
               const SizedBox(width: 20),
-              Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white,
-                ),
-                child: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: AppColors.black,
-                  size: 20,
-                ),
-              ).toGesture(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
+              getBackButton(context),
               const SizedBox(width: 20),
               PrimaryText(
-                text: "KYC Information",
-                color: AppColors.black,
+                text: AppStrings.kycInformation,
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize20,
               ),
@@ -238,13 +220,13 @@ class _KycPageState extends State<KycPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       PrimaryText(
-                        text: "Personal Detail",
+                        text: AppStrings.personalDetail,
                         size: AppDimen.textSize16,
                         color: AppColors.white,
                         weight: AppFont.semiBold,
                       ),
                       PrimaryText(
-                        text: "Lorem ipsum dolor sit amet consectetur.",
+                        text: "Please fill in your personal details to proceed",
                         size: AppDimen.textSize12,
                         color: AppColors.white,
                         weight: AppFont.regular,
@@ -261,7 +243,7 @@ class _KycPageState extends State<KycPage> {
                       width: 70,
                       height: 70,
                       child: CircularProgressIndicator(
-                        value: provider.progress,
+                        value: progress,
                         color: AppColors.yellowShadeColor,
                         strokeWidth: 7,
                         backgroundColor: AppColors.primaryLight,

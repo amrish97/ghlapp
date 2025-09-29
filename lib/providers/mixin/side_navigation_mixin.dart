@@ -27,7 +27,28 @@ mixin SideNavigationMixin on ChangeNotifier {
   final List<Map<String, dynamic>> educationalVideo = [];
   final List<Map<String, dynamic>> blogData = [];
   final List<Map<String, dynamic>> financialIQ = [];
-  final List<Map<String, dynamic>> economyInsights = [];
+  List<Map<String, dynamic>> economyInsights = [];
+  List<Map<String, dynamic>> filteredEconomyInsights = [];
+  String? selectedDateTime;
+
+  void filterEconomyByDate(DateTime pickedDate) {
+    String selectedDateStr =
+        "${pickedDate.year.toString().padLeft(4, '0')}-"
+        "${pickedDate.month.toString().padLeft(2, '0')}-"
+        "${pickedDate.day.toString().padLeft(2, '0')}";
+    selectedDateTime = selectedDateStr;
+    filteredEconomyInsights =
+        economyInsights.where((item) {
+          return item["created_at"] != null &&
+              item["created_at"].toString().startsWith(selectedDateStr);
+        }).toList();
+    notifyListeners();
+  }
+
+  void resetFilter() {
+    filteredEconomyInsights.clear();
+    notifyListeners();
+  }
 
   final Map<int, bool> _expandedMap = {};
 
@@ -65,7 +86,7 @@ mixin SideNavigationMixin on ChangeNotifier {
       );
       final res = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final List<dynamic> video = res["VideoData"] ?? [];
+        final List<dynamic> video = res["data"] ?? [];
         educationalVideo.clear();
         educationalVideo.addAll(video.map((e) => Map<String, dynamic>.from(e)));
         notifyListeners();
@@ -77,7 +98,7 @@ mixin SideNavigationMixin on ChangeNotifier {
     }
   }
 
-  Future<void> getBlog(context) async {
+  void getBlog(context) async {
     final url = Uri.parse("${AppStrings.baseURL}blogs");
     try {
       final response = await http.get(
@@ -90,7 +111,7 @@ mixin SideNavigationMixin on ChangeNotifier {
       );
       final res = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final List<dynamic> blogs = res["Blogs"] ?? [];
+        final List<dynamic> blogs = res["data"] ?? [];
         blogData.clear();
         blogData.addAll(blogs.map((e) => Map<String, dynamic>.from(e)));
         notifyListeners();
@@ -102,7 +123,7 @@ mixin SideNavigationMixin on ChangeNotifier {
     }
   }
 
-  Future<void> getFinancialData(context) async {
+  void getFinancialData(context) async {
     final url = Uri.parse("${AppStrings.baseURL}financial/iq");
     try {
       final response = await http.get(
@@ -115,19 +136,10 @@ mixin SideNavigationMixin on ChangeNotifier {
       );
       final res = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final List<dynamic> finance = res["FinancialIQ"] ?? [];
+        final List<dynamic> finance = res["data"] ?? [];
         financialIQ.clear();
         financialIQ.addAll(finance.map((e) => Map<String, dynamic>.from(e)));
         print("financialIQ---->> $finance");
-
-        // Sort
-        financialIQ.sort((a, b) {
-          DateTime dateA = DateTime.parse(a["create_date"]);
-          DateTime dateB = DateTime.parse(b["create_date"]);
-          return dateB.compareTo(dateA);
-        });
-        List<Map<String, dynamic>> latestNews = [financialIQ.first];
-
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: res["message"]);
@@ -137,7 +149,7 @@ mixin SideNavigationMixin on ChangeNotifier {
     }
   }
 
-  Future<void> getEconomicInsights(context) async {
+  void getEconomicInsights(context) async {
     final url = Uri.parse("${AppStrings.baseURL}economic/insights");
     try {
       final response = await http.get(
@@ -150,7 +162,7 @@ mixin SideNavigationMixin on ChangeNotifier {
       );
       final res = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final List<dynamic> economy = res["EconomicInsight"] ?? [];
+        final List<dynamic> economy = res["data"] ?? [];
         economyInsights.clear();
         economyInsights.addAll(
           economy.map((e) => Map<String, dynamic>.from(e)),

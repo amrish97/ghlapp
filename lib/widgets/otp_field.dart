@@ -1,20 +1,15 @@
-import 'package:ghlapp/resources/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ghlapp/resources/app_style.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../resources/app_colors.dart';
 
 class OtpField extends StatelessWidget {
   final bool isFrom;
-  final FocusNode focusNode;
   final TextEditingController controller;
-  const OtpField({
-    super.key,
-    required this.focusNode,
-    this.isFrom = false,
-    required this.controller,
-  });
+
+  const OtpField({super.key, this.isFrom = false, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +19,6 @@ class OtpField extends StatelessWidget {
     return PinCodeTextField(
       length: isFrom ? 6 : 4,
       appContext: context,
-      focusNode: focusNode,
       controller: controller,
       enableActiveFill: true,
       inputFormatters: [

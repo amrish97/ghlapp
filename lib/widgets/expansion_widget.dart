@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/providers/home_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
+import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/resources/app_style.dart';
@@ -27,11 +29,11 @@ class FAQSection extends StatelessWidget {
                 return const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: PrimaryText(
-                    text: "Frequently Asked Questions",
+                    text: AppStrings.freqQuestion,
                     size: AppDimen.textSize16,
                     weight: AppFont.medium,
                     align: TextAlign.start,
-                    color: Color.fromRGBO(91, 91, 91, 1),
+                    color: AppColors.faqColor,
                   ),
                 );
               }
@@ -39,7 +41,7 @@ class FAQSection extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
-                  color: const Color.fromRGBO(223, 223, 223, 0.53),
+                  color: AppColors.faqColor1,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ExpansionTile(
@@ -52,10 +54,10 @@ class FAQSection extends StatelessWidget {
                     align: TextAlign.start,
                     color: Color.fromRGBO(91, 91, 91, 1),
                   ),
-                  iconColor: Colors.black,
-                  collapsedIconColor: Colors.black,
+                  iconColor: AppColors.black,
+                  collapsedIconColor: AppColors.black,
                   tilePadding: EdgeInsets.symmetric(horizontal: 10),
-                  shape: Border.all(color: Color.fromRGBO(223, 223, 223, 0.53)),
+                  shape: Border.all(color: AppColors.faqColor1),
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -63,7 +65,6 @@ class FAQSection extends StatelessWidget {
                         faq.content,
                         onTapUrl: (url) async {
                           bool? result = await BaseFunction().onUrlLaunch(url);
-                          print("re--->> $result");
                           result ??= false;
                           return result;
                         },

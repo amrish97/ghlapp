@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ghlapp/app/app.dart';
+import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
 import 'package:ghlapp/resources/app_style.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_button.dart';
 import 'package:ghlapp/widgets/custom_snakebar.dart';
@@ -32,24 +35,7 @@ class InvestNowPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.black,
-                      size: 20,
-                    ),
-                  ).toGesture(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  child: getBackButton(context),
                 ),
               ),
             ),
@@ -69,7 +55,7 @@ class InvestNowPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           PrimaryText(
-                            text: "Amount Payable",
+                            text: AppStrings.amtPayable,
                             weight: AppFont.semiBold,
                             size: AppDimen.textSize12,
                           ),
@@ -93,7 +79,7 @@ class InvestNowPage extends StatelessWidget {
                           vertical: 10,
                         ),
                         child: PrimaryText(
-                          text: "Learn about the Terms",
+                          text: AppStrings.learnTerm,
                           color: AppColors.white,
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
@@ -128,8 +114,7 @@ class InvestNowPage extends StatelessWidget {
                                               vertical: 20,
                                             ),
                                             child: const PrimaryText(
-                                              text:
-                                                  "Grab upto 2% cashback on your Investments",
+                                              text: AppStrings.grab,
                                               size: AppDimen.textSize14,
                                               weight: AppFont.semiBold,
                                               color: AppColors.white,
@@ -157,15 +142,16 @@ class InvestNowPage extends StatelessWidget {
                                                 weight: AppFont.semiBold,
                                                 size: AppDimen.textSize12,
                                               ),
-                                              SizedBox(height: 20),
+                                              const SizedBox(height: 20),
                                               PrimaryText(
-                                                text: "Regards,",
+                                                text: AppStrings.regard,
                                                 align: TextAlign.start,
                                                 weight: AppFont.regular,
                                                 size: AppDimen.textSize12,
                                               ),
                                               PrimaryText(
-                                                text: "TEAM GHL INDIA",
+                                                text:
+                                                    "TEAM ${AppStrings.appName}",
                                                 align: TextAlign.start,
                                                 weight: AppFont.bold,
                                                 size: AppDimen.textSize12,
@@ -176,54 +162,32 @@ class InvestNowPage extends StatelessWidget {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.end,
                                                 children: [
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 5,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .closeButtonColor
-                                                          .withAlpha(90),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            7,
-                                                          ),
-                                                    ),
-                                                    child: PrimaryText(
-                                                      text: "Close",
-                                                      color: AppColors.white,
-                                                      size: AppDimen.textSize12,
-                                                      weight: AppFont.regular,
-                                                    ),
-                                                  ).toGesture(
+                                                  getContainer(
+                                                    title: AppStrings.close,
+                                                    color: AppColors
+                                                        .closeButtonColor
+                                                        .withAlpha(90),
                                                     onTap:
                                                         () => Navigator.pop(
                                                           context,
                                                         ),
                                                   ),
-                                                  SizedBox(width: 10),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 5,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.primary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            5,
-                                                          ),
-                                                    ),
-                                                    child: PrimaryText(
-                                                      text: "Invest Now",
-                                                      size: AppDimen.textSize12,
-                                                      weight: AppFont.regular,
-                                                      color: AppColors.white,
-                                                    ),
-                                                  ).toGesture(onTap: () {}),
+                                                  const SizedBox(width: 10),
+                                                  getContainer(
+                                                    title: AppStrings.investNow,
+                                                    color: AppColors.primary,
+                                                    onTap: () {
+                                                      value.clearFields();
+                                                      Navigator.pushNamedAndRemoveUntil(
+                                                        context,
+                                                        AppRouteEnum
+                                                            .bottomPage
+                                                            .name,
+                                                        (route) => false,
+                                                      );
+                                                    },
+                                                  ),
+                                                  const SizedBox(width: 10),
                                                 ],
                                               ),
                                             ],
@@ -252,36 +216,36 @@ class InvestNowPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         getRowSectionWithItem(
-                          title: "Investment Amount",
+                          title: AppStrings.investAmount,
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.amountInvestController.text.isEmpty ? "" : value.amountInvestController.text))}",
                         ),
                         getRowSectionWithItem(
-                          title: "Tenure",
+                          title: AppStrings.tenure,
                           value: "${planDetail["tenure"]} Months",
                         ),
                         getRowSectionWithItem(
-                          title: "Pre Tax Return (%)",
+                          title: AppStrings.preTaxReturn,
                           value: "${planDetail["return_of_investment"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "Pre Tax Return",
+                          title: AppStrings.preTax,
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.withoutTDS.toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
-                          title: "TDS Applicable",
+                          title: AppStrings.tdsApplicable,
                           value: "${planDetail["tax_applicable"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "Post TDS Return",
+                          title: AppStrings.postTDS,
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -295,7 +259,7 @@ class InvestNowPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         PrimaryText(
-                          text: "Bank Details",
+                          text: "Bank ${AppStrings.details}",
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
                         ),
@@ -333,14 +297,14 @@ class InvestNowPage extends StatelessWidget {
                               getRowSectionWithItem(
                                 title: "Account Type : ",
                                 isBoldText: true,
-                                value: " ${e.value["b_type"] ?? ""}",
+                                value: " ${e.value["b_type"] ?? "Current"}",
                               ),
                             ],
                           );
                         }),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
-                          text: "Transaction ID",
+                          text: AppStrings.transactionID,
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
                         ),
@@ -349,6 +313,7 @@ class InvestNowPage extends StatelessWidget {
                           child: TextFormField(
                             controller: value.transactionIDController,
                             keyboardType: TextInputType.number,
+                            style: AppTextStyles.hintStyle,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
@@ -376,9 +341,9 @@ class InvestNowPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
-                          text: "Transaction Proof",
+                          text: AppStrings.transactionProof,
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
                         ),
@@ -399,7 +364,7 @@ class InvestNowPage extends StatelessWidget {
                                     children: [
                                       const SizedBox(width: 8),
                                       const PrimaryText(
-                                        text: "Choose File",
+                                        text: AppStrings.chooseFile,
                                         weight: AppFont.regular,
                                         size: AppDimen.textSize12,
                                       ),
@@ -409,7 +374,7 @@ class InvestNowPage extends StatelessWidget {
                                         child: PrimaryText(
                                           text:
                                               value.fileName ??
-                                              "No file chosen",
+                                              AppStrings.noFile,
                                           weight: AppFont.bold,
                                           align: TextAlign.start,
                                           maxLines: 1,
@@ -424,9 +389,9 @@ class InvestNowPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomButton(
-                          text: "Submit",
+                          text: AppStrings.submit,
                           onTap: () {
                             if (value.fileName == null) {
                               AppSnackBar.show(
@@ -459,7 +424,7 @@ class InvestNowPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -467,6 +432,26 @@ class InvestNowPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget getContainer({
+    required String title,
+    required Color color,
+    required GestureTapCallback onTap,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(7),
+      ),
+      child: PrimaryText(
+        text: title,
+        color: AppColors.white,
+        size: AppDimen.textSize12,
+        weight: AppFont.regular,
+      ),
+    ).toGesture(onTap: onTap);
   }
 
   Widget getRowSectionWithItem({
@@ -483,7 +468,6 @@ class InvestNowPage extends StatelessWidget {
           text: title,
           size: AppDimen.textSize12,
           weight: isBoldText == true ? AppFont.bold : AppFont.regular,
-          color: AppColors.black,
         ),
         PrimaryText(
           text: value,
@@ -530,7 +514,7 @@ class InvestNowPage extends StatelessWidget {
                     : null,
           ).toGesture(onTap: onTap),
         ),
-        SizedBox(width: 6),
+        const SizedBox(width: 6),
         Expanded(
           child: RichText(
             text: TextSpan(

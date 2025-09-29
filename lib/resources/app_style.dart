@@ -80,4 +80,32 @@ class AppTextStyles {
     fontWeight: AppFont.semiBold,
     fontFamily: AppFont.font,
   );
+
+  static TextStyle aboutStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: AppDimen.textSize16,
+    fontWeight: AppFont.semiBold,
+    fontFamily: AppFont.font,
+  );
+
+  static TextStyle aboutContentStyleRed = TextStyle(
+    color: AppColors.primary,
+    fontSize: AppDimen.textSize12,
+    fontWeight: AppFont.semiBold,
+    fontFamily: AppFont.font,
+  );
+
+  static TextStyle aboutContentStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: AppDimen.textSize12,
+    fontWeight: AppFont.regular,
+    fontFamily: AppFont.font,
+  );
+
+  static TextStyle aboutContentStyleBold = TextStyle(
+    color: AppColors.black,
+    fontSize: AppDimen.textSize12,
+    fontWeight: AppFont.semiBold,
+    fontFamily: AppFont.font,
+  );
 }

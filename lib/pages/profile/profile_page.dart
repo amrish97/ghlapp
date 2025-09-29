@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/app/app_routes.dart';
 import 'package:ghlapp/constants.dart';
-import 'package:ghlapp/pages/html_content_page.dart';
 import 'package:ghlapp/pages/profile/Detail_page.dart';
-import 'package:ghlapp/pages/profile/document/document_page.dart';
 import 'package:ghlapp/providers/profile_provider.dart';
 import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
@@ -24,12 +23,25 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     context.read<ProfileProvider>().getKYCDetail(context);
     context.read<ProfileProvider>().getDocuments(context);
+    context.read<ProfileProvider>().getPersonalDetail(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> imageData = [
+      {
+        "image": "assets/images/user-portfolio.png",
+        "onTap": () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailPage(title: "Personal"),
+            ),
+          );
+        },
+        "title": "Personal Details",
+      },
       {
         "image": "assets/images/kyc-detail.png",
         "onTap": () {
@@ -53,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
         "title": "Account Detail",
       },
       {
-        "image": "assets/images/account-detail.png",
+        "image": "assets/images/user-portfolio.png",
         "onTap": () {
           Navigator.push(
             context,
@@ -66,21 +78,15 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       {
         "image": "assets/images/my-document.png",
-        "onTap": () async {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DocumentPage(title: "initialView"),
-            ),
-          );
+        "onTap": () {
+          Navigator.pushNamed(context, AppRouteEnum.documentView.name);
         },
-        "title": "My Documents",
+        "title": AppStrings.myDocument,
       },
       {
         "image": "assets/images/support.png",
         "onTap": () {
-          print("ontapped--> $AppStrings");
-          context.read<ProfileProvider>().setIndex(4, context);
+          Navigator.pushNamed(context, AppRouteEnum.chat.name);
         },
         "title": "Support",
       },
@@ -92,16 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
       {
         "image": "assets/images/terms-privacy.png",
         "onTap": () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => HtmlContentView(
-                    isFrom: AppStrings.termsPrivacy,
-                    showTermsPrivacy: false,
-                  ),
-            ),
-          );
+          Navigator.pushNamed(context, AppRouteEnum.privacy.name);
         },
         "title": AppStrings.termsPrivacy,
       },
@@ -122,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 color: AppColors.primary,
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height / 2.2,
+                height: MediaQuery.of(context).size.height / 2.5,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -140,7 +137,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: CircleAvatar(
                             radius: 80,
                             backgroundImage:
-                                "assets/images/user.png".toImageAsset().image,
+                                (profilePicture != null && profilePicture != "")
+                                    ? Image.network(
+                                      profilePicture.toString(),
+                                    ).image
+                                    : "assets/images/user.png"
+                                        .toAssetImageProvider(),
                           ),
                         ),
                         Positioned(
@@ -157,6 +159,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               'assets/images/edit.png',
                               scale: 3,
                             ),
+                          ).toGesture(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRouteEnum.personalDetail.name,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -164,9 +173,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 20),
                     PrimaryText(
                       text:
-                          aadhaarName.toString().isEmpty
+                          userName.toString().isEmpty
                               ? "User"
-                              : aadhaarName.toString(),
+                              : userName.toString(),
                       size: AppDimen.textSize20,
                       weight: AppFont.semiBold,
                       color: AppColors.white,
@@ -196,6 +205,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Image.asset(
                                   data["image"],
                                   scale: 3,
+                                  height: 20,
+                                  width: 20,
                                   color:
                                       index != imageData.length - 1
                                           ? AppColors.black

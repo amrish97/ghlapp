@@ -4,6 +4,7 @@ import 'package:ghlapp/pages/Investment/completed_plan_page.dart';
 import 'package:ghlapp/pages/Investment/investment_calculator.dart';
 import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
 import 'package:ghlapp/providers/investment_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -129,19 +130,19 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               ),
                               SizedBox(height: 10),
                               getRowSectionWithItem(
-                                title: "Tenure",
+                                title: AppStrings.tenure,
                                 value:
                                     "${provider.activePlan[index]["tenure"]} Months",
                               ),
                               SizedBox(height: 10),
                               getRowSectionWithItem(
-                                title: "Total fund Required",
+                                title: AppStrings.totalFundRequired,
                                 value:
                                     "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["max_investment_amt"]).toInt())}",
                               ),
                               SizedBox(height: 10),
                               getRowSectionWithItem(
-                                title: "Total fund Raised",
+                                title: AppStrings.totalFundRaised,
                                 value:
                                     "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["deposit_amount"]).toInt())}",
                               ),
@@ -157,10 +158,9 @@ class _InvestmentPageState extends State<InvestmentPage> {
                                 ),
                               ),
                               PrimaryText(
-                                text: "Funding Process",
+                                text: AppStrings.fundingProcess,
                                 size: AppDimen.textSize12,
                                 weight: AppFont.regular,
-                                color: AppColors.black,
                               ),
                             ],
                           ),
@@ -178,7 +178,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               ),
                             );
                           },
-                          text: "Invest",
+                          text: AppStrings.invest,
                           color: AppColors.greenCircleColor,
                           width: MediaQuery.of(context).size.width - 200,
                           iconWidget:
@@ -195,12 +195,12 @@ class _InvestmentPageState extends State<InvestmentPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     PrimaryText(
-                      text: "Completed Project",
+                      text: AppStrings.completeProject,
                       weight: AppFont.semiBold,
                       size: AppDimen.textSize16,
                     ),
                     PrimaryText(
-                      text: "See All",
+                      text: AppStrings.seeAll,
                       weight: AppFont.regular,
                       color: Colors.blue,
                       size: AppDimen.textSize14,
@@ -302,13 +302,11 @@ class _InvestmentPageState extends State<InvestmentPage> {
           text: title,
           size: AppDimen.textSize12,
           weight: AppFont.regular,
-          color: AppColors.black,
         ),
         PrimaryText(
           text: value,
           size: AppDimen.textSize12,
           weight: AppFont.semiBold,
-          color: AppColors.black,
         ),
       ],
     );
@@ -319,7 +317,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
       children: [
         ...provider.activePlan.map(
           (plan) => Container(
-            height: 300,
+            height: 310,
             padding: EdgeInsets.only(top: 60),
             width: double.infinity,
             alignment: Alignment.topCenter,
@@ -351,17 +349,12 @@ class _InvestmentPageState extends State<InvestmentPage> {
         ),
         ...provider.activePlan.map(
           (plan) => Positioned(
-            top: 130,
+            top: 105,
             left: 50,
             right: 50,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: SizedBox(
-                child: Image.network(
-                  plan["uploadfiles_url"],
-                  fit: BoxFit.cover,
-                ),
-              ),
+              borderRadius: BorderRadius.circular(15),
+              child: Image.network(plan["uploadfiles_url"], fit: BoxFit.cover),
             ),
           ),
         ),

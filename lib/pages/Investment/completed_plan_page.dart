@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/app/app.dart';
 import 'package:ghlapp/pages/Investment/investment_completed_page.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
+import 'package:ghlapp/utils/commonWidgets.dart';
 import 'package:ghlapp/utils/extension/extension.dart';
 import 'package:ghlapp/widgets/custom_text.dart';
 
@@ -14,6 +16,7 @@ class CompletedPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("completedPlans---->>> ${completedPlans.length}--$completedPlans");
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -26,27 +29,10 @@ class CompletedPlanPage extends StatelessWidget {
             child: Center(
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.black,
-                      size: 20,
-                    ),
-                  ).toGesture(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  SizedBox(width: 10),
+                  getBackButton(context),
+                  const SizedBox(width: 10),
                   PrimaryText(
-                    text: "Completed Project",
+                    text: AppStrings.completeProject,
                     size: AppDimen.textSize16,
                     weight: AppFont.semiBold,
                   ),
@@ -78,7 +64,7 @@ class CompletedPlanPage extends StatelessWidget {
                     completedPlans[index]["uploadfiles_url"],
                   ),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
