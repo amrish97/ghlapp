@@ -32,4 +32,10 @@ class AppColors {
   static const Color referralPageColor = Color.fromRGBO(248, 34, 34, 0.17);
   static const Color notificationCardColor = Color.fromRGBO(151, 151, 151, 1);
   static const Color historyCardColor = Color.fromRGBO(217, 217, 217, 0.68);
+  static const Color calcCardColor = Color.fromRGBO(255, 166, 0, 0.32);
+  static const Color invCard = Color.fromRGBO(6, 139, 15, 0.1);
+  static const Color faqCard = Color.fromRGBO(159, 152, 152, 1);
+  static const Color customChipColor = Color.fromRGBO(219, 219, 219, 0.68);
+  static const Color investCardColor = Color.fromRGBO(224, 223, 225, 1);
+  static const Color documentCardColor = Color.fromRGBO(248, 200, 200, 0.32);
 }

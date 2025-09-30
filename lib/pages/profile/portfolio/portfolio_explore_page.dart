@@ -34,7 +34,7 @@ class PortfolioExplorePage extends StatelessWidget {
                 getBackButton(context),
                 SizedBox(width: 10),
                 PrimaryText(
-                  text: "Explore",
+                  text: AppStrings.explore,
                   weight: AppFont.semiBold,
                   size: AppDimen.textSize18,
                 ),
@@ -652,8 +652,7 @@ class PortfolioExplorePage extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 13),
       decoration: BoxDecoration(
-        color:
-            selected ? AppColors.primary : Color.fromRGBO(219, 219, 219, 0.68),
+        color: selected ? AppColors.primary : AppColors.customChipColor,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: Colors.transparent),
       ),

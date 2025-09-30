@@ -157,15 +157,15 @@ class ProfileProvider extends ChangeNotifier
   }
 
   bool hasUploaded(String title) {
-    if (title == "Aadhaar Card") {
+    if (title == AppStrings.aadharCard) {
       return frontAadhaarPath != null || backAadhaarPath != null;
-    } else if (title == "Pan Card") {
+    } else if (title == AppStrings.panCard) {
       return panCardPath != null;
-    } else if (title == "Bank Documents") {
+    } else if (title == AppStrings.bankDocuments) {
       return bankDocPath != null;
-    } else if (title == "Nominee Documents") {
+    } else if (title == AppStrings.nomineeDocuments) {
       return nomineeFrontPath != null || nomineeBackPath != null;
-    } else if (title == "CML Report") {
+    } else if (title == AppStrings.cmlReport) {
       return cmlReport != null;
     }
     return false;
@@ -174,7 +174,7 @@ class ProfileProvider extends ChangeNotifier
   Future<void> uploadDocuments(context, String title) async {
     final uri = Uri.parse("${AppStrings.baseURL}upload/documents");
     final request = http.MultipartRequest("POST", uri);
-    if (title == "Aadhaar Card") {
+    if (title == AppStrings.aadharCard) {
       if (frontAadhaarPath != null) {
         final compressed = await compressFile(File(frontAadhaarPath!));
         if (compressed != null) {
@@ -192,7 +192,7 @@ class ProfileProvider extends ChangeNotifier
         }
       }
     }
-    if (title == "Pan Card") {
+    if (title == AppStrings.panCard) {
       if (panCardPath != null) {
         final compressed = await compressFile(File(panCardPath!));
         if (compressed != null) {
@@ -202,7 +202,7 @@ class ProfileProvider extends ChangeNotifier
         }
       }
     }
-    if (title == "Bank Documents") {
+    if (title == AppStrings.bankDocuments) {
       if (bankDocPath != null) {
         final compressed = await compressFile(File(bankDocPath!));
         if (compressed != null) {
@@ -215,7 +215,7 @@ class ProfileProvider extends ChangeNotifier
         }
       }
     }
-    if (title == "Nominee Documents") {
+    if (title == AppStrings.nomineeDocuments) {
       if (nomineeFrontPath != null) {
         final compressed = await compressFile(File(nomineeFrontPath!));
         if (compressed != null) {
@@ -239,7 +239,7 @@ class ProfileProvider extends ChangeNotifier
         }
       }
     }
-    if (title == "CML Report") {
+    if (title == AppStrings.cmlReport) {
       if (cmlReport != null) {
         final compressed = await compressFile(File(cmlReport!));
         if (compressed != null) {
@@ -261,10 +261,12 @@ class ProfileProvider extends ChangeNotifier
         message: "$title uploaded successfully",
         backgroundColor: AppColors.greenCircleColor,
       );
-      if (title == "Aadhaar Card") isAadhaarUploaded = true;
-      if (title == "Pan Card") isPanUploaded = true;
-      if (title == "Bank Documents") isBankUploaded = true;
-      if (title == "Nominee Documents") isNomineeUploaded = true;
+      if (title == AppStrings.aadharCard) isAadhaarUploaded = true;
+      if (title == AppStrings.panCard) isPanUploaded = true;
+      if (title == AppStrings.bankDocuments) isBankUploaded = true;
+      if (title == AppStrings.nomineeDocuments) isNomineeUploaded = true;
+      if (title == AppStrings.cmlReport) isCMLUploaded = true;
+      notifyListeners();
     } else {
       AppSnackBar.show(context, message: "Error uploading $title");
       debugPrint("Response Body: $responseBody");

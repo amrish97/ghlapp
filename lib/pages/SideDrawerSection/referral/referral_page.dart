@@ -52,7 +52,7 @@ class ReferralPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           getBackButton(context),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: PrimaryText(
@@ -64,7 +64,7 @@ class ReferralPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       PrimaryText(
                         text: "Refer your friends \n and earn",
                         color: AppColors.white,
@@ -72,13 +72,13 @@ class ReferralPage extends StatelessWidget {
                         size: AppDimen.textSize24,
                       ),
                       "assets/images/reward.png".toImageAsset(),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           "assets/images/dollar.png".toImageAsset(),
-                          SizedBox(width: 3),
+                          const SizedBox(width: 3),
                           PrimaryText(
                             text: "100",
                             color: AppColors.white,
@@ -88,7 +88,7 @@ class ReferralPage extends StatelessWidget {
                         ],
                       ),
                       PrimaryText(
-                        text: "Loyalty points",
+                        text: AppStrings.loyalPoints,
                         color: AppColors.white,
                         weight: AppFont.regular,
                         size: AppDimen.textSize12,
@@ -105,14 +105,13 @@ class ReferralPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: PrimaryText(
-                  text:
-                      "Your friend gets 100 Timespoint on signup and,you get 100 Time Points too everytime!",
+                  text: AppStrings.pointsContent,
                   weight: AppFont.medium,
                   align: TextAlign.center,
                   size: AppDimen.textSize14,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DottedBorder(
                 color: AppColors.brownColor,
                 dash: 6,
@@ -137,7 +136,7 @@ class ReferralPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           PrimaryText(
-                            text: "Your Referral Code",
+                            text: AppStrings.referCode,
                             color: AppColors.lightGrey,
                             weight: AppFont.medium,
                             align: TextAlign.center,
@@ -170,14 +169,14 @@ class ReferralPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               PrimaryText(
-                text: "Share your referral Code Via",
+                text: "Share ${AppStrings.referCode} Via",
                 weight: AppFont.medium,
                 align: TextAlign.center,
                 size: AppDimen.textSize14,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               CustomButton(
                 text: AppStrings.shareNow,
                 onTap: () async {

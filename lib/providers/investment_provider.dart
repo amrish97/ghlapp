@@ -151,32 +151,6 @@ class InvestmentProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<void> uploadFile(String authToken) async {
-    var url = Uri.parse("https://ghl.com/api/upload");
-
-    var request = http.MultipartRequest("POST", url);
-
-    request.headers.addAll({
-      "Accept": "application/json",
-      "Authorization": "Bearer $authToken",
-    });
-
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        "document",
-        "/storage/emulated/0/Download/sample.pdf",
-      ),
-    );
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      var respStr = await response.stream.bytesToString();
-      print("res--->> $respStr");
-    } else {
-      print("error --${response.statusCode}");
-    }
-  }
-
   void clearData() {
     amountInvestController.clear();
     investmentAmount = 0.0;

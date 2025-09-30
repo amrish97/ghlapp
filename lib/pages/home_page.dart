@@ -61,9 +61,13 @@ class _HomePageState extends State<HomePage> {
     return Consumer<HomeProvider>(
       builder: (context, value, child) {
         final investments = buildMonthlyInvestments(value.userPlans);
-        double received = value.thisMonth.toDouble();
-        double target = 6000000;
-        final percentage = (received / target).clamp(0.0, 1.0);
+        final List<Color> baseColors = [
+          Colors.green,
+          Colors.blue,
+          Colors.red,
+          Colors.yellow,
+          Colors.grey,
+        ];
         final allVerified = value.verifiedSection.values.every(
           (v) => v == true,
         );
@@ -115,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             kycCard(!allVerified, context),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             PrimaryText(
                               text: AppStrings.totalInvest,
                               size: 16,
@@ -128,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                               size: 36,
                               weight: AppFont.semiBold,
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Row(
                               children: [
                                 getCommonButton(
@@ -139,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                                     value.setIndex(1, context);
                                   },
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 getCommonButton(
                                   context,
                                   imageData: "assets/images/referal.png",
@@ -154,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -171,13 +175,13 @@ class _HomePageState extends State<HomePage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       PrimaryText(
-                                        text: "This Month",
-                                        size: 16,
+                                        text: AppStrings.thisMonth,
+                                        size: AppDimen.textSize16,
                                         weight: AppFont.semiBold,
                                       ),
                                       PrimaryText(
-                                        text: "View All",
-                                        size: 14,
+                                        text: AppStrings.viewAll,
+                                        size: AppDimen.textSize14,
                                         weight: AppFont.regular,
                                         color: AppColors.lightGrey,
                                       ).toGesture(
@@ -187,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
@@ -198,21 +202,21 @@ class _HomePageState extends State<HomePage> {
                                         size: 32,
                                         weight: AppFont.semiBold,
                                       ),
-                                      SizedBox(width: 5),
+                                      const SizedBox(width: 5),
                                       Padding(
                                         padding: const EdgeInsets.only(
                                           top: 8.0,
                                         ),
                                         child: PrimaryText(
-                                          text: "Spend this month",
-                                          size: 14,
+                                          text: AppStrings.spendThisMonth,
+                                          size: AppDimen.textSize14,
                                           weight: AppFont.medium,
                                           color: AppColors.lightGrey,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Container(
                                     margin: const EdgeInsets.symmetric(
                                       vertical: 10,
@@ -223,56 +227,47 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(10),
                                       color: AppColors.lightGrey.withAlpha(90),
                                     ),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
+                                    child: Row(
+                                      children: List.generate(baseColors.length, (
+                                        index,
+                                      ) {
+                                        final bool isThisMonth =
+                                            value.thisMonth > 0 && index == 0;
+                                        return Expanded(
+                                          child: Container(
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  isThisMonth
+                                                      ? baseColors[index]
+                                                          .withAlpha(100)
+                                                      : baseColors[index],
+                                              borderRadius: BorderRadius.horizontal(
+                                                left:
+                                                    index == 0
+                                                        ? const Radius.circular(
+                                                          10,
+                                                        )
+                                                        : Radius.zero,
+                                                right:
+                                                    index ==
+                                                            baseColors.length -
+                                                                1
+                                                        ? const Radius.circular(
+                                                          10,
+                                                        )
+                                                        : Radius.zero,
+                                              ),
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  height: 60,
-                                                  color: Colors.green,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  height: 60,
-                                                  color: Colors.blue,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  height: 60,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  height: 60,
-                                                  color: Colors.yellow,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  height: 60,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                         );
-                                      },
+                                      }),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -290,12 +285,12 @@ class _HomePageState extends State<HomePage> {
                                     size: AppDimen.textSize16,
                                     weight: AppFont.semiBold,
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   LineChart(investmentData: investments),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
@@ -406,7 +401,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             imageData.toImageAsset(),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             PrimaryText(
               text: text,
               color: AppColors.white,
@@ -436,7 +431,7 @@ class _HomePageState extends State<HomePage> {
           data.getBlog(context);
           Navigator.pushNamed(context, AppRouteEnum.blog.name);
         },
-        "title": "Blogs",
+        "title": "${AppStrings.blog}s",
       },
       {
         "image": "assets/images/video.png",
@@ -495,7 +490,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.pop(context);
           Navigator.pushNamed(context, AppRouteEnum.contactUs.name);
         },
-        "title": "Contact Us",
+        "title": AppStrings.contactUs,
       },
       {
         "image": "assets/images/about.png",
@@ -503,7 +498,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.pop(context);
           Navigator.pushNamed(context, AppRouteEnum.about.name);
         },
-        "title": "About Us",
+        "title": AppStrings.aboutUs,
       },
       {
         "image": "assets/images/milestone.png",
@@ -520,7 +515,7 @@ class _HomePageState extends State<HomePage> {
         "onTap": () {
           Provider.of<ProfileProvider>(context, listen: false).logOut(context);
         },
-        "title": "Logout",
+        "title": AppStrings.logout,
       },
     ];
     return SingleChildScrollView(
@@ -536,7 +531,7 @@ class _HomePageState extends State<HomePage> {
                     data["image"].toString().toImageAsset(
                       color: AppColors.black,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     PrimaryText(
                       text: data["title"],
                       size: AppDimen.textSize14,
@@ -562,7 +557,7 @@ class _HomePageState extends State<HomePage> {
         child: Row(
           children: [
             "assets/images/timer.png".toImageAsset(),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -579,7 +574,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             "assets/images/circleArrow.png".toImageAsset(),
           ],
         ).toGesture(
@@ -710,13 +705,11 @@ class _HomePageState extends State<HomePage> {
                     minHeight: 20,
                   ),
                   child: Center(
-                    child: Text(
-                      "$pendingCount",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: PrimaryText(
+                      text: "$pendingCount",
+                      size: AppDimen.textSize12,
+                      weight: AppFont.semiBold,
+                      color: AppColors.white,
                     ),
                   ),
                 ),

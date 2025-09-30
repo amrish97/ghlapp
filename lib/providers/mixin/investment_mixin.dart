@@ -18,6 +18,32 @@ mixin InvestmentDetailMixin on ChangeNotifier {
   String errorMessage = "";
   String amountInWords = "";
 
+  double monthlyReturnComplete = 0.0;
+  double yearlyReturnComplete = 0.0;
+  double totalSumComplete = 0.0;
+
+  void completeInvestmentDetail(
+    double investmentAmount,
+    double roiPercent,
+    double taxPercent,
+  ) {
+    print("investmentAmount---->>> $investmentAmount");
+    print("roiPercent---->>> $roiPercent");
+    print("taxPercent---->>> $taxPercent");
+    double monthlyRate = roiPercent / 12 / 100;
+    print("monthlyRate---->>> $monthlyRate");
+    double grossMonthly = investmentAmount * monthlyRate;
+    print("grossMonthly---->>> $grossMonthly");
+    double tds = grossMonthly * (taxPercent / 100);
+    print("tds---->>> $tds");
+    monthlyReturnComplete = grossMonthly - tds;
+    print("monthlyReturnComplete---->>> $monthlyReturnComplete");
+    yearlyReturnComplete = monthlyReturnComplete * 12;
+    print("yearlyReturnComplete---->>> $yearlyReturnComplete");
+    totalSumComplete = investmentAmount + (yearlyReturnComplete * 2);
+    print("totalSumComplete---->>> $totalSumComplete");
+  }
+
   void updateInvestment(
     String value,
     double roiPercent,
@@ -43,7 +69,7 @@ mixin InvestmentDetailMixin on ChangeNotifier {
       return;
     } else if (investmentAmount > maxInvestment) {
       errorMessage =
-          "Maximum investment is ₹ ${maxInvestment.toStringAsFixed(0)}";
+          "Maximum investment is  ${maxInvestment.toStringAsFixed(0)}";
       notifyListeners();
       return;
     } else {

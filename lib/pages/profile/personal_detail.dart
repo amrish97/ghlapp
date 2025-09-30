@@ -54,7 +54,7 @@ class PersonalDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   documentUploadView(
-                    label: "Show profile",
+                    label: "",
                     onUpload: () => value.pickProfile(),
                     filePath:
                         (value.filePathProfile == null ||

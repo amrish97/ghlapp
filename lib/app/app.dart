@@ -73,30 +73,12 @@ class BaseFunction {
     }
   }
 
-  String formatIndianNumber(int number) {
-    final formatter = NumberFormat.decimalPattern('en_IN');
-    return formatter.format(number);
-  }
-
-  String getMonthFromTimestamp(int timestamp) {
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(
-      timestamp * 1000,
-      isUtc: true,
+  String formatIndianNumber(num number) {
+    final formatter = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '',
+      decimalDigits: 2,
     );
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return months[date.month - 1];
+    return formatter.format(number);
   }
 }

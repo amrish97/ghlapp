@@ -192,7 +192,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       child: PrimaryText(
-                                        text: "Explore",
+                                        text: AppStrings.explore,
                                         weight: AppFont.semiBold,
                                         size: AppDimen.textSize12,
                                         color: AppColors.white,
@@ -369,7 +369,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: PrimaryText(
-                                    text: "Explore",
+                                    text: AppStrings.explore,
                                     weight: AppFont.semiBold,
                                     size: AppDimen.textSize12,
                                     color: AppColors.white,

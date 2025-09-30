@@ -52,7 +52,7 @@ class FAQSection extends StatelessWidget {
                     size: AppDimen.textSize14,
                     weight: AppFont.bold,
                     align: TextAlign.start,
-                    color: Color.fromRGBO(91, 91, 91, 1),
+                    color: AppColors.faqColor,
                   ),
                   iconColor: AppColors.black,
                   collapsedIconColor: AppColors.black,

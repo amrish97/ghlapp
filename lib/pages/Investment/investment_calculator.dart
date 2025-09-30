@@ -114,9 +114,8 @@ class InvestmentCalculator extends StatelessWidget {
                           diff > 0
                               ? (diff / 10000).round().clamp(1, 1000)
                               : null,
-                      // ✅ safe
                       label:
-                          '₹${provider.initialInvestmentAmount.toStringAsFixed(0)}',
+                          '\u20B9 ${provider.initialInvestmentAmount.toStringAsFixed(0)}',
                       activeColor: AppColors.primary,
                       inactiveColor: Colors.grey[300],
                       onChanged: (value) {
@@ -298,7 +297,8 @@ class InvestmentCalculator extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         PrimaryText(
-                          text: "Total Amount \n Sum of Capital & ROI",
+                          text:
+                              "${AppStrings.totalAmount} \n ${AppStrings.sumOfROI}",
                           align: TextAlign.start,
                           weight: AppFont.semiBold,
                           size: AppDimen.textSize12,
@@ -354,7 +354,7 @@ class InvestmentCalculator extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Color.fromRGBO(224, 223, 225, 1),
+            color: AppColors.investCardColor,
           ),
           child: PrimaryText(
             text: value,

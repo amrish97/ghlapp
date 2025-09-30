@@ -43,7 +43,7 @@ class _PrivacyShowPageState extends State<PrivacyShowPage> {
                 child: Row(
                   children: [
                     getBackButton(context),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     PrimaryText(
                       text: AppStrings.termsPrivacy,
                       weight: AppFont.semiBold,

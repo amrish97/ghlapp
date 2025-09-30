@@ -53,20 +53,6 @@ class AppTextStyles {
     fontWeight: AppFont.regular,
   );
 
-  static TextStyle errorSnakeBar = TextStyle(
-    color: AppColors.white,
-    fontSize: AppDimen.textSize14,
-    fontFamily: AppFont.font,
-    fontWeight: AppFont.regular,
-  );
-
-  static TextStyle buttonTextStyle = TextStyle(
-    color: AppColors.white,
-    fontSize: AppDimen.textSize16,
-    fontFamily: AppFont.font,
-    fontWeight: AppFont.semiBold,
-  );
-
   static TextStyle unSelectedTextStyle = TextStyle(
     color: AppColors.black,
     fontSize: AppDimen.textSize12,

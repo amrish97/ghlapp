@@ -21,7 +21,6 @@ class InvestmentAboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InvestmentProvider>(
       builder: (context, value, child) {
-        print("planDetail---->> ${planDetail["y_link1"]}");
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60),
@@ -86,7 +85,7 @@ class InvestmentAboutPage extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       PrimaryText(
                         text: "Tenkasi Land",
                         weight: AppFont.medium,

@@ -17,27 +17,27 @@ class DocumentPage extends StatelessWidget {
       {
         "key": "aadhaar",
         "image": "assets/images/pan_detail.png",
-        "title": "Aadhaar Card",
+        "title": AppStrings.aadharCard,
       },
       {
         "key": "pan",
         "image": "assets/images/pan_detail.png",
-        "title": "Pan Card",
+        "title": AppStrings.panCard,
       },
       {
         "key": "bank",
         "image": "assets/images/bank.png",
-        "title": "Bank Documents",
+        "title": AppStrings.bankDocuments,
       },
       {
         "key": "nominee",
         "image": "assets/images/user-plus.png",
-        "title": "Nominee Documents",
+        "title": AppStrings.nomineeDocuments,
       },
       {
         "key": "cml",
         "image": "assets/images/pan_detail.png",
-        "title": "CML Report",
+        "title": AppStrings.cmlReport,
       },
     ];
     return Scaffold(

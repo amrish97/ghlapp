@@ -39,7 +39,7 @@ class _EducationalVideoPageState extends State<EducationalVideoPage> {
                 child: Row(
                   children: [
                     getBackButton(context),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     PrimaryText(
                       text: AppStrings.educationVideo,
                       weight: AppFont.semiBold,

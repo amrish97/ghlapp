@@ -38,7 +38,7 @@ class TrackingStatus extends StatelessWidget {
                 ? AppColors.black
                 : (isCurrent
                     ? AppColors.greenCircleColor
-                    : Color.fromRGBO(151, 151, 151, 1));
+                    : AppColors.notificationCardColor);
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

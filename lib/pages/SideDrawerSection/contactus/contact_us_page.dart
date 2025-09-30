@@ -51,7 +51,7 @@ class ContactUsPage extends StatelessWidget {
                     size: AppDimen.textSize14,
                     align: TextAlign.start,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   CustomTextFormField(
                     label: "Name",
                     controller: value.contactusNameController,
@@ -81,7 +81,7 @@ class ContactUsPage extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   CustomTextFormField(
                     label: "Phone Number",
                     keyboardType: TextInputType.phone,

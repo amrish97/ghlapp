@@ -20,7 +20,11 @@ class InvestmentCompletePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InvestmentProvider>(
       builder: (context, value, child) {
-        print("planDetail---->>> $planDetail");
+        value.completeInvestmentDetail(
+          double.parse(planDetail["min_investment_amt"].toString()),
+          double.parse(planDetail["return_of_investment"].toString()),
+          double.parse(planDetail["tax_applicable"].toString()),
+        );
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60),
@@ -48,7 +52,7 @@ class InvestmentCompletePage extends StatelessWidget {
                         BaseFunction().openPdf(planDetail["documentfiles_url"]);
                       },
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                   ],
                 ),
               ),
@@ -114,14 +118,14 @@ class InvestmentCompletePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
                           text: "Tenure ${planDetail["tenure"]} Months",
                           color: AppColors.lightGrey,
                           weight: AppFont.regular,
                           size: AppDimen.textSize12,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
                           text: AppStrings.fundingProcess,
                           weight: AppFont.regular,
@@ -159,7 +163,7 @@ class InvestmentCompletePage extends StatelessWidget {
                         ),
                         getRowSectionWithItem(
                           title: AppStrings.capitalInvestment.toUpperCase(),
-                          value: "",
+                          value: planDetail["min_investment_amt"],
                         ),
                         getRowSectionWithItem(
                           title: AppStrings.tdsApplicable.toUpperCase(),
@@ -168,15 +172,17 @@ class InvestmentCompletePage extends StatelessWidget {
                         getRowSectionWithItem(
                           title: AppStrings.monthlyReturn.toUpperCase(),
                           value:
-                              "\u20B9 ${value.monthlyReturn.toStringAsFixed(2)}",
+                              "\u20B9 ${value.monthlyReturnComplete.toStringAsFixed(2)}",
                         ),
                         getRowSectionWithItem(
                           title: AppStrings.yearlyReturns.toUpperCase(),
-                          value: "\u20B9 ${value.monthlyReturn * 12}",
+                          value:
+                              "\u20B9 ${value.yearlyReturnComplete.toStringAsFixed(2)}",
                         ),
                         getRowSectionWithItem(
-                          title: "SUM OF CAPITAL & ROI",
-                          value: "\u20B9 ${value.totalSum.toStringAsFixed(2)}",
+                          title: AppStrings.sumOfROI,
+                          value:
+                              "\u20B9 ${value.totalSumComplete.toStringAsFixed(2)}",
                         ),
                       ],
                     ),

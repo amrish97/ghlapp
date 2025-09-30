@@ -117,14 +117,14 @@ class InvestmentDetailPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
                           text: "Tenure ${planDetail["tenure"]} Months",
                           color: AppColors.lightGrey,
                           weight: AppFont.regular,
                           size: AppDimen.textSize12,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         PrimaryText(
                           text: AppStrings.fundingProcess,
                           weight: AppFont.regular,
@@ -141,7 +141,7 @@ class InvestmentDetailPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -154,44 +154,44 @@ class InvestmentDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         getRowSectionWithItem(
-                          title: "PER TAX RETURN",
+                          title: AppStrings.preTax.toUpperCase(),
                           value: "${planDetail["return_of_investment"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "MINIMUM INVESTMENT",
+                          title: AppStrings.minInvestment,
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(planDetail["min_investment_amt"]).toInt())}",
                         ),
                         getRowSectionWithItem(
-                          title: "CAPITAL INVESTED",
+                          title: AppStrings.capitalInvestment,
                           value:
                               value.amountInvestController.text.isEmpty
                                   ? ""
                                   : "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.amountInvestController.text))}",
                         ),
                         getRowSectionWithItem(
-                          title: "TDS APPLICABLE",
+                          title: AppStrings.tdsApplicable,
                           value: "${planDetail["tax_applicable"]}%",
                         ),
                         getRowSectionWithItem(
-                          title: "MONTHLY RETURNS",
+                          title: AppStrings.monthlyReturn.toUpperCase(),
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.monthlyReturn.toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
-                          title: "YEARLY RETURNS",
+                          title: AppStrings.yearlyReturns.toUpperCase(),
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse((value.monthlyReturn * 12).toStringAsFixed(0)))}",
                         ),
                         getRowSectionWithItem(
-                          title: "SUM OF CAPITAL & ROI",
+                          title: AppStrings.sumOfROI,
                           value:
                               "\u20B9 ${BaseFunction().formatIndianNumber(int.parse(value.totalSum.toStringAsFixed(0)))}",
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -200,7 +200,7 @@ class InvestmentDetailPage extends StatelessWidget {
                         weight: AppFont.regular,
                         size: AppDimen.textSize12,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextFormField(
                         label: "",
                         controller: value.amountInvestController,
@@ -230,7 +230,7 @@ class InvestmentDetailPage extends StatelessWidget {
                           );
                         },
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       PrimaryText(
                         text: value.amountInWords,
                         color: AppColors.lightGrey,
@@ -287,14 +287,14 @@ class InvestmentDetailPage extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               const PrimaryText(
                                                 text: "Payment Schedule",
                                                 size: AppDimen.textSize14,
                                                 weight: AppFont.semiBold,
                                                 color: AppColors.white,
                                               ),
-                                              Spacer(),
+                                              const Spacer(),
                                               IconButton(
                                                 icon: const Icon(
                                                   Icons.close,
@@ -307,10 +307,10 @@ class InvestmentDetailPage extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Row(
                                           children: [
-                                            SizedBox(width: 5),
+                                            const SizedBox(width: 5),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -322,8 +322,8 @@ class InvestmentDetailPage extends StatelessWidget {
                                                       "Investment \u20B9${planDetail["min_investment_amt"]}",
                                                   size: AppDimen.textSize12,
                                                   weight: AppFont.semiBold,
-                                                  color: AppColors.black,
                                                 ),
+                                                const SizedBox(height: 5),
                                                 PrimaryText(
                                                   text:
                                                       "${planDetail["name"]}(${planDetail["plan_id"]})",
@@ -333,7 +333,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            Spacer(),
+                                            const Spacer(),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -370,7 +370,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(height: 8),
+                                                const SizedBox(height: 8),
                                                 GestureDetector(
                                                   onTap: () async {
                                                     await _exportCSV(res);
@@ -394,7 +394,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                     ),
                                                     child: const PrimaryText(
                                                       text: "Export CSV",
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       size: AppDimen.textSize12,
                                                     ),
@@ -402,10 +401,10 @@ class InvestmentDetailPage extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(width: 5),
+                                            const SizedBox(width: 5),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Row(
                                           children: const [
                                             Expanded(
@@ -474,7 +473,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                           (index + 1)
                                                               .toString(),
                                                       size: AppDimen.textSize12,
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       align: TextAlign.start,
                                                     ),
@@ -486,7 +484,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                           item["payment_date"]
                                                               .toString(),
                                                       size: AppDimen.textSize12,
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       align: TextAlign.start,
                                                     ),
@@ -497,7 +494,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                       text: item["gross_amount"]
                                                           .toStringAsFixed(0),
                                                       size: AppDimen.textSize12,
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       align: TextAlign.start,
                                                     ),
@@ -508,7 +504,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                       text: item["tds"]
                                                           .toStringAsFixed(0),
                                                       size: AppDimen.textSize12,
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       align: TextAlign.start,
                                                     ),
@@ -519,7 +514,6 @@ class InvestmentDetailPage extends StatelessWidget {
                                                       text: item["net_return"]
                                                           .toStringAsFixed(0),
                                                       size: AppDimen.textSize12,
-                                                      color: AppColors.black,
                                                       weight: AppFont.regular,
                                                       align: TextAlign.start,
                                                     ),
@@ -529,7 +523,7 @@ class InvestmentDetailPage extends StatelessWidget {
                                             },
                                           ),
                                         ),
-                                        Divider(
+                                        const Divider(
                                           thickness: 1,
                                           color: AppColors.lightGrey,
                                         ),
@@ -538,11 +532,11 @@ class InvestmentDetailPage extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 3,
@@ -556,14 +550,14 @@ class InvestmentDetailPage extends StatelessWidget {
                                               flex: 3,
                                               child: PrimaryText(
                                                 text:
-                                                    "\u20B9${res["capital_invested"].toString()}",
+                                                    "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["capital_invested"].toString()) ?? 0)}",
                                                 weight: AppFont.semiBold,
                                                 size: AppDimen.textSize12,
                                               ),
                                             ),
                                             Expanded(
                                               flex: 1,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                           ],
                                         ),
@@ -571,16 +565,16 @@ class InvestmentDetailPage extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 3,
                                               child: PrimaryText(
-                                                text: "Return",
+                                                text: AppStrings.returnContent,
                                                 weight: AppFont.regular,
                                                 size: AppDimen.textSize12,
                                               ),
@@ -589,14 +583,14 @@ class InvestmentDetailPage extends StatelessWidget {
                                               flex: 3,
                                               child: PrimaryText(
                                                 text:
-                                                    "\u20B9${res["returns"].toString()}",
+                                                    "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["returns"].toString()) ?? 0)}",
                                                 weight: AppFont.semiBold,
                                                 size: AppDimen.textSize12,
                                               ),
                                             ),
                                             Expanded(
                                               flex: 1,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                           ],
                                         ),
@@ -604,16 +598,16 @@ class InvestmentDetailPage extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 2,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                             Expanded(
                                               flex: 3,
                                               child: PrimaryText(
-                                                text: "Total",
+                                                text: AppStrings.total,
                                                 weight: AppFont.regular,
                                                 size: AppDimen.textSize12,
                                               ),
@@ -622,18 +616,19 @@ class InvestmentDetailPage extends StatelessWidget {
                                               flex: 3,
                                               child: PrimaryText(
                                                 text:
-                                                    "\u20B9${double.parse(res["sum_of_capital"].toString())}",
+                                                    "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["sum_of_capital"].toString()) ?? 0)}",
+
                                                 weight: AppFont.semiBold,
                                                 size: AppDimen.textSize12,
                                               ),
                                             ),
                                             Expanded(
                                               flex: 1,
-                                              child: SizedBox(),
+                                              child: const SizedBox.shrink(),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                       ],
                                     ),
                                   ),
@@ -646,9 +641,9 @@ class InvestmentDetailPage extends StatelessWidget {
                     },
                     color: AppColors.greenCircleColor,
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   PrimaryText(
-                    text: "Select Payment type",
+                    text: AppStrings.paymentType,
                     weight: AppFont.regular,
                     color: AppColors.progressGreyColor,
                     size: AppDimen.textSize14,
@@ -660,7 +655,7 @@ class InvestmentDetailPage extends StatelessWidget {
                     isCheck: value.isRememberClick,
                   ),
                   getBottomButton(value: value, context: context),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -741,138 +736,207 @@ class InvestmentDetailPage extends StatelessWidget {
     String formattedDate = DateFormat('dd-MM-yyyy').format(datetime);
 
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Stack(
-            children: [
-              pw.Positioned.fill(
-                child: pw.Center(
-                  child: pw.Transform.rotate(
-                    angle: 0.5,
-                    child: pw.Opacity(
-                      opacity: 0.1,
-                      child: pw.Text(
-                        AppStrings.appName,
-                        style: pw.TextStyle(
-                          font: poppinsBold,
-                          fontSize: 80,
-                          color: PdfColors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.legal,
+        build:
+            (pw.Context context) => [
+              pw.Stack(
                 children: [
-                  pw.Row(
-                    children: [
-                      pw.Text(
-                        planName,
-                        style: pw.TextStyle(fontSize: 16, font: poppinsBold),
-                      ),
-                      pw.SizedBox(width: 10),
-                      pw.Text(
-                        "(Download Date",
-                        style: pw.TextStyle(
-                          fontSize: 16,
-                          font: poppinsBold,
-                          color: PdfColor.fromInt(0xFFDA0000),
+                  pw.Positioned.fill(
+                    child: pw.Center(
+                      child: pw.Transform.rotate(
+                        angle: 0.5,
+                        child: pw.Opacity(
+                          opacity: 0.1,
+                          child: pw.Text(
+                            AppStrings.appName,
+                            style: pw.TextStyle(
+                              font: poppinsBold,
+                              fontSize: 80,
+                              color: PdfColors.grey,
+                            ),
+                          ),
                         ),
                       ),
-                      pw.Text(
-                        ": $formattedDate)",
-                        style: pw.TextStyle(fontSize: 16, font: poppinsBold),
-                      ),
-                    ],
-                  ),
-                  pw.SizedBox(height: 10),
-                  pw.Row(
-                    children: [
-                      pw.Text(
-                        "${AppStrings.investAmount} (\u20B9):",
-                        style: pw.TextStyle(fontSize: 16, font: poppinsRegular),
-                      ),
-                      pw.SizedBox(width: 5),
-                      pw.Text(
-                        res["capital_invested"],
-                        style: pw.TextStyle(fontSize: 16, font: poppinsBold),
-                      ),
-                    ],
-                  ),
-                  pw.SizedBox(height: 10),
-
-                  // Net Interest
-                  pw.Row(
-                    children: [
-                      pw.Text(
-                        "Total Net Interest (\u20B9):",
-                        style: pw.TextStyle(fontSize: 16, font: poppinsRegular),
-                      ),
-                      pw.SizedBox(width: 5),
-                      pw.Text(
-                        res["returns"].toString(),
-                        style: pw.TextStyle(fontSize: 16, font: poppinsBold),
-                      ),
-                    ],
-                  ),
-                  pw.SizedBox(height: 10),
-
-                  // Table
-                  pw.TableHelper.fromTextArray(
-                    headers: [
-                      "Tentative Date",
-                      "Gross Interest (\u20B9)",
-                      "TDS (\u20B9)",
-                      "Net Interest (\u20B9)",
-                    ],
-                    data: List.generate(res["paymentSchedule"].length, (i) {
-                      final item = res["paymentSchedule"][i];
-                      String formattedDateInTable = DateFormat(
-                        'dd-MM-yyyy',
-                      ).format(DateTime.parse(item["payment_date"].toString()));
-                      return [
-                        formattedDateInTable.toString().trim(),
-                        item["gross_amount"].toString().trim(),
-                        item["tds"].toString().trim(),
-                        item["net_return"].toString().trim(),
-                      ];
-                    }),
-                    headerStyle: pw.TextStyle(
-                      font: poppinsBold,
-                      fontSize: 14,
-                      color: PdfColors.white,
                     ),
-                    headerDecoration: const pw.BoxDecoration(
-                      color: PdfColor.fromInt(0xFFDA0000),
-                    ),
-                    cellAlignments: {
-                      0: pw.Alignment.center,
-                      1: pw.Alignment.center,
-                      2: pw.Alignment.center,
-                      3: pw.Alignment.center,
-                    },
                   ),
 
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                    "Principal: \u20B9 ${res["capital_invested"]}",
-                    style: pw.TextStyle(font: poppinsRegular, fontSize: 16),
-                  ),
-                  pw.Text(
-                    "Return: \u20B9 ${res["returns"]}",
-                    style: pw.TextStyle(font: poppinsRegular, fontSize: 16),
-                  ),
-                  pw.Text(
-                    "Total: \u20B9 ${res["sum_of_capital"]}",
-                    style: pw.TextStyle(font: poppinsRegular, fontSize: 16),
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Row(
+                        children: [
+                          pw.Text(
+                            planName,
+                            style: pw.TextStyle(
+                              fontSize: AppDimen.textSize14,
+                              font: poppinsBold,
+                            ),
+                          ),
+                          pw.SizedBox(width: 5),
+                          pw.Text(
+                            "(Download Date",
+                            style: pw.TextStyle(
+                              fontSize: AppDimen.textSize14,
+                              font: poppinsBold,
+                              color: PdfColor.fromInt(0xFFDA0000),
+                            ),
+                          ),
+                          pw.Text(
+                            ": $formattedDate)",
+                            style: pw.TextStyle(
+                              fontSize: AppDimen.textSize14,
+                              font: poppinsBold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        children: [
+                          pw.Text(
+                            "${AppStrings.investAmount} (\u20B9):",
+                            style: pw.TextStyle(
+                              fontSize: AppDimen.textSize16,
+                              font: poppinsRegular,
+                            ),
+                          ),
+                          pw.SizedBox(width: 5),
+                          pw.Text(
+                            "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["capital_invested"].toString()) ?? 0)}",
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              font: poppinsBold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        children: [
+                          pw.Text(
+                            "Total Net Interest (\u20B9):",
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              font: poppinsRegular,
+                            ),
+                          ),
+                          pw.SizedBox(width: 5),
+                          pw.Text(
+                            "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["returns"].toString()) ?? 0)}",
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              font: poppinsBold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 10),
+                      pw.TableHelper.fromTextArray(
+                        headers: [
+                          "Tentative Date",
+                          "Gross Interest (\u20B9)",
+                          "TDS (\u20B9)",
+                          "Net Interest (\u20B9)",
+                        ],
+                        data: List.generate(res["paymentSchedule"].length, (i) {
+                          final item = res["paymentSchedule"][i];
+                          String formattedDateInTable = DateFormat(
+                            'dd-MM-yyyy',
+                          ).format(
+                            DateTime.parse(item["payment_date"].toString()),
+                          );
+                          return [
+                            formattedDateInTable,
+                            item["gross_amount"].toString(),
+                            item["tds"].toString(),
+                            item["net_return"].toString(),
+                          ];
+                        }),
+                        headerStyle: pw.TextStyle(
+                          font: poppinsBold,
+                          fontSize: AppDimen.textSize14,
+                          color: PdfColors.white,
+                        ),
+                        headerDecoration: pw.BoxDecoration(
+                          color: PdfColor.fromInt(0xFF000000),
+                        ),
+                        cellAlignments: {
+                          0: pw.Alignment.center,
+                          1: pw.Alignment.center,
+                          2: pw.Alignment.center,
+                          3: pw.Alignment.center,
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
-          );
-        },
+        footer:
+            (pw.Context context) => pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              mainAxisSize: pw.MainAxisSize.min,
+              children: [
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      "Principal:",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsRegular,
+                      ),
+                    ),
+                    pw.SizedBox(width: 5),
+                    pw.Text(
+                      "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["capital_invested"].toString()) ?? 0)}",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsBold,
+                      ),
+                    ),
+                  ],
+                ),
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      "${AppStrings.returnContent}:",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsRegular,
+                      ),
+                    ),
+                    pw.SizedBox(width: 5),
+                    pw.Text(
+                      "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["returns"].toString()) ?? 0)}",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsBold,
+                      ),
+                    ),
+                  ],
+                ),
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      "${AppStrings.total}:",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsRegular,
+                      ),
+                    ),
+                    pw.SizedBox(width: 5),
+                    pw.Text(
+                      "\u20B9 ${BaseFunction().formatIndianNumber(double.tryParse(res["sum_of_capital"].toString()) ?? 0)}",
+                      style: pw.TextStyle(
+                        fontSize: AppDimen.textSize14,
+                        font: poppinsBold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
       ),
     );
 
@@ -883,7 +947,6 @@ class InvestmentDetailPage extends StatelessWidget {
   }
 
   Future<void> _exportCSV(dynamic res) async {
-    print("res---->> $res");
     List<List<dynamic>> rows = [];
     String padRight(String value, int width) {
       return value.padRight(width);
@@ -908,8 +971,8 @@ class InvestmentDetailPage extends StatelessWidget {
     }
     rows.add([]);
     rows.add(["Principal: \u20B9${res["capital_invested"]}"]);
-    rows.add(["Return: \u20B9${res["returns"]}"]);
-    rows.add(["Total: \u20B9${res["sum_of_capital"]}"]);
+    rows.add(["${AppStrings.returnContent}: \u20B9${res["returns"]}"]);
+    rows.add(["${AppStrings.total}: \u20B9${res["sum_of_capital"]}"]);
 
     String csvData = const ListToCsvConverter().convert(rows);
 
@@ -974,7 +1037,7 @@ class InvestmentDetailPage extends StatelessWidget {
                     : null,
           ).toGesture(onTap: onTap),
         ),
-        SizedBox(width: 6),
+        const SizedBox(width: 6),
         Expanded(
           child: RichText(
             text: TextSpan(

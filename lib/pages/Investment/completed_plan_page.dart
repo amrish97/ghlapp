@@ -16,7 +16,6 @@ class CompletedPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("completedPlans---->>> ${completedPlans.length}--$completedPlans");
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),

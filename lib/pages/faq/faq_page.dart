@@ -84,7 +84,7 @@ class FaqPage extends StatelessWidget {
                         text: AppStrings.startConversation,
                         size: AppDimen.textSize12,
                         weight: AppFont.medium,
-                        color: Color.fromRGBO(159, 152, 152, 1),
+                        color: AppColors.faqCard,
                       ),
                       const SizedBox(height: 10),
                       Row(

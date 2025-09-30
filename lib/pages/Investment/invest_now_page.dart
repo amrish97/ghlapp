@@ -320,8 +320,6 @@ class InvestNowPage extends StatelessWidget {
                             decoration: InputDecoration(
                               hintText: "",
                               labelStyle: AppTextStyles.hintStyle,
-                              hintStyle: AppTextStyles.hintStyle,
-                              errorStyle: AppTextStyles.errorStyle,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: BorderSide(

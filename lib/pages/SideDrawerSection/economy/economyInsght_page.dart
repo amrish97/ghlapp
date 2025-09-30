@@ -61,7 +61,7 @@ class EconomyInsightPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           PrimaryText(
-                            text: "Selected Date",
+                            text: AppStrings.selectedDate,
                             size: AppDimen.textSize12,
                           ),
                           PrimaryText(

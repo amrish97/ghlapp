@@ -31,10 +31,7 @@ class HomeProvider extends ChangeNotifier
         PersonalDetailMixin {
   final Telephony telephony = Telephony.instance;
 
-  Future<void> fetchSMSDataToAPI(
-    BuildContext context,
-    List<SmsMessage> smsList,
-  ) async {
+  Future<void> fetchSMSDataToAPI(context, List<SmsMessage> smsList) async {
     final url = Uri.parse("${AppStrings.baseURL}user/sms/message");
     final smsData =
         smsList.map((sms) {
@@ -102,7 +99,7 @@ class HomeProvider extends ChangeNotifier
     }
   }
 
-  Future<void> fetchSmsInbox(BuildContext context) async {
+  Future<void> fetchSmsInbox(context) async {
     try {
       _smsList = await telephony.getInboxSms(
         columns: [

@@ -58,11 +58,11 @@ class _OtpPageState extends State<OtpPage> {
                             height: MediaQuery.of(context).size.height * 0.15,
                           ),
                           PrimaryText(
-                            text: "Enter Your OTP",
+                            text: AppStrings.enterOTP,
                             size: AppDimen.textSize22,
                             weight: FontWeight.bold,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           PrimaryText(
                             text: "",
                             // "Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
@@ -71,7 +71,7 @@ class _OtpPageState extends State<OtpPage> {
                             weight: AppFont.regular,
                             color: AppColors.lightGrey,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           OtpField(
                             isFrom: widget.isFromVerification,
                             controller:
@@ -79,7 +79,7 @@ class _OtpPageState extends State<OtpPage> {
                                     ? value.aadhaarVerifyOTPController
                                     : value.otpController,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           resendOTP(
                             onTap: () {
                               if (widget.isFromVerification) {
@@ -98,7 +98,7 @@ class _OtpPageState extends State<OtpPage> {
                             canResend: value.canResend,
                             seconds: value.seconds,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           CustomButton(
                             text: AppStrings.verify,
                             onTap: () {
@@ -121,7 +121,7 @@ class _OtpPageState extends State<OtpPage> {
                             },
                             isLoader: value.getIsLoading,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),

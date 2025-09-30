@@ -79,4 +79,29 @@ class AppStrings {
   static const String kycPending = "KYC is Pending";
   static const String fillKyc = "Please Fill the KYC";
   static const String welcomeBack = "Welcome Back!";
+  static const String thisMonth = "This Month";
+  static const String viewAll = "View All";
+  static const String spendThisMonth = "Spend this month";
+  static const String paymentType = "Select Payment type";
+  static const String total = "Total";
+  static const String returnContent = "Return";
+  static const String sumOfROI = "Sum of Capital & ROI";
+  static const String totalAmount = "Total Amount";
+  static const String sendOTP = "Send OTP";
+  static const String enterOTP = "Enter Your OTP";
+  static const String aadharCard = "Aadhaar Card";
+  static const String panCard = "Pan Card";
+  static const String bankDocuments = "Bank Documents";
+  static const String nomineeDocuments = "Nominee Documents";
+  static const String cmlReport = "CML Report";
+  static const String changeDocument = "Change Document";
+  static const String explore = "Explore";
+  static const String selectedDate = "Selected Date";
+  static const String loyalPoints = "Loyalty points";
+  static const String referCode = "Your Referral Code";
+  static const String notification = "Notification";
+  static const String loginWith = "Login With";
+  static const String logout = "Logout";
+  static const String pointsContent =
+      "Your friend gets 100 Timespoint on signup and,you get 100 Time Points too everytime!";
 }

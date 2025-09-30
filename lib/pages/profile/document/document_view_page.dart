@@ -49,7 +49,7 @@ class DocumentViewPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (title == "Aadhaar Card") ...[
+                if (title == AppStrings.aadharCard) ...[
                   DocumentUploadWidget(
                     label: "Upload Your Front Page \n $title",
                     filePath:
@@ -70,7 +70,7 @@ class DocumentViewPage extends StatelessWidget {
                     onUpload: () => value.pickBackAadhaar(),
                   ),
                 ],
-                if (title == "Pan Card")
+                if (title == AppStrings.panCard)
                   DocumentUploadWidget(
                     label: "Upload Your $title",
                     filePath:
@@ -80,7 +80,7 @@ class DocumentViewPage extends StatelessWidget {
                             : value.panCardPath,
                     onUpload: () => value.pickPanCard(),
                   ),
-                if (title == "Bank Documents")
+                if (title == AppStrings.bankDocuments)
                   DocumentUploadWidget(
                     label: "Upload Your $title",
                     filePath:
@@ -90,7 +90,7 @@ class DocumentViewPage extends StatelessWidget {
                             : value.bankDocPath,
                     onUpload: () => value.pickBankDoc(),
                   ),
-                if (title == "Nominee Documents") ...[
+                if (title == AppStrings.nomineeDocuments) ...[
                   DocumentUploadWidget(
                     label: "Upload Your $title \n (Aadhaar Card Front)",
                     filePath:
@@ -111,7 +111,7 @@ class DocumentViewPage extends StatelessWidget {
                     onUpload: () => value.pickNomineeBack(),
                   ),
                 ],
-                if (title == "CML Report") ...[
+                if (title == AppStrings.cmlReport) ...[
                   DocumentUploadWidget(
                     label: "Upload Your $title",
                     filePath:
@@ -142,55 +142,56 @@ class DocumentViewPage extends StatelessWidget {
     String? docBack;
 
     switch (title) {
-      case "Aadhaar Card":
+      case AppStrings.aadharCard:
         isUploaded = value.isAadhaarUploaded;
         docFront = value.frontAadhaarPath;
         docBack = value.backAadhaarPath;
         break;
-      case "Pan Card":
+      case AppStrings.panCard:
         isUploaded = value.isPanUploaded;
         docFront = value.panCardPath;
         break;
-      case "Bank Documents":
+      case AppStrings.bankDocuments:
         isUploaded = value.isBankUploaded;
         docFront = value.bankDocPath;
         break;
-      case "Nominee Documents":
+      case AppStrings.nomineeDocuments:
         isUploaded = value.isNomineeUploaded;
         docFront = value.nomineeFrontPath;
         docBack = value.nomineeBackPath;
         break;
-      case "CML Report":
+      case AppStrings.cmlReport:
         isUploaded = value.isCMLUploaded;
         docFront = value.cmlReport;
         break;
     }
 
     return CustomButton(
-      text: isUploaded ? "Change Document" : AppStrings.submit,
+      text: isUploaded ? AppStrings.changeDocument : AppStrings.submit,
       color: isUploaded ? AppColors.primary : AppColors.greenCircleColor,
       onTap: () {
         if (isUploaded) {
           switch (title) {
-            case "Aadhaar Card":
+            case AppStrings.aadharCard:
               value.resetAadhaar();
               break;
-            case "Pan Card":
+            case AppStrings.panCard:
               value.resetPan();
               break;
-            case "Bank Documents":
+            case AppStrings.bankDocuments:
               value.resetBank();
               break;
-            case "Nominee Documents":
+            case AppStrings.nomineeDocuments:
               value.resetNominee();
-            case "CML Report":
+            case AppStrings.cmlReport:
               value.resetCMLReport();
               break;
           }
         } else {
           if (docFront == null ||
               docFront.isEmpty ||
-              ((title == "Aadhaar Card" || title == "Nominee Documents") &&
+              ((title == AppStrings.aadharCard ||
+                      title == AppStrings.nomineeDocuments) &&
                   (docBack == null || docBack.isEmpty))) {
             AppSnackBar.show(
               context,

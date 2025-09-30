@@ -27,9 +27,9 @@ class NotificationPage extends StatelessWidget {
             child: Row(
               children: [
                 getBackButton(context),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 PrimaryText(
-                  text: "Notification",
+                  text: AppStrings.notification,
                   weight: AppFont.semiBold,
                   size: AppDimen.textSize16,
                 ),

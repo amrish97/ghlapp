@@ -35,9 +35,6 @@ mixin GetDetailMixin on ChangeNotifier {
         privacyContent = data["data"]["terms"]["privacy"];
         isAgreePrivacyPolicy = data["data"]["user_agreed"];
         notifyListeners();
-        print(
-          "isAgreePrivacyPolicy--->> $isAgreePrivacyPolicy------$privacyContent",
-        );
       } else {
         AppSnackBar.show(context, message: data["message"]);
       }
@@ -72,7 +69,6 @@ mixin GetDetailMixin on ChangeNotifier {
 
   void postPrivacy(context) async {
     final url = Uri.parse("${AppStrings.baseURL}privacy");
-    print("isAgreePrivacyPolicy--->> $isAgreePrivacyPolicy");
     try {
       final request = await http.post(
         url,
@@ -100,7 +96,6 @@ mixin GetDetailMixin on ChangeNotifier {
   }
 
   Future<void> postTermsCondition(context) async {
-    print("isAgreeTermsCondition--->> $isAgreeTermsCondition");
     final url = Uri.parse("${AppStrings.baseURL}terms/conditions");
     try {
       final request = await http.post(
@@ -140,7 +135,6 @@ mixin GetDetailMixin on ChangeNotifier {
         },
       );
       final data = jsonDecode(request.body);
-      print("data1--->> $data");
       if (request.statusCode == 200) {
         kycInformation.clear();
         kycInformation.addAll(data["data"] ?? {});
@@ -172,7 +166,6 @@ mixin GetDetailMixin on ChangeNotifier {
       if (request.statusCode == 200) {
         personalDetails.clear();
         personalDetails.addAll(data["data"] ?? {});
-        print("personalDetails--->> $personalDetails");
         notifyListeners();
       } else {
         AppSnackBar.show(context, message: data["message"]);

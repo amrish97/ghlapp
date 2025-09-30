@@ -38,7 +38,7 @@ class FinancialPage extends StatelessWidget {
                         Navigator.pop(context);
                       },
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     PrimaryText(
                       text: AppStrings.financial,
                       weight: AppFont.semiBold,
@@ -82,7 +82,7 @@ class FinancialPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     PrimaryText(
                       text: financialData["title"],
                       align: TextAlign.start,

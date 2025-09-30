@@ -55,7 +55,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                     margin: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -64,14 +64,12 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               child: PrimaryText(
                                 text: provider.activePlan[index]["name"],
                                 size: AppDimen.textSize14,
-                                weight: AppFont.bold,
-                                color: AppColors.black,
                               ),
                             ),
                             Column(
                               children: [
                                 PrimaryText(
-                                  text: "Minimum Investment",
+                                  text: AppStrings.minInvestment,
                                   size: AppDimen.textSize12,
                                   weight: AppFont.regular,
                                   color: AppColors.lightGrey,
@@ -87,7 +85,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 10,
@@ -95,7 +93,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: Color.fromRGBO(255, 166, 0, 0.32),
+                            color: AppColors.calcCardColor,
                           ),
                           width: double.infinity,
                           child: Row(
@@ -104,43 +102,42 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               "assets/images/cashback.png".toImageAsset(
                                 scale: 2.5,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               PrimaryText(
                                 text: "Upto 20% Cashback Offer!!",
-                                color: AppColors.black,
                                 weight: AppFont.semiBold,
                                 size: AppDimen.textSize12,
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Color.fromRGBO(6, 139, 15, 0.1),
+                            color: AppColors.invCard,
                           ),
                           child: Column(
                             children: [
                               getRowSectionWithItem(
-                                title: "Per Tax return",
+                                title: AppStrings.preTax,
                                 value:
                                     "${provider.activePlan[index]["return_of_investment"]}% P.a",
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               getRowSectionWithItem(
                                 title: AppStrings.tenure,
                                 value:
                                     "${provider.activePlan[index]["tenure"]} Months",
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               getRowSectionWithItem(
                                 title: AppStrings.totalFundRequired,
                                 value:
                                     "\u20B9 ${BaseFunction().formatIndianNumber(double.parse(provider.activePlan[index]["max_investment_amt"]).toInt())}",
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               getRowSectionWithItem(
                                 title: AppStrings.totalFundRaised,
                                 value:
@@ -165,7 +162,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         CustomButton(
                           onTap: () {
                             Navigator.push(
@@ -220,9 +217,9 @@ class _InvestmentPageState extends State<InvestmentPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               horizontalView(completedPlan: provider.completedPlan),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           );
         },

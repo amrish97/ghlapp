@@ -23,10 +23,9 @@ class DocumentUploadWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("filePath--->> $filePath");
     return filePath == null
         ? DottedBorder(
-          color: Color.fromRGBO(151, 151, 151, 1),
+          color: AppColors.notificationCardColor,
           dash: 12,
           gap: 12,
           strokeWidth: 1,
@@ -34,7 +33,7 @@ class DocumentUploadWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color.fromRGBO(248, 200, 200, 0.32),
+              color: AppColors.documentCardColor,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -61,7 +60,7 @@ class DocumentUploadWidget extends StatelessWidget {
                   weight: AppFont.semiBold,
                   color: AppColors.lightGrey,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Container(
                   color: AppColors.primaryLight,
                   padding: const EdgeInsets.symmetric(
@@ -72,7 +71,7 @@ class DocumentUploadWidget extends StatelessWidget {
                     text: "PNG,JPEG,PDF, Are support",
                     size: AppDimen.textSize10,
                     weight: AppFont.semiBold,
-                    color: Color.fromRGBO(91, 91, 91, 1),
+                    color: AppColors.faqColor,
                   ),
                 ),
               ],

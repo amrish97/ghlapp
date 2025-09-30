@@ -46,7 +46,7 @@ class FinancialDetailPage extends StatelessWidget {
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize16,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 height: 180,
                 width: double.infinity,
@@ -60,7 +60,7 @@ class FinancialDetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ReadMoreWidget(
                 text: financeDetail["description"].toString().replaceAll(
                   "\"",
@@ -71,13 +71,13 @@ class FinancialDetailPage extends StatelessWidget {
                         .toInt(),
                 index: index,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               PrimaryText(
                 text: AppStrings.latestUpdates,
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize16,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 color: AppColors.white,
                 padding: EdgeInsets.only(top: 20, right: 20, left: 20),
@@ -93,7 +93,7 @@ class FinancialDetailPage extends StatelessWidget {
                         width: double.infinity,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     PrimaryText(
                       text: latestUpdates[0]["title"] ?? "",
                       weight: AppFont.semiBold,
@@ -103,7 +103,7 @@ class FinancialDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),

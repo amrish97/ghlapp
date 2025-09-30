@@ -107,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
         "onTap": () {
           context.read<ProfileProvider>().logOut(context);
         },
-        "title": "Logout",
+        "title": AppStrings.logout,
       },
     ];
     return Scaffold(

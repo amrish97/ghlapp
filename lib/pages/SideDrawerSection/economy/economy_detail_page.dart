@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -72,7 +73,7 @@ class EconomyDetailPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               PrimaryText(
-                text: "Latest Updates",
+                text: AppStrings.latestUpdates,
                 weight: AppFont.semiBold,
                 size: AppDimen.textSize16,
               ),

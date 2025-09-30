@@ -31,7 +31,7 @@ class Blog extends StatelessWidget {
                 child: Row(
                   children: [
                     getBackButton(context),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     PrimaryText(
                       text: AppStrings.blog,
                       weight: AppFont.semiBold,
@@ -67,7 +67,7 @@ class Blog extends StatelessWidget {
                             size: AppDimen.textSize14,
                             align: TextAlign.start,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           PrimaryText(
                             text: "Post Date: $formattedDate",
                             weight: AppFont.regular,
@@ -75,7 +75,7 @@ class Blog extends StatelessWidget {
                             color: AppColors.lightGrey,
                             align: TextAlign.start,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Row(
                             children: [
                               Icon(
@@ -83,7 +83,7 @@ class Blog extends StatelessWidget {
                                 color: AppColors.primary,
                                 size: AppDimen.textSize14,
                               ),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               PrimaryText(
                                 text: data["author"].toString().trim(),
                                 weight: AppFont.semiBold,
@@ -96,7 +96,7 @@ class Blog extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     SizedBox(
                       width: 140,
                       height: 90,

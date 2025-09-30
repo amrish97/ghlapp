@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghlapp/providers/login_provider.dart';
+import 'package:ghlapp/resources/AppString.dart';
 import 'package:ghlapp/resources/app_colors.dart';
 import 'package:ghlapp/resources/app_dimention.dart';
 import 'package:ghlapp/resources/app_font.dart';
@@ -47,13 +48,13 @@ class _LoginPageState extends State<LoginPage> {
                             height: MediaQuery.of(context).size.height / 10,
                           ),
                           'assets/images/login.png'.toImageAsset(),
-                          SizedBox(height: 60),
+                          const SizedBox(height: 60),
                           PrimaryText(
                             text: "Enter Your Phone Number",
                             size: AppDimen.textSize24,
                             weight: AppFont.semiBold,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           PrimaryText(
                             text: "",
                             //"Lorem ipsum dolor sit amet consectetur. Elementum imperdiet est",
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                             weight: AppFont.light,
                             color: AppColors.lightGrey,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           CustomTextFormField(
                             label: 'Enter your phone number',
                             isShowPrefixIcon: true,
@@ -70,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                             prefixIcon: "assets/images/Vector.png",
                             keyboardType: TextInputType.phone,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           CustomButton(
-                            text: "Send OTP",
+                            text: AppStrings.sendOTP,
                             onTap: () {
                               if (value.phoneNumberController.text.isEmpty) {
                                 AppSnackBar.show(
@@ -93,14 +94,14 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           PrimaryText(
-                            text: "Login With",
+                            text: AppStrings.loginWith,
                             size: 16,
                             weight: AppFont.medium,
                             color: AppColors.lightGrey,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Row(
                             children: [
                               socialButton(

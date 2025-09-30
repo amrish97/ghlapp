@@ -41,7 +41,7 @@ class VerificationPage extends StatelessWidget {
               child: Row(
                 children: [
                   getBackButton(context),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   PrimaryText(
                     text: "$routeName ${AppStrings.details}",
                     weight: AppFont.semiBold,
